@@ -1,16 +1,21 @@
 package xyz.geekweb.stock;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class ScheduledTask {
 
-
+    private Logger logger = LoggerFactory.getLogger(ScheduledTask.class);
 //    @Scheduled(fixedRate = 5000)
 //    public void reportCurrentTime() throws InterruptedException {
 //        System.out.println(String.format("---第%s次执行，当前时间为：%s", count0++, dateFormat.format(new Date())));
@@ -23,38 +28,26 @@ public class ScheduledTask {
 
     @Scheduled(cron = "0 15 9 ? * MON-FRI") //表示周一到周五每天上午9：15执行作业
     public void reportCurrentTimeCron() throws InterruptedException, IOException {
-        //System.out.println(String.format("+++第%s次执行，当前时间为：%s", count2++, dateFormat.format(new Date())));
 
-        if (HolidayUtil.isHoliday()) return;
-        if (HolidayUtil.isStockTimeEnd()) return;
+        if (HolidayUtil.isHoliday() || HolidayUtil.isStockTimeEnd()){
+            logger.info("节假日或者已收盘，结束！");
+            return;
+        }
+        ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(1);
+        scheduledThreadPool.scheduleAtFixedRate(() -> {
 
-        Thread thread = new Thread(() -> {
+            logger.info("执行轮询");
             try {
-
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-                Boolean result = false;
-                int count = 0;
-                while (!result) {
-                    try {
-                        count++;
-                        System.out.println(sdf.format(new Date()) + "--循环执行第" + count + "次");
-                        new SearchStocks().doALL();
-                        Thread.sleep(60 * 1000); //设置暂停的时间 60 秒
-//                        if (count == 3) {
-//                            result = true;
-//                            break ;
-//                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                if(! HolidayUtil.isStockTimeEnd()){
+                    new SearchStocks().doALL();
+                }else{
+                    logger.info("已收盘");
+                    scheduledThreadPool.shutdown();
                 }
-
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("run error",e);
             }
-        });
-        thread.start();
+        }, 3, 60, TimeUnit.SECONDS);
 
 
     }

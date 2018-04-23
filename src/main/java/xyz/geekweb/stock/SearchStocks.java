@@ -23,8 +23,6 @@ import static java.util.stream.Collectors.toList;
 
 public class SearchStocks {
 
-
-
     /**
      * 国债逆回购
      */
@@ -69,7 +67,7 @@ public class SearchStocks {
 
         flag = 0;
 
-        logger.debug("flag初始化" + Integer.toBinaryString(flag));
+//        logger.debug("flag初始化" + Integer.toBinaryString(flag));
 
         final String strSinaData = getSinaData();
 
@@ -116,7 +114,7 @@ public class SearchStocks {
             if (item.getNow() > MIN_REVERSE_BONDS_VALUE) {
                 //国债逆回购触发价格高点（对标：浦发天天）
                 flag = 1 << 0;
-                logger.debug("国债" + Integer.toBinaryString(flag));
+//                logger.debug("国债" + Integer.toBinaryString(flag));
                 sb.append(String.format("%5s 当前价[%2.2f] 买入价[%2.2f]%n", item.getName(), item.getNow(), item.getBuy1Pricae()));
             }
         }
@@ -145,7 +143,7 @@ public class SearchStocks {
                     || (item.getFullCode().equals("sh132003") && item.getNow() <= MIN_132003_VALUE)) {
 
                 flag = flag | 1 << 2;
-                logger.debug("转债" + Integer.toBinaryString(flag));
+//                logger.debug("转债" + Integer.toBinaryString(flag));
                 sb.append(String.format("%-6s 当前价[%7.3f] 卖出价[%7.3f] 卖量[%5.0f] %-6s %n", item.getFullCode(), item.getNow(), item.getSell1Pricae(), item.getSell1Num(), item.getName()));
             }
         }
@@ -161,7 +159,7 @@ public class SearchStocks {
                 //价格突破设定值
 
                 flag = flag | 1 << 3;
-                logger.debug("股票" + Integer.toBinaryString(flag));
+//                logger.debug("股票" + Integer.toBinaryString(flag));
                 sb.append(String.format("%8s 幅度[%6.2f%%] 当前价[%6.2f] 卖出价[%6.2f] 买入价[%6.2f] %-6s %n", item.getFullCode(), percent, item.getNow(), item.getSell1Pricae(), item.getBuy1Pricae(), item.getName()));
             }
         }
@@ -241,7 +239,7 @@ public class SearchStocks {
 
             if (lst.get(0).getDiffValue() - minFJFundaPO.getDiffValue() > MAX_DIFF_VALUE) {
                 flag = flag | 1 << 4;
-                logger.debug("分级" + Integer.toBinaryString(flag));
+//                logger.debug("分级" + Integer.toBinaryString(flag));
                 sb.append(String.format("分级A可以做轮动 买入：[%5s %6s][%5.3f]%n", minFJFundaPO.getFundaName(), minFJFundaPO.getFundaId(), minFJFundaPO.getFundaValue()));
                 sb.append(String.format("              卖出：[%5s %6s][%5.3f]%n", lst.get(0).getFundaName(), lst.get(0).getFundaId(), lst.get(0).getFundaValue()));
 
