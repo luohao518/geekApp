@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Repayment List</title>
+    <link rel="stylesheet" th:href="@{css/style.css}"></link>
+   
+    <script type="text/javascript">
+//auto expand textarea
+
+</script>
+  </head>
+
+  <body>    
+  
+  <style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;}
+.tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;}
+.tg .tg-yw4l{vertical-align:top}
+
+.form-style-2{
+    max-width: 500px;
+    padding: 20px 12px 10px 20px;
+    font: 13px Arial, Helvetica, sans-serif;
+}
+.form-style-2-heading{
+    font-weight: bold;
+    font-style: italic;
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 20px;
+    font-size: 15px;
+    padding-bottom: 3px;
+}
+.form-style-2 label{
+    display: block;
+    margin: 0px 0px 15px 0px;
+}
+.form-style-2 label > span{
+    width: 100px;
+    font-weight: bold;
+    float: left;
+    padding-top: 8px;
+    padding-right: 5px;
+}
+.form-style-2 span.required{
+    color:red;
+}
+.form-style-2 .tel-number-field{
+    width: 40px;
+    text-align: center;
+}
+.form-style-2 input.input-field{
+    width: 48%;
+    
+}
+
+.form-style-2 input.input-field, 
+.form-style-2 .tel-number-field, 
+.form-style-2 .textarea-field, 
+ .form-style-2 .select-field{
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    border: 1px solid #C2C2C2;
+    box-shadow: 1px 1px 4px #EBEBEB;
+    -moz-box-shadow: 1px 1px 4px #EBEBEB;
+    -webkit-box-shadow: 1px 1px 4px #EBEBEB;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    padding: 7px;
+    outline: none;
+}
+.form-style-2 .input-field:focus, 
+.form-style-2 .tel-number-field:focus, 
+.form-style-2 .textarea-field:focus,  
+.form-style-2 .select-field:focus{
+    border: 1px solid #0C0;
+}
+.form-style-2 .textarea-field{
+    height:100px;
+    width: 55%;
+}
+.form-style-2 input[type=submit],
+.form-style-2 input[type=button]{
+    border: none;
+    padding: 8px 15px 8px 15px;
+    background: #FF8500;
+    color: #fff;
+    box-shadow: 1px 1px 4px #DADADA;
+    -moz-box-shadow: 1px 1px 4px #DADADA;
+    -webkit-box-shadow: 1px 1px 4px #DADADA;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+}
+.form-style-2 input[type=submit]:hover,
+.form-style-2 input[type=button]:hover{
+    background: #EA7B00;
+    color: #fff;
+}
+
+</style>
+
+<div  align="center" class="form-style-2">
+
+<div  align="center" class="form-style-2">
+	<div class="form-style-2-heading" align="center">月还款计算器</div>
+    <form method="POST" action="#" th:action="@{/calcuRepayment}" th:object="${formData}" accept-charset="utf-8">      
+		<label for="name"><span>借款人姓名</span><input type="text" class="input-field" th:field="*{name}" /></label>
+		<label for="date"><span>借款日期<span class="required">*</span></span><input type="date" class="input-field" th:field="*{date}"  /></label>
+		<p th:if="${#fields.hasErrors('date')}" th:errors="*{date}" />
+		<label for="totalAmount"><span>借款总金额<span class="required">*</span></span><input type="number" class="input-field" th:field="*{totalAmount}"  /></label>
+		<p th:if="${#fields.hasErrors('totalAmount')}" th:errors="*{totalAmount}" />
+		<label for="interestRate"><span>利率%<span class="required">*</span></span><input type="number" class="input-field" th:field="*{interestRate}"  /></label>
+		<p th:if="${#fields.hasErrors('interestRate')}" th:errors="*{interestRate}" />
+		<label for="repaymentMonthly"><span>月还款额<span class="required">*</span></span><input type="number" class="input-field" th:field="*{repaymentMonthly}"  /></label>
+		<p th:if="${#fields.hasErrors('repaymentMonthly')}" th:errors="*{repaymentMonthly}" />
+		<input type="submit" value="计算"></input>
+    </form>
+</div>
+<hr/>
+<div align="center" th:unless="${#lists.isEmpty(repaymentScheduleData)}">
+    <h2><span th:text="${repaymentScheduleData.name}" /></h2>
+    
+	<table class="tg">
+	<tr><th>No.</th><th>还款日</th><th>总金额</th><th>应还利息</th><th>剩余本息</th></tr>
+	<dl th:each="item : ${repaymentScheduleData.data}">
+	<tr>
+	    <th class="tg-yw4l"><span th:text="${item.index}">index</span></th>
+	    <th class="tg-yw4l"><span th:text="${item.date}">date</span></th>
+	    <th class="tg-yw4l"><span th:text="${item.totalAmount}">totalAmount</span></th>
+	    <th class="tg-yw4l"><span th:text="${item.interest}">interest</span></th>
+	    <th class="tg-yw4l"><span th:text="${item.balance}">balance</span></th>
+	</tr>
+	</dl>
+	</table>
+	<br/><br/><br/>
+	 <div align="right" ><button onclick="{location.href='/download'}">下载(Json)</button></div>      
+</div>
+</div>
+</body>
+</html>
