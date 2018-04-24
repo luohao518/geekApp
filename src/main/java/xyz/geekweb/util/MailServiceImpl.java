@@ -6,14 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
  * @author lhao
  * @date 2018/4/23
  */
-@Component
-public class MailServiceImpl implements MailService{
+@Service
+public class MailServiceImpl implements MailService {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -23,12 +23,16 @@ public class MailServiceImpl implements MailService{
     @Value("${mail.fromMail.addr}")
     private String from;
 
+    @Value("${mail.toMail.addr}")
+    private String to;
+
+
     @Override
-    public void sendSimpleMail(String to, String subject, String content) {
+    public void sendSimpleMail(String content) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(from);
         message.setTo(to);
-        message.setSubject(subject);
+        message.setSubject("每日行情");
         message.setText(content);
 
         try {

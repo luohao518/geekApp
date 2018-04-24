@@ -8,14 +8,18 @@ public class FJFundaPO {
     double diffValue;
 
     @Override
-    public String toString() {
-        return "FJFundaPO{" +
-                "fundaId='" + fundaId + '\'' +
-                ", fundaName='" + fundaName + '\'' +
-                ", fundaCurrentPrice=" + fundaCurrentPrice +
-                ", fundaValue=" + fundaValue +
-                ", diffValue=" + diffValue +
-                '}';
+    public int hashCode() {
+        int result;
+        long temp;
+        result = fundaId != null ? fundaId.hashCode() : 0;
+        result = 31 * result + (fundaName != null ? fundaName.hashCode() : 0);
+        temp = Double.doubleToLongBits(fundaCurrentPrice);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(fundaValue);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(diffValue);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
     }
 
     @Override
@@ -33,18 +37,14 @@ public class FJFundaPO {
     }
 
     @Override
-    public int hashCode() {
-        int result;
-        long temp;
-        result = fundaId != null ? fundaId.hashCode() : 0;
-        result = 31 * result + (fundaName != null ? fundaName.hashCode() : 0);
-        temp = Double.doubleToLongBits(fundaCurrentPrice);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(fundaValue);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(diffValue);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        return result;
+    public String toString() {
+        return "FJFundaPO{" +
+                "fundaId='" + fundaId + '\'' +
+                ", fundaName='" + fundaName + '\'' +
+                ", fundaCurrentPrice=" + fundaCurrentPrice +
+                ", fundaValue=" + fundaValue +
+                ", diffValue=" + diffValue +
+                '}';
     }
 
     public String getFundaId() {

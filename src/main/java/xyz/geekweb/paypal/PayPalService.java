@@ -73,7 +73,7 @@ public class PayPalService {
 
     public Payment executePayment(String paymentId, String payerId) throws PayPalRESTException {
 
-        logger.debug("executePayment():[{}],[{}]",paymentId,payerId);
+        logger.debug("executePayment():[{}],[{}]", paymentId, payerId);
 
         Payment payment = new Payment();
         payment.setId(paymentId);

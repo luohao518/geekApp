@@ -12,9 +12,9 @@ import java.util.List;
 @RestController
 public class JsonController {
 
-	@RequestMapping("/download")
-	public RepaymentScheduleData<List<Detail>> repayment(HttpSession session) {
+    @RequestMapping("/download")
+    public RepaymentScheduleData<List<Detail>> repayment(HttpSession session) {
 
-		return (RepaymentScheduleData<List<Detail>>)session.getAttribute("result");
-	}
+        return (RepaymentScheduleData<List<Detail>>) session.getAttribute("result");
+    }
 }

@@ -2,13 +2,13 @@ package xyz.geekweb.calcurepayment.model;
 
 public class Detail {
 
-	public int index;
+    public int index;
 
-	public String date;
+    public String date;
 
-	public double totalAmount;
+    public double totalAmount;
 
-	public double interest;
+    public double interest;
 
-	public double balance;
+    public double balance;
 }

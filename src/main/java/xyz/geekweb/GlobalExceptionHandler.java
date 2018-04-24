@@ -12,13 +12,13 @@ import javax.servlet.http.HttpServletRequest;
 @ControllerAdvice
 class GlobalExceptionHandler {
 
+    public static final String DEFAULT_ERROR_VIEW = "error";
     private Logger logger = LoggerFactory.getLogger(PayPalService.class);
 
-    public static final String DEFAULT_ERROR_VIEW = "error";
     @ExceptionHandler(value = Exception.class)
     public ModelAndView defaultErrorHandler(HttpServletRequest req, Exception e) throws Exception {
 
-        logger.error("error handler:",e);
+        logger.error("error handler:", e);
         ModelAndView mav = new ModelAndView();
         mav.addObject("exception", e);
         mav.addObject("url", req.getRequestURL());

@@ -47,6 +47,20 @@ public class HistoryData {
 
     /**
      * 获取股票历史数据<br>
+     * 实际调用getKLineData(String code, String scale, HistoryData.DEFAULT_DATALEN)<br>
+     * 例子：<br>
+     * String result = HistoryData.getKLineData("sz000001", HistoryData.FIVE_MINUTES);<br>
+     *
+     * @param code  股票代码
+     * @param scale 时间跨度 可选[FIVE_MINUTES,FIFTEEN_MINUTES,THIRTY_MINUTES,ONE_HOUR,ONE_DAY,ONE_WEEK]
+     * @return json字符串
+     */
+    public static String getKLineData(String code, String scale) {
+        return HistoryData.getKLineData(code, scale, HistoryData.DEFAULT_DATALEN);
+    }
+
+    /**
+     * 获取股票历史数据<br>
      * 例子：<br>
      * String result = HistoryData.getKLineData("sz000001", HistoryData.FIVE_MINUTES, "20");<br>
      *
@@ -60,69 +74,10 @@ public class HistoryData {
         return Tools.sendHTTPGET(url, "UTF-8");
     }
 
-    /**
-     * 获取股票历史数据
-     * 例子：<br>
-     * List&lt;HistoryDataPOJO&gt; result = HistoryData.getKLineDataObjects("sz000001", HistoryData.FIVE_MINUTES, "20");<br>
-     *
-     * @param code    股票代码
-     * @param scale   时间跨度 可选[FIVE_MINUTES,FIFTEEN_MINUTES,THIRTY_MINUTES,ONE_HOUR,ONE_DAY,ONE_WEEK]
-     * @param datalen 数据量
-     * @return 一个{@link List}，里面是{@link HistoryDataPOJO}对象
-     */
-    public static List<HistoryDataPOJO> getKLineDataObjects(String code, String scale, String datalen) {
-        String jsonText = getKLineData(code, scale, datalen);
-        JSONArray jsonarray = new JSONArray(jsonText);
-        int lengh = jsonarray.length();
-        List<HistoryDataPOJO> result = new ArrayList<>();
-        for (int i = 0; i < lengh; i++) {
-            JSONObject jsonobject = jsonarray.getJSONObject(i);
-            String dayString = jsonobject.getString("day");
-            LocalDateTime day = Tools.string2LocalDateTime(dayString);
-            double open = Double.parseDouble(jsonobject.getString("open"));
-            double high = Double.parseDouble(jsonobject.getString("high"));
-            double low = Double.parseDouble(jsonobject.getString("low"));
-            double close = Double.parseDouble(jsonobject.getString("close"));
-            double volume = Double.parseDouble(jsonobject.getString("volume"));
-            double MA5 = jsonobject.optDouble("ma_price5");
-            double MA5Volume = jsonobject.optDouble("ma_volume5");
-            double MA10 = jsonobject.optDouble("ma_price10");
-            double MA10Volume = jsonobject.optDouble("ma_volume10");
-            double MA30 = jsonobject.optDouble("ma_price30");
-            double MA30Volume = jsonobject.optDouble("ma_volume30");
-            HistoryDataPOJO pojo;
-            if (!Double.isNaN(MA30) && !Double.isNaN(MA30Volume)) {
-                pojo = new HistoryDataPOJO(day, open, high, low, close, volume, MA5, MA5Volume, MA10, MA10Volume, MA30, MA30Volume);
-            } else if (!Double.isNaN(MA10) && !Double.isNaN(MA10Volume)) {
-                pojo = new HistoryDataPOJO(day, open, high, low, close, volume, MA5, MA5Volume, MA10, MA10Volume);
-            } else if (!Double.isNaN(MA5) && !Double.isNaN(MA5Volume)) {
-                pojo = new HistoryDataPOJO(day, open, high, low, close, volume, MA5, MA5Volume);
-            } else {
-                pojo = new HistoryDataPOJO(day, open, high, low, close, volume);
-            }
-            result.add(pojo);
-        }
-        return result;
-    }
-
     private static String createURL(String code, String scale, String datalen) {
         String url = String.format("http://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?"
                 + "symbol=%s&scale=%s&datalen=%s", code, scale, datalen);
         return url;
-    }
-
-    /**
-     * 获取股票历史数据<br>
-     * 实际调用getKLineData(String code, String scale, HistoryData.DEFAULT_DATALEN)<br>
-     * 例子：<br>
-     * String result = HistoryData.getKLineData("sz000001", HistoryData.FIVE_MINUTES);<br>
-     *
-     * @param code  股票代码
-     * @param scale 时间跨度 可选[FIVE_MINUTES,FIFTEEN_MINUTES,THIRTY_MINUTES,ONE_HOUR,ONE_DAY,ONE_WEEK]
-     * @return json字符串
-     */
-    public static String getKLineData(String code, String scale) {
-        return HistoryData.getKLineData(code, scale, HistoryData.DEFAULT_DATALEN);
     }
 
     /**
@@ -260,6 +215,51 @@ public class HistoryData {
      */
     public static List<HistoryDataPOJO> getKLineDataObjects(String code, String scale) {
         return HistoryData.getKLineDataObjects(code, scale, HistoryData.DEFAULT_DATALEN);
+    }
+
+    /**
+     * 获取股票历史数据
+     * 例子：<br>
+     * List&lt;HistoryDataPOJO&gt; result = HistoryData.getKLineDataObjects("sz000001", HistoryData.FIVE_MINUTES, "20");<br>
+     *
+     * @param code    股票代码
+     * @param scale   时间跨度 可选[FIVE_MINUTES,FIFTEEN_MINUTES,THIRTY_MINUTES,ONE_HOUR,ONE_DAY,ONE_WEEK]
+     * @param datalen 数据量
+     * @return 一个{@link List}，里面是{@link HistoryDataPOJO}对象
+     */
+    public static List<HistoryDataPOJO> getKLineDataObjects(String code, String scale, String datalen) {
+        String jsonText = getKLineData(code, scale, datalen);
+        JSONArray jsonarray = new JSONArray(jsonText);
+        int lengh = jsonarray.length();
+        List<HistoryDataPOJO> result = new ArrayList<>();
+        for (int i = 0; i < lengh; i++) {
+            JSONObject jsonobject = jsonarray.getJSONObject(i);
+            String dayString = jsonobject.getString("day");
+            LocalDateTime day = Tools.string2LocalDateTime(dayString);
+            double open = Double.parseDouble(jsonobject.getString("open"));
+            double high = Double.parseDouble(jsonobject.getString("high"));
+            double low = Double.parseDouble(jsonobject.getString("low"));
+            double close = Double.parseDouble(jsonobject.getString("close"));
+            double volume = Double.parseDouble(jsonobject.getString("volume"));
+            double MA5 = jsonobject.optDouble("ma_price5");
+            double MA5Volume = jsonobject.optDouble("ma_volume5");
+            double MA10 = jsonobject.optDouble("ma_price10");
+            double MA10Volume = jsonobject.optDouble("ma_volume10");
+            double MA30 = jsonobject.optDouble("ma_price30");
+            double MA30Volume = jsonobject.optDouble("ma_volume30");
+            HistoryDataPOJO pojo;
+            if (!Double.isNaN(MA30) && !Double.isNaN(MA30Volume)) {
+                pojo = new HistoryDataPOJO(day, open, high, low, close, volume, MA5, MA5Volume, MA10, MA10Volume, MA30, MA30Volume);
+            } else if (!Double.isNaN(MA10) && !Double.isNaN(MA10Volume)) {
+                pojo = new HistoryDataPOJO(day, open, high, low, close, volume, MA5, MA5Volume, MA10, MA10Volume);
+            } else if (!Double.isNaN(MA5) && !Double.isNaN(MA5Volume)) {
+                pojo = new HistoryDataPOJO(day, open, high, low, close, volume, MA5, MA5Volume);
+            } else {
+                pojo = new HistoryDataPOJO(day, open, high, low, close, volume);
+            }
+            result.add(pojo);
+        }
+        return result;
     }
 
     /**

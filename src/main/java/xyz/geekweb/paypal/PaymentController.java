@@ -53,7 +53,7 @@ public class PaymentController {
                 }
             }
         } catch (PayPalRESTException e) {
-            logger.error("pay error",e);
+            logger.error("pay error", e);
         }
         return "redirect:/";
     }

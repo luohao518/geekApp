@@ -1,7 +1,8 @@
 package xyz.geekweb.stock;
 
 import static org.testng.Assert.assertEquals;
-import static xyz.geekweb.stock.HolidayUtil.*;
+import static xyz.geekweb.stock.HolidayUtil.isHoliday;
+import static xyz.geekweb.stock.HolidayUtil.isStockTime;
 
 public class HolidayUtilTest {
     @org.testng.annotations.Test

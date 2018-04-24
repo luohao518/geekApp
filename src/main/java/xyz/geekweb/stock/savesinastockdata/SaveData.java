@@ -209,6 +209,46 @@ public class SaveData {
     }
 
     /**
+     * 保存历史数据，使用多线程<br>
+     * 注意：使用此方法需要谨慎，因为这个方法没有经过良好测试！！存在潜在问题！！
+     *
+     * @param fullCodeList 股票代码list，注意股票代码要有sz或sh前缀
+     * @param num          线程数
+     */
+    public void saveHistoryDataPointThread(List<String> fullCodeList, int num) {
+        int trems = fullCodeList.size() / num;
+        List<List<String>> ll = new ArrayList<>();
+        int start = 0;
+        for (int m = 0; m < num; m++) {
+            if (m == num - 1) {
+                List<String> l = new ArrayList<>();
+                while (start != fullCodeList.size() - 1) {
+                    l.add(fullCodeList.get(start));
+                    start++;
+                }
+                ll.add(l);
+            } else {
+                List<String> l = new ArrayList<>();
+                int count = 0;
+                while (count < trems) {
+                    if (start != fullCodeList.size() - 1) {
+                        l.add(fullCodeList.get(start));
+                        start++;
+                        count++;
+                    }
+                }
+                ll.add(l);
+            }
+        }
+        for (List<String> codes : ll) {
+            Thread t = new Thread(() -> {
+                this.saveHistoryData(codes);
+            });
+            t.start();
+        }
+    }
+
+    /**
      * 保存历史数据
      *
      * @param fullCodeList 股票代码list，注意股票代码要有sz或sh前缀
@@ -250,6 +290,19 @@ public class SaveData {
         }
     }
 
+    private List<List<HistoryDataPOJO>> getHistoryData(String fullCode) {
+        List<List<HistoryDataPOJO>> result = new ArrayList<>();
+        System.out.println("开始查询" + fullCode);
+        result.add(HistoryData.get5MKlineDataObjects(fullCode));
+        result.add(HistoryData.get15MKlineDataObjects(fullCode));
+        result.add(HistoryData.get30MKlineDataObjects(fullCode));
+        result.add(HistoryData.get1HKlineDataObjects(fullCode));
+        result.add(HistoryData.get1DKlineDataObjects(fullCode));
+        result.add(HistoryData.get1WKlineDataObjects(fullCode));
+        System.out.println(fullCode + "查询完毕");
+        return result;
+    }
+
     private void executeHistorySQL(Connection conn, Statement stmt, List<HistoryDataPOJO> lh, String tableName, String fullCode) throws SQLException {
         String sqlString = String.format(SaveData.INSERT_HISTORY, tableName);
         for (HistoryDataPOJO obj : lh) {
@@ -271,59 +324,6 @@ public class SaveData {
             sql.executeUpdate();
         }
 
-    }
-
-    private List<List<HistoryDataPOJO>> getHistoryData(String fullCode) {
-        List<List<HistoryDataPOJO>> result = new ArrayList<>();
-        System.out.println("开始查询" + fullCode);
-        result.add(HistoryData.get5MKlineDataObjects(fullCode));
-        result.add(HistoryData.get15MKlineDataObjects(fullCode));
-        result.add(HistoryData.get30MKlineDataObjects(fullCode));
-        result.add(HistoryData.get1HKlineDataObjects(fullCode));
-        result.add(HistoryData.get1DKlineDataObjects(fullCode));
-        result.add(HistoryData.get1WKlineDataObjects(fullCode));
-        System.out.println(fullCode + "查询完毕");
-        return result;
-    }
-
-    /**
-     * 保存历史数据，使用多线程<br>
-     * 注意：使用此方法需要谨慎，因为这个方法没有经过良好测试！！存在潜在问题！！
-     *
-     * @param fullCodeList 股票代码list，注意股票代码要有sz或sh前缀
-     * @param num          线程数
-     */
-    public void saveHistoryDataPointThread(List<String> fullCodeList, int num) {
-        int trems = fullCodeList.size() / num;
-        List<List<String>> ll = new ArrayList<>();
-        int start = 0;
-        for (int m = 0; m < num; m++) {
-            if (m == num - 1) {
-                List<String> l = new ArrayList<>();
-                while (start != fullCodeList.size() - 1) {
-                    l.add(fullCodeList.get(start));
-                    start++;
-                }
-                ll.add(l);
-            } else {
-                List<String> l = new ArrayList<>();
-                int count = 0;
-                while (count < trems) {
-                    if (start != fullCodeList.size() - 1) {
-                        l.add(fullCodeList.get(start));
-                        start++;
-                        count++;
-                    }
-                }
-                ll.add(l);
-            }
-        }
-        for (List<String> codes : ll) {
-            Thread t = new Thread(() -> {
-                this.saveHistoryData(codes);
-            });
-            t.start();
-        }
     }
 
     /**

@@ -47,6 +47,18 @@ public class RealTimeData {
         return result;
     }
 
+    private static String createURL(String[] codes) {
+        String codelist = "";
+        for (int i = 0; i < codes.length; i++) {
+            codelist += codes[i];
+            if (i != codes.length - 1) {
+                codelist += ",";
+            }
+        }
+        String url = String.format("http://hq.sinajs.cn/list=%s", codelist);
+        return url;
+    }
+
     /**
      * 获取股票历史数据
      * 例子：<br>
@@ -128,17 +140,5 @@ public class RealTimeData {
             }
         }
         return result;
-    }
-
-    private static String createURL(String[] codes) {
-        String codelist = "";
-        for (int i = 0; i < codes.length; i++) {
-            codelist += codes[i];
-            if (i != codes.length - 1) {
-                codelist += ",";
-            }
-        }
-        String url = String.format("http://hq.sinajs.cn/list=%s", codelist);
-        return url;
     }
 }

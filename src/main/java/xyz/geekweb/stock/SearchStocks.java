@@ -8,10 +8,13 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import xyz.geekweb.stock.pojo.FJFundaPO;
 import xyz.geekweb.stock.pojo.json.JsonRootBean;
 import xyz.geekweb.stock.savesinastockdata.RealTimeData;
 import xyz.geekweb.stock.savesinastockdata.RealTimeDataPOJO;
+import xyz.geekweb.util.MailService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,8 +24,13 @@ import java.util.List;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
+/**
+ * @author lhao
+ */
+@Service
 public class SearchStocks {
 
+    public static final double MAX_DIFF_VALUE = 0.003;
     /**
      * 国债逆回购
      */
@@ -35,24 +43,19 @@ public class SearchStocks {
     final static String[] MONETARY_FUNDS = {"sh511990", "sh511660", "sh511810", "sh511690", "sh511900"};
     public static final int LENGTH_2 = MONETARY_FUNDS.length;
     final static double MAX_MONETARY_FUNDS_VALUE = 99.990;
-    public static final double MAX_DIFF_VALUE = 0.003;
-
     /**
      * 股票
      */
     final static String[] STOCKS = {"sh600185", "sh600448", "sh601098", "sz000066", "sz002570", "sh601828", "sh601928", "sh601369", "sz000417"};
-    final static double MIN_505888_VALUE = 1.013;
     public static final int LENGTH_4 = STOCKS.length;
+    final static double MIN_505888_VALUE = 1.013;
     /**
      * 可转债，元和
      */
     final static String[] STOCKS_OTHERS = {"sh132003", "sh110030", "sh505888"};
+    public static final int LENGTH_3 = STOCKS_OTHERS.length;
     final static double MAX_STOCKS_PERCENT = 3.0;
     final static double MIN_132003_VALUE = 99.500;
-    //存储状态
-    private int flag;
-
-    public static final int LENGTH_3 = STOCKS_OTHERS.length;
     /**
      * 分级基金
      */
@@ -60,9 +63,11 @@ public class SearchStocks {
     final static String[] FJ_FUNDS = {"150022", "150181", "150018", "150171", "150227", "150200",};
     final static String[] FJ_FUNDS_HAVE = {"150181", "150018"};
 
+    //存储状态
+    private int flag;
     private Logger logger = LoggerFactory.getLogger(SearchStocks.class);
 
-    public void doALL() throws IOException {
+    public String doALL() throws IOException {
 
 
         flag = 0;
@@ -73,25 +78,18 @@ public class SearchStocks {
 
         final String strJSLData = getJSLData();
 
-        logger.warn(strSinaData + strJSLData);
+
         StringBuilder sb = new StringBuilder();
+        sb.append(strSinaData);
+        sb.append(strJSLData);
         sb.append(String.format("%n%-5s %-5s %-5s %-5s %-5s%n", "国债逆回购", "货币基金", "可转债元和", "股票", "分级基金"));
         String strFlag = StringUtils.reverse(Integer.toBinaryString(flag));
 
         sb.append(String.format("%-9s %-8s %-8s %-8s %-8s%n", getValue(strFlag, 0), getValue(strFlag, 1), getValue(strFlag, 2), getValue(strFlag, 3), getValue(strFlag, 4)));
-        logger.warn(sb.toString());
-//        logger.warn(String.format("flag值：%b",flag ));
 
+        return sb.toString();
     }
 
-    private String getValue(String str, int start) {
-        if (StringUtils.isNotEmpty(str)) {
-            if (str.length() > start) {
-                return str.substring(start, start + 1);
-            }
-        }
-        return "0";
-    }
     /**
      * 监测 (货币基金，国债逆回购，股票)
      *
@@ -128,7 +126,6 @@ public class SearchStocks {
             if (item.getNow() < MAX_MONETARY_FUNDS_VALUE) {
                 //货币基金触发价格低点
                 flag = flag | 1 << 1;
-                logger.debug("货基" + Integer.toBinaryString(flag));
                 sb.append(String.format("购买货币基金:%s 当前价[%7.3f] 卖出价[%7.3f] 卖量[%5.0f]%n", item.getFullCode(), item.getNow(), item.getSell1Pricae(), item.getSell1Num()));
             }
         }
@@ -143,7 +140,6 @@ public class SearchStocks {
                     || (item.getFullCode().equals("sh132003") && item.getNow() <= MIN_132003_VALUE)) {
 
                 flag = flag | 1 << 2;
-//                logger.debug("转债" + Integer.toBinaryString(flag));
                 sb.append(String.format("%-6s 当前价[%7.3f] 卖出价[%7.3f] 卖量[%5.0f] %-6s %n", item.getFullCode(), item.getNow(), item.getSell1Pricae(), item.getSell1Num(), item.getName()));
             }
         }
@@ -167,7 +163,6 @@ public class SearchStocks {
 
         return sb.toString();
     }
-
 
     /**
      * 监测分级基金数据
@@ -247,6 +242,15 @@ public class SearchStocks {
         }
         sb.append("----------------------------------------------------\n");
         return sb.toString();
+    }
+
+    private String getValue(String str, int start) {
+        if (StringUtils.isNotEmpty(str)) {
+            if (str.length() > start) {
+                return str.substring(start, start + 1);
+            }
+        }
+        return "0";
     }
 
 }

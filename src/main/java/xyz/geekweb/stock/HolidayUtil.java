@@ -31,6 +31,11 @@ public class HolidayUtil {
         return false;
     }
 
+    public static boolean isStockTime() {
+
+        return isStockTime(LocalTime.now().format(DateTimeFormatter.ofPattern("HHmm")));
+    }
+
     public static boolean isStockTime(String hhmm) {
 
         if (StringUtils.isEmpty(hhmm)) {
@@ -51,11 +56,6 @@ public class HolidayUtil {
         return isHoliday(LocalDate.now());
     }
 
-    public static boolean isHoliday(String str) throws IOException {
-        return isHoliday(LocalDate.parse(str, DateTimeFormatter.ofPattern("yyyyMMdd")));
-
-    }
-
     public static boolean isHoliday(LocalDate date) throws IOException {
 
         System.out.println(date.toString());
@@ -74,6 +74,11 @@ public class HolidayUtil {
         String result = response.body().string();
 
         return result.equals("0") ? false : true;
+    }
+
+    public static boolean isHoliday(String str) throws IOException {
+        return isHoliday(LocalDate.parse(str, DateTimeFormatter.ofPattern("yyyyMMdd")));
+
     }
 
 }

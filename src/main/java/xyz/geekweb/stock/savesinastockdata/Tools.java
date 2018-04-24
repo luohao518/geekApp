@@ -52,6 +52,25 @@ public class Tools {
     }
 
     /**
+     * 将{@link InputStream}转换为{@link String}
+     *
+     * @param in          {@link InputStream}
+     * @param charsetName 字符串编码
+     * @return 返回String字符串
+     * @throws UnsupportedEncodingException 不支持的编码
+     * @throws IOException                  io错误
+     */
+    public static String InputStreamToString(InputStream in, String charsetName) throws UnsupportedEncodingException, IOException {
+        StringBuffer sb = new StringBuffer();
+        byte[] b = new byte[1024];
+        int len = 0;
+        while ((len = in.read(b)) != -1) {
+            sb.append(new String(b, 0, len, charsetName));
+        }
+        return sb.toString();
+    }
+
+    /**
      * 将如"2017-01-07 14:07:35"或"2017-01-07"这样的字符串转换为LocalDateTime对象
      *
      * @param time 时间字符串
@@ -69,25 +88,6 @@ public class Tools {
             result = LocalDateTime.of(Integer.parseInt(day[0]), Integer.parseInt(day[1]), Integer.parseInt(day[2]), Integer.parseInt(daytime[0]), Integer.parseInt(daytime[1]), Integer.parseInt(daytime[2]));
         }
         return result;
-    }
-
-    /**
-     * 将{@link InputStream}转换为{@link String}
-     *
-     * @param in          {@link InputStream}
-     * @param charsetName 字符串编码
-     * @return 返回String字符串
-     * @throws UnsupportedEncodingException 不支持的编码
-     * @throws IOException                  io错误
-     */
-    public static String InputStreamToString(InputStream in, String charsetName) throws UnsupportedEncodingException, IOException {
-        StringBuffer sb = new StringBuffer();
-        byte[] b = new byte[1024];
-        int len = 0;
-        while ((len = in.read(b)) != -1) {
-            sb.append(new String(b, 0, len, charsetName));
-        }
-        return sb.toString();
     }
 
     /**

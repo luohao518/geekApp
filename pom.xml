@@ -5,12 +5,10 @@
 
 	<groupId>xyz.geekweb</groupId>
 	<artifactId>geekApp</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.1-Release</version>
 	<packaging>jar</packaging>
-
 	<name>geekApp</name>
 	<description>Demo project for Spring Boot</description>
-
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -29,27 +27,22 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
-
         <dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
-
         <dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
@@ -59,7 +52,6 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>com.paypal.sdk</groupId>
 			<artifactId>rest-api-sdk</artifactId>
@@ -69,12 +61,6 @@
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 		</dependency>
-
-		<!--<dependency>-->
-		<!--<groupId>com.yilihjy</groupId>-->
-		<!--<artifactId>SaveSinaStockData</artifactId>-->
-		<!--<version>1.0.1</version>-->
-		<!--</dependency>-->
 		<dependency>
 			<groupId>com.squareup.okhttp</groupId>
 			<artifactId>okhttp</artifactId>
