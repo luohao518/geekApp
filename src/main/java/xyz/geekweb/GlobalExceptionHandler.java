@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
-import xyz.geekweb.paypal.PayPalService;
+import xyz.geekweb.paypal.service.impl.PayPalServiceImpl;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 class GlobalExceptionHandler {
 
     public static final String DEFAULT_ERROR_VIEW = "error";
-    private Logger logger = LoggerFactory.getLogger(PayPalService.class);
+    private Logger logger = LoggerFactory.getLogger(PayPalServiceImpl.class);
 
     @ExceptionHandler(value = Exception.class)
     public ModelAndView defaultErrorHandler(HttpServletRequest req, Exception e) throws Exception {

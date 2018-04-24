@@ -1,30 +1,31 @@
-package xyz.geekweb.paypal;
+package xyz.geekweb.paypal.control;
 
-import com.paypal.api.payments.Links;
-import com.paypal.api.payments.Payment;
+import com.paypal.api.payments.*;
 import com.paypal.base.rest.PayPalRESTException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import xyz.geekweb.paypal.config.PayPalPaymentIntentEnum;
 import xyz.geekweb.paypal.config.PayPalPaymentMethodEnum;
+import xyz.geekweb.paypal.result.ExceptionMsg;
+import xyz.geekweb.paypal.service.PayPalService;
+import xyz.geekweb.paypal.result.ResponseData;
 import xyz.geekweb.util.URLUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
-@Controller
+/**
+ * @author lhao
+ */
+@RestController
 @RequestMapping("/paypal")
 public class PaymentController {
 
     private Logger logger = LoggerFactory.getLogger(PaymentController.class);
 
     @Autowired
-    private PayPalService paypalService;
+    private PayPalService payPalService;
 
     @GetMapping("")
     public String index() {
@@ -38,7 +39,7 @@ public class PaymentController {
         String successUrl = URLUtils.getBaseURl(request) + "/paypal/success";
         try {
             logger.debug("do pay() start");
-            Payment payment = paypalService.createPayment(
+            Payment payment = payPalService.createPayment(
                     50.00,
                     "USD",
                     PayPalPaymentMethodEnum.paypal,
@@ -62,21 +63,40 @@ public class PaymentController {
     public String cancelPay() {
         logger.debug("do cancel");
         return "paypal/cancel";
+
     }
 
     @GetMapping("success")
-    public String successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId) {
+    public ResponseData successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId) {
         try {
             logger.debug("do success");
-            Payment payment = paypalService.executePayment(paymentId, payerId);
+            Payment payment = payPalService.executePayment(paymentId, payerId);
             logger.debug("do execute finished!!![{}]", payment.toJSON());
             if (payment.getState().equals("approved")) {
-                return "paypal/success";
+                return new ResponseData(ExceptionMsg.SUCCESS);
+            }else{
+                return new ResponseData(ExceptionMsg.FAILED);
             }
         } catch (PayPalRESTException e) {
-            logger.error(e.getMessage());
+            logger.error("successPay",e);
+            return new ResponseData(ExceptionMsg.FAILED,e.getMessage());
         }
-        return "redirect:/";
     }
 
+    @GetMapping("refund")
+    public ResponseData reFund(String saleId, String amountMoney)  {
+        logger.debug("do refund");
+
+        DetailedRefund detailedRefund = null;
+        try {
+            detailedRefund = payPalService.reFund(saleId, amountMoney);
+            return new ResponseData(ExceptionMsg.SUCCESS,detailedRefund.toJSON());
+        } catch (PayPalRESTException e) {
+            logger.error("reFund",e);
+            return new ResponseData(ExceptionMsg.FAILED,e.getMessage());
+        }
+
+
+
+    }
 }
