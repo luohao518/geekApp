@@ -9,9 +9,13 @@ import javax.servlet.http.HttpSession;
 import java.util.List;
 
 
+/**
+ * @author lhao
+ */
 @RestController
 public class JsonController {
 
+    @SuppressWarnings("unchecked")
     @RequestMapping("/download")
     public RepaymentScheduleData<List<Detail>> repayment(HttpSession session) {
 

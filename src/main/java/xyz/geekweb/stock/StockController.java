@@ -17,19 +17,23 @@ import java.io.IOException;
 @RequestMapping("/stock")
 public class StockController {
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    private SearchStocks sotck;
+    private SearchFinanceData searchFinanceData;
 
-    @Autowired
     private MailService mailService;
+
+    @Autowired
+    public StockController(SearchFinanceData searchFinanceData,MailService mailService){
+        this.searchFinanceData=searchFinanceData;
+        this.mailService=mailService;
+    }
 
     @RequestMapping(method = RequestMethod.GET)
     public String showList() throws IOException {
         logger.info("do Get()");
 
-        String s = sotck.doALL();
+        String s = searchFinanceData.getALLDataForOutput();
         logger.warn(s);
 
         mailService.sendSimpleMail(s);

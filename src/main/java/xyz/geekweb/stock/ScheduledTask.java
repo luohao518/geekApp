@@ -19,9 +19,13 @@ import java.util.concurrent.TimeUnit;
 public class ScheduledTask {
 
     @Autowired
-    private SearchStocks stocks;
+    public  ScheduledTask(SearchFinanceData searchFinanceData,MailService mailService){
+        this.searchFinanceData=searchFinanceData;
+        this.mailService=mailService;
+    }
 
-    @Autowired
+    private SearchFinanceData searchFinanceData;
+
     private MailService mailService;
 
     private Logger logger = LoggerFactory.getLogger(ScheduledTask.class);
@@ -43,38 +47,32 @@ public class ScheduledTask {
             return;
         }
 
-        ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(1);
+        ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(2);
         scheduledThreadPool.scheduleAtFixedRate(() -> {
 
             logger.info("执行轮询");
-            try {
-                if (HolidayUtil.isStockTimeEnd()) {
-                    logger.info("已收盘，今天执行程序退出！");
-                    scheduledThreadPool.shutdown();
-                }
-                if (HolidayUtil.isStockTime()) {
-                    String result = stocks.doALL();
-                    logger.warn(result);
-                }
-            } catch (IOException e) {
-                logger.error("run error", e);
+
+            if (HolidayUtil.isStockTimeEnd()) {
+                logger.info("已收盘，今天执行程序退出！");
+                scheduledThreadPool.shutdown();
             }
+            if (HolidayUtil.isStockTime()) {
+                String result = searchFinanceData.getALLDataForOutput();
+                logger.warn(result);
+            }
+
         }, 3, 60, TimeUnit.SECONDS);
 
         scheduledThreadPool.scheduleAtFixedRate(() -> {
 
             logger.info("发送邮件，30分钟间隔");
-            try {
-                if (HolidayUtil.isStockTimeEnd()) {
-                    logger.info("已收盘，今天执行程序退出！");
-                    scheduledThreadPool.shutdown();
-                }
-                if (HolidayUtil.isStockTime()) {
-                    mailService.sendSimpleMail(stocks.doALL());
-                }
-            } catch (IOException e) {
-                logger.error("run error", e);
+            if (HolidayUtil.isStockTimeEnd()) {
+                logger.info("已收盘，今天执行程序退出！");
+                scheduledThreadPool.shutdown();
             }
-        }, 5, 1800, TimeUnit.SECONDS);
+            if (HolidayUtil.isStockTime()) {
+                mailService.sendSimpleMail(searchFinanceData.getALLDataForOutput());
+            }
+        }, 3, 1800, TimeUnit.SECONDS);
     }
 }
