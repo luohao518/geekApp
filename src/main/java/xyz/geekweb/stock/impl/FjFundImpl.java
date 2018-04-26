@@ -1,14 +1,16 @@
 package xyz.geekweb.stock.impl;
 
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.LoggerFactory;
 import xyz.geekweb.stock.FinanceData;
 import xyz.geekweb.stock.pojo.FJFundaPO;
-import xyz.geekweb.stock.pojo.json.JsonRootBean;
 import xyz.geekweb.stock.pojo.json.Rows;
-import xyz.geekweb.stock.savesinastockdata.RealTimeDataPOJO;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.io.IOException;
+import java.util.*;
 
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
@@ -20,18 +22,21 @@ import static java.util.stream.Collectors.toList;
  */
 public class FjFundImpl implements FinanceData<Rows> {
 
+    private org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final static String[] FJ_FUNDS = {"150022", "150181", "150018", "150171", "150227", "150200",};
     private final static String[] FJ_FUNDS_HAVE = {"150181", "150018"};
     private final static double MAX_DIFF_VALUE = 0.003;
 
+    private static final String QT_URL = "http://qt.gtimg.cn/q=%s";
+
     private List<FJFundaPO> data;
 
     @Override
     public void initData(List<Rows> rows) {
+        getQTData();
         List<String> strFjFunds = Arrays.asList(FJ_FUNDS);
         List<FJFundaPO> lstFJFundaPO = new ArrayList<>(10);
-
         rows.forEach(row -> {
             if (strFjFunds.contains(row.getId())) {
                 double fundaCurrentPrice = Double.parseDouble(row.getCell().getFunda_current_price());
@@ -49,17 +54,18 @@ public class FjFundImpl implements FinanceData<Rows> {
         lstFJFundaPO.sort(comparing(FJFundaPO::getDiffValue));
 
         //计算是否轮动
-        lstFJFundaPO.remove(lstFJFundaPO.size() - 1);//删除军工A //TODO:未来可以参照历史偏差度做轮动（复杂）
-        lstFJFundaPO.remove(0);//删除022
+        //删除军工A //TODO:未来可以参照历史偏差度做轮动（复杂）
+        lstFJFundaPO.remove(lstFJFundaPO.size() - 1);
+        //删除022
+        lstFJFundaPO.remove(0);
 
         //取最小值
-        //TODO
-        //FJFundaPO minFJFundaPO = lstFJFundaPO.stream().min(comparing(FJFundaPO::getDiffValue)).get();
+        FJFundaPO minFJFundaPO = lstFJFundaPO.stream().min(comparing(FJFundaPO::getDiffValue)).get();
 
-        //for (int i = 0; i < FJ_FUNDS_HAVE.length; i++) {
         for(String i : FJ_FUNDS_HAVE){
             if ("150181".equals(i)) {
-                continue; //忽略军工A
+                //忽略军工A
+                continue;
             }
 
             final String tmpStr = i;
@@ -67,14 +73,24 @@ public class FjFundImpl implements FinanceData<Rows> {
             assert (lst.size() == 1);
 
             //TODO
-//            if (lst.get(0).getDiffValue() - minFJFundaPO.getDiffValue() > MAX_DIFF_VALUE) {
-//                //                logger.debug("分级" + Integer.toBinaryString(flag));
-//                sb.append(String.format("分级A可以做轮动 买入：[%5s %6s][%5.3f]%n", minFJFundaPO.getFundaName(), minFJFundaPO.getFundaId(), minFJFundaPO.getFundaValue()));
-//                sb.append(String.format("              卖出：[%5s %6s][%5.3f]%n", lst.get(0).getFundaName(), lst.get(0).getFundaId(), lst.get(0).getFundaValue()));
-//
-//            }
+            if (lst.get(0).getDiffValue() - minFJFundaPO.getDiffValue() > MAX_DIFF_VALUE) {
+
+                logger.warn(String.format("分级A可以做轮动 买入：[%5s %6s][%5.3f]%n", minFJFundaPO.getFundaName(), minFJFundaPO.getFundaId(), minFJFundaPO.getFundaValue()));
+                logger.warn(String.format("              卖出：[%5s %6s][%5.3f]%n", lst.get(0).getFundaName(), lst.get(0).getFundaId(), lst.get(0).getFundaValue()));
+
+            }
         }
         this.data=lstFJFundaPO;
+    }
+
+    public void getQTData() {
+
+        StringBuilder sb ;
+        for (int i = 0; i < FJ_FUNDS.length; i++) {
+            sb = new StringBuilder();
+            FJ_FUNDS[i]= sb.append("sz").append(FJ_FUNDS[i]).toString();
+        }
+        fetchQTData(StringUtils.join(FJ_FUNDS,","));
     }
 
     @Override
@@ -86,5 +102,41 @@ public class FjFundImpl implements FinanceData<Rows> {
                 item.getFundaValue(), item.getDiffValue(), item.getFundaName())));
         sb.append("-----------------------------------------\n");
         return sb.toString();
+    }
+
+    private Map<String,String[]> fetchQTData(String strLst) {
+        logger.debug("fetchQTData[{}]",strLst);
+        OkHttpClient client = new OkHttpClient();
+        String url = String.format(QT_URL, strLst);
+        logger.debug(url);
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+        Response response;
+        try {
+            response = client.newCall(request).execute();
+        } catch (IOException e) {
+            throw new RuntimeException("服务器端错误: ", e);
+        }
+        if (!response.isSuccessful()) {
+            throw new RuntimeException("服务器端错误: " + response.message());
+        }
+        try {
+            String result = response.body().string();
+            logger.debug("result[{}]",result);
+            String[] datas=StringUtils.split(result,";");
+            Map<String,String[]> dataMap=new HashMap(10);
+            for(String item : datas){
+                if(StringUtils.isEmpty(StringUtils.trim(item))){
+                    break;
+                }
+                String[] strSplit = StringUtils.split(item, "=");
+                String substring = strSplit[0].substring(3);
+                dataMap.put(substring,StringUtils.split(strSplit[1],"~"));
+            }
+            return dataMap;
+        } catch (IOException e) {
+            throw new RuntimeException("服务器端错误: ", e);
+        }
     }
 }

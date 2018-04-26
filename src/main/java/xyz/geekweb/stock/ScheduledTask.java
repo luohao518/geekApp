@@ -42,6 +42,8 @@ public class ScheduledTask {
     @Scheduled(cron = "0 15 9 ? * MON-FRI") //表示周一到周五每天上午9：15执行作业
     public void reportCurrentTimeCron() throws InterruptedException, IOException {
 
+        logger.info("reportCurrentTimeCron() start");
+
         if (HolidayUtil.isHoliday() || HolidayUtil.isStockTimeEnd()) {
             logger.info("节假日或者已收盘，结束！");
             return;

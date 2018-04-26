@@ -32,7 +32,7 @@ public class MailServiceImpl implements MailService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(from);
         message.setTo(to);
-        message.setSubject("每日行情");
+        message.setSubject("every day info");
         message.setText(content);
 
         try {
