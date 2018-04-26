@@ -6,7 +6,7 @@
 	<groupId>xyz.geekweb</groupId>
 	<artifactId>geekApp</artifactId>
 	<version>1.2.0-Release</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 	<name>geekApp</name>
 	<description>Demo project for Spring Boot</description>
 	<parent>
@@ -111,6 +111,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>geekApp</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
