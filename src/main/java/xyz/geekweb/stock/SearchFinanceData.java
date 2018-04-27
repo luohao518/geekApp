@@ -7,6 +7,7 @@ import com.squareup.okhttp.Response;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xyz.geekweb.stock.impl.*;
 import xyz.geekweb.stock.pojo.json.JsonRootBean;
@@ -27,7 +28,8 @@ public class SearchFinanceData {
 
     private static final String URL = "https://www.jisilu.cn/data/sfnew/funda_list/";
 
-
+    @Autowired
+    private DataProperties dataProperties;
     /**
      * 国债逆回购
      */
@@ -74,6 +76,8 @@ public class SearchFinanceData {
     public void fillALLData() {
 
         logger.debug("execute fillALLData()");
+
+        System.out.println(dataProperties.getList());
         final List<RealTimeDataPOJO> realTimeDataPOJOS = fetchSinaData();
 
         final List<Rows> rows = fetchJSLData();
