@@ -1,16 +1,19 @@
 package xyz.geekweb.paypal.control;
 
-import com.paypal.api.payments.*;
+import com.paypal.api.payments.DetailedRefund;
+import com.paypal.api.payments.Links;
+import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import xyz.geekweb.paypal.config.PayPalPaymentIntentEnum;
 import xyz.geekweb.paypal.config.PayPalPaymentMethodEnum;
 import xyz.geekweb.paypal.result.ExceptionMsg;
-import xyz.geekweb.paypal.service.PayPalService;
 import xyz.geekweb.paypal.result.ResponseData;
+import xyz.geekweb.paypal.service.PayPalService;
 import xyz.geekweb.util.URLUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author lhao
  */
-@RestController
+@Controller
 @RequestMapping("/paypal")
 public class PaymentController {
 
@@ -74,28 +77,28 @@ public class PaymentController {
             logger.debug("do execute finished!!![{}]", payment.toJSON());
             if (payment.getState().equals("approved")) {
                 return new ResponseData(ExceptionMsg.SUCCESS);
-            }else{
+            } else {
                 return new ResponseData(ExceptionMsg.FAILED);
             }
         } catch (PayPalRESTException e) {
-            logger.error("successPay",e);
-            return new ResponseData(ExceptionMsg.FAILED,e.getMessage());
+            logger.error("successPay", e);
+            return new ResponseData(ExceptionMsg.FAILED, e.getMessage());
         }
     }
 
     @GetMapping("refund")
-    public ResponseData reFund(String saleId, String amountMoney)  {
+    public @ResponseBody
+    ResponseData reFund(String saleId, String amountMoney) {
         logger.debug("do refund");
 
         DetailedRefund detailedRefund = null;
         try {
             detailedRefund = payPalService.reFund(saleId, amountMoney);
-            return new ResponseData(ExceptionMsg.SUCCESS,detailedRefund.toJSON());
+            return new ResponseData(ExceptionMsg.SUCCESS, detailedRefund.toJSON());
         } catch (PayPalRESTException e) {
-            logger.error("reFund",e);
-            return new ResponseData(ExceptionMsg.FAILED,e.getMessage());
+            logger.error("reFund", e);
+            return new ResponseData(ExceptionMsg.FAILED, e.getMessage());
         }
-
 
 
     }

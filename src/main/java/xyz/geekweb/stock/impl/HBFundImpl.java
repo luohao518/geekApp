@@ -12,16 +12,19 @@ import static java.util.stream.Collectors.toList;
  * @date 2018/4/25
  * 货币基金
  */
-public class HBFundImpl implements FinanceData<RealTimeDataPOJO> {
+public class HBFundImpl implements FinanceData {
 
     private final static double MAX_MONETARY_FUNDS_VALUE = 99.990;
 
     private List<RealTimeDataPOJO> data;
 
-    @Override
-    public void initData(List<RealTimeDataPOJO> data) {
+    public HBFundImpl(List<RealTimeDataPOJO> data) {
+        this.data = initData(data);
+    }
 
-        this.data = data.stream().filter(item -> item.getFullCode().startsWith("sh511") && item.getNow() <= MAX_MONETARY_FUNDS_VALUE).collect(toList());
+    private List<RealTimeDataPOJO> initData(List<RealTimeDataPOJO> data) {
+
+        return data.stream().filter(item -> item.getFullCode().startsWith("sh511") && item.getNow() <= MAX_MONETARY_FUNDS_VALUE).collect(toList());
 
     }
 
@@ -29,7 +32,7 @@ public class HBFundImpl implements FinanceData<RealTimeDataPOJO> {
     public String print() {
         StringBuilder sb = new StringBuilder("\n");
         sb.append("--------------货币基金--------------------\n");
-        this.data.forEach( item -> sb.append(String.format("购买货币基金:%s 当前价[%7.3f] 卖出价[%7.3f] 卖量[%5.0f]%n", item.getFullCode(), item.getNow(), item.getSell1Pricae(), item.getSell1Num())));
+        this.data.forEach(item -> sb.append(String.format("购买货币基金:%s 当前价[%7.3f] 卖出价[%7.3f] 卖量[%5.0f]%n", item.getFullCode(), item.getNow(), item.getSell1Pricae(), item.getSell1Num())));
         sb.append("-------------------------------------------\n");
         return sb.toString();
     }

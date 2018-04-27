@@ -18,17 +18,15 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class ScheduledTask {
 
-    @Autowired
-    public  ScheduledTask(SearchFinanceData searchFinanceData,MailService mailService){
-        this.searchFinanceData=searchFinanceData;
-        this.mailService=mailService;
-    }
-
     private SearchFinanceData searchFinanceData;
-
     private MailService mailService;
-
     private Logger logger = LoggerFactory.getLogger(ScheduledTask.class);
+
+    @Autowired
+    public ScheduledTask(SearchFinanceData searchFinanceData, MailService mailService) {
+        this.searchFinanceData = searchFinanceData;
+        this.mailService = mailService;
+    }
 //    @Scheduled(fixedRate = 5000)
 //    public void reportCurrentTime() throws InterruptedException {
 //        System.out.println(String.format("---第%s次执行，当前时间为：%s", count0++, dateFormat.format(new Date())));

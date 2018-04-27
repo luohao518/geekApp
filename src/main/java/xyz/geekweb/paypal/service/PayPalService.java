@@ -3,7 +3,6 @@ package xyz.geekweb.paypal.service;
 import com.paypal.api.payments.DetailedRefund;
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
-import org.springframework.stereotype.Service;
 import xyz.geekweb.paypal.config.PayPalPaymentIntentEnum;
 import xyz.geekweb.paypal.config.PayPalPaymentMethodEnum;
 
@@ -14,15 +13,16 @@ public interface PayPalService {
 
     /**
      * 创建交易
+     *
      * @param total
      * @return
-     * @throws PayPalRESTException
      * @throws PayPalRESTException
      */
     Payment createPayment(Double total) throws PayPalRESTException;
 
     /**
      * 创建交易
+     *
      * @param total
      * @param currency
      * @param method
@@ -44,6 +44,7 @@ public interface PayPalService {
 
     /**
      * 退款
+     *
      * @param saleId
      * @param amountMoney
      * @return
@@ -53,6 +54,7 @@ public interface PayPalService {
 
     /**
      * 执行交易
+     *
      * @param paymentId
      * @param payerId
      * @return

@@ -16,13 +16,13 @@ import java.io.IOException;
 public class GeekWebApplication extends SpringBootServletInitializer {
 
 
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(GeekWebApplication.class);
-    }
-
     public static void main(String[] args) throws IOException {
 
         SpringApplication.run(GeekWebApplication.class, args);
+    }
+
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(GeekWebApplication.class);
     }
 }

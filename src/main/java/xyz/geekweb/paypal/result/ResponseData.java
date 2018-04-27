@@ -1,16 +1,16 @@
 package xyz.geekweb.paypal.result;
 
-public class ResponseData extends Response{
+public class ResponseData extends Response {
     private Object data;
 
     public ResponseData(Object data) {
         this.data = data;
     }
-    
+
     public ResponseData(ExceptionMsg msg) {
-    	  super(msg);
+        super(msg);
     }
-    
+
     public ResponseData(String rspCode, String rspMsg) {
         super(rspCode, rspMsg);
     }

@@ -31,9 +31,9 @@ public class PayPalServiceImpl implements PayPalService {
     @Override
     public Payment createPayment(
             Double total
-            ) throws PayPalRESTException {
+    ) throws PayPalRESTException {
 
-        return createPayment(total,"USD",PayPalPaymentMethodEnum.paypal,
+        return createPayment(total, "USD", PayPalPaymentMethodEnum.paypal,
                 PayPalPaymentIntentEnum.sale,
                 "payment description",
                 "/paypal/cancel",
@@ -50,7 +50,7 @@ public class PayPalServiceImpl implements PayPalService {
             String description,
             String cancelUrl,
             String successUrl) throws PayPalRESTException {
-        logger.info("createPayment():[{}],[{}],[{}],[{}],[{}],[{}],[{}]", total, currency,method,intent,description,cancelUrl,successUrl);
+        logger.info("createPayment():[{}],[{}],[{}],[{}],[{}],[{}],[{}]", total, currency, method, intent, description, cancelUrl, successUrl);
 
         APIContext apiContext = getApiContext();
         Amount amount = new Amount();
@@ -95,15 +95,6 @@ public class PayPalServiceImpl implements PayPalService {
         return sale.refund(getApiContext(), refund);
     }
 
-    private APIContext getApiContext()  {
-
-        logger.info("getApiContext()");
-
-        Map<String, String> sdkConfig = new HashMap<>(1);
-        sdkConfig.put("mode", payPalConfig.mode);
-        return new APIContext(payPalConfig.clientId, payPalConfig.clientSecret, payPalConfig.mode, sdkConfig);
-    }
-
     @Override
     public Payment executePayment(String paymentId, String payerId) throws PayPalRESTException {
 
@@ -116,5 +107,14 @@ public class PayPalServiceImpl implements PayPalService {
 
         return payment.execute(getApiContext(), paymentExecute);
 
+    }
+
+    private APIContext getApiContext() {
+
+        logger.info("getApiContext()");
+
+        Map<String, String> sdkConfig = new HashMap<>(1);
+        sdkConfig.put("mode", payPalConfig.mode);
+        return new APIContext(payPalConfig.clientId, payPalConfig.clientSecret, payPalConfig.mode, sdkConfig);
     }
 }

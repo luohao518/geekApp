@@ -12,7 +12,7 @@ import static java.util.stream.Collectors.toList;
  * @date 2018/4/25
  * 可转债,元和
  */
-public class KZZImpl implements FinanceData<RealTimeDataPOJO> {
+public class KZZImpl implements FinanceData {
 
     private final static double MIN_132003_VALUE = 99.500;
 
@@ -20,12 +20,14 @@ public class KZZImpl implements FinanceData<RealTimeDataPOJO> {
 
     private List<RealTimeDataPOJO> data;
 
+    public KZZImpl(List<RealTimeDataPOJO> realTimeDataPOJO) {
+        this.data = initData(realTimeDataPOJO);
+    }
 
-    @Override
-    public void initData(List<RealTimeDataPOJO> realTimeDataPOJO) {
+    private List<RealTimeDataPOJO> initData(List<RealTimeDataPOJO> realTimeDataPOJO) {
 
 
-        this.data = realTimeDataPOJO.stream().filter(item ->
+        return realTimeDataPOJO.stream().filter(item ->
                 ((item.getFullCode().startsWith("sh505888") && item.getNow() <= MIN_505888_VALUE) || (item.getFullCode().startsWith("sh132003") && item.getNow() <= MIN_132003_VALUE))).collect(toList());
 
     }

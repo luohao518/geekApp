@@ -5,7 +5,6 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -27,7 +26,6 @@ import java.util.Map;
 public class SearchFinanceData {
 
     private static final String URL = "https://www.jisilu.cn/data/sfnew/funda_list/";
-
 
 
     /**
@@ -56,6 +54,7 @@ public class SearchFinanceData {
 
     /**
      * getALLDataForOutput
+     *
      * @return str
      */
     public String getALLDataForOutput() {
@@ -80,25 +79,23 @@ public class SearchFinanceData {
         final List<Rows> rows = fetchJSLData();
 
         this.lstFinanceData = new HashMap<>(10);
-        FinanceData<RealTimeDataPOJO> monetaryBondImpl = new GZNHGImpl();
-        monetaryBondImpl.initData(realTimeDataPOJOS);
+        FinanceData monetaryBondImpl = new GZNHGImpl(realTimeDataPOJOS);
         this.lstFinanceData.put(FinanceTypeEnum.GZNHG, monetaryBondImpl);
 
-        FinanceData<RealTimeDataPOJO> reverseBondImpl = new HBFundImpl();
-        reverseBondImpl.initData(realTimeDataPOJOS);
+        FinanceData reverseBondImpl = new HBFundImpl(realTimeDataPOJOS);
         this.lstFinanceData.put(FinanceTypeEnum.HB_FUND, reverseBondImpl);
 
-        FinanceData<RealTimeDataPOJO> convertibleBondImpl = new KZZImpl();
-        convertibleBondImpl.initData(realTimeDataPOJOS);
+        FinanceData convertibleBondImpl = new KZZImpl(realTimeDataPOJOS);
         this.lstFinanceData.put(FinanceTypeEnum.KZZ, convertibleBondImpl);
 
-        FinanceData<RealTimeDataPOJO> stockImpl = new StockImpl();
-        stockImpl.initData(realTimeDataPOJOS);
+        FinanceData stockImpl = new StockImpl(realTimeDataPOJOS);
         this.lstFinanceData.put(FinanceTypeEnum.STOCK, stockImpl);
 
-        FinanceData<Rows> fjFundImpl = new FjFundImpl();
-        fjFundImpl.initData(rows);
+        FinanceData fjFundImpl = new FjFundImpl(rows);
         this.lstFinanceData.put(FinanceTypeEnum.FJ_FUND, fjFundImpl);
+
+        FXImpl fXImpl = new FXImpl();
+        this.lstFinanceData.put(FinanceTypeEnum.FX, fXImpl);
     }
 
     private List<RealTimeDataPOJO> fetchSinaData() {

@@ -24,9 +24,9 @@ public class StockController {
     private MailService mailService;
 
     @Autowired
-    public StockController(SearchFinanceData searchFinanceData,MailService mailService){
-        this.searchFinanceData=searchFinanceData;
-        this.mailService=mailService;
+    public StockController(SearchFinanceData searchFinanceData, MailService mailService) {
+        this.searchFinanceData = searchFinanceData;
+        this.mailService = mailService;
     }
 
     @RequestMapping(method = RequestMethod.GET)
