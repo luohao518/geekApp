@@ -33,7 +33,7 @@ public class SearchFinanceData {
     /**
      * 国债逆回购
      */
-    private final static String[] REVERSE_BONDS = {"sh204001", "sh204002", "sh204003", "sh204004", "sh204007", "sh204014"};
+    //private final static String[] REVERSE_BONDS = {"sh204001", "sh204002", "sh204003", "sh204004", "sh204007", "sh204014"};
     /**
      * 货币基金
      */
@@ -77,7 +77,6 @@ public class SearchFinanceData {
 
         logger.debug("execute fillALLData()");
 
-        System.out.println(dataProperties.getList());
         final List<RealTimeDataPOJO> realTimeDataPOJOS = fetchSinaData();
 
         final List<Rows> rows = fetchJSLData();
@@ -103,7 +102,9 @@ public class SearchFinanceData {
     }
 
     private List<RealTimeDataPOJO> fetchSinaData() {
-        String[] codes = ArrayUtils.addAll((ArrayUtils.addAll(ArrayUtils.addAll(REVERSE_BONDS, MONETARY_FUNDS), STOCKS_OTHERS)), STOCKS);
+        String[] reverseBonds = dataProperties.getReverse_bonds().toArray(new String[0]);
+        logger.debug("REVERSE_BONDS[{}]",reverseBonds);
+        String[] codes = ArrayUtils.addAll((ArrayUtils.addAll(ArrayUtils.addAll(reverseBonds, MONETARY_FUNDS), STOCKS_OTHERS)), STOCKS);
         return RealTimeData.getRealTimeDataObjects(codes);
     }
 

@@ -1,8 +1,8 @@
 package xyz.geekweb.stock;
 
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.testng.annotations.Test;
 
 @Component
 public class SearchFinanceDataTest {
@@ -12,13 +12,13 @@ public class SearchFinanceDataTest {
 
     @Test
     public void testFetchALLData() throws Exception {
-        searchFinanceData.fillALLData();
+        //searchFinanceData.fillALLData();
     }
 
     @Test
     public void testGetALLData() throws Exception {
 
-        System.out.println(searchFinanceData.getALLDataForOutput());
+        //System.out.println(searchFinanceData.getALLDataForOutput());
 
     }
 

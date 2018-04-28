@@ -1,6 +1,7 @@
 package xyz.geekweb.stock.impl;
 
-import org.testng.annotations.Test;
+
+import org.junit.Test;
 
 public class FXImplTest {
     @Test

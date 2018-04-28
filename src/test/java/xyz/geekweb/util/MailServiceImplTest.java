@@ -1,10 +1,9 @@
 package xyz.geekweb.util;
 
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 //@ContextConfiguration(classes = MailServiceImpl.class)
-public class MailServiceImplTest extends AbstractTestNGSpringContextTests {
+public class MailServiceImplTest  {
 
     //@Autowired
     //private MailService mailService;

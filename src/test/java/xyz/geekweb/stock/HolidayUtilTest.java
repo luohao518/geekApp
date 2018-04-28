@@ -1,12 +1,18 @@
 package xyz.geekweb.stock;
 
-import static org.testng.Assert.assertEquals;
+
+
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 import static xyz.geekweb.stock.HolidayUtil.isHoliday;
 import static xyz.geekweb.stock.HolidayUtil.isStockTime;
 
 public class HolidayUtilTest {
-    @org.testng.annotations.Test
+
+    @Test
     public void testIsStockTime() throws Exception {
+
 
         assertEquals(isStockTime("0914"), false);
         assertEquals(isStockTime("0939"), true);
@@ -19,7 +25,7 @@ public class HolidayUtilTest {
 
     }
 
-    @org.testng.annotations.Test
+    @Test
     public void testIsHoliday() throws Exception {
 
         assertEquals(isHoliday("20180501"), true);
