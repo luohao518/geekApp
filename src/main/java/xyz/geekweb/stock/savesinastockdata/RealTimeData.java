@@ -1,6 +1,8 @@
 package xyz.geekweb.stock.savesinastockdata;
 
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +31,7 @@ public class RealTimeData {
         String stockPatterString = "var hq_str_(\\w{8})=\"(.+)\"";
         Pattern stockPatter = Pattern.compile(stockPatterString);
         List<String[]> result = new ArrayList<>();
-        String url = createURL(codes);
-        String response = Tools.sendHTTPGET(url, "GBK");
+        String response = Tools.sendHTTPGET(String.format("http://hq.sinajs.cn/list=%s", StringUtils.join(codes,",")), "GBK");
         String[] responses = response.split(";");
         for (int i = 0; i < responses.length; i++) {
             String reresponseString = responses[i];
@@ -47,17 +48,6 @@ public class RealTimeData {
         return result;
     }
 
-    private static String createURL(String[] codes) {
-        String codelist = "";
-        for (int i = 0; i < codes.length; i++) {
-            codelist += codes[i];
-            if (i != codes.length - 1) {
-                codelist += ",";
-            }
-        }
-        String url = String.format("http://hq.sinajs.cn/list=%s", codelist);
-        return url;
-    }
 
     /**
      * 获取股票历史数据
@@ -68,13 +58,13 @@ public class RealTimeData {
      * @param codes 股票代码数组 例如 {"sz000002","sz000001"}
      * @return 一个{@link List}，里面是{@link RealTimeDataPOJO}对象
      */
-    public static List<RealTimeDataPOJO> getRealTimeDataObjects(String[] codes) {
+    public static List<RealTimeDataPOJO> getRealTimeDataObjects(List codes) {
         String indexPatternString = "var hq_str_s_(\\w{8})=\"(.+)\"";
         String stockPatterString = "var hq_str_(\\w{8})=\"(.+)\"";
         Pattern indexPatter = Pattern.compile(indexPatternString);
         Pattern stockPatter = Pattern.compile(stockPatterString);
         List<RealTimeDataPOJO> result = new ArrayList<>();
-        String url = createURL(codes);
+        String url = String.format("http://hq.sinajs.cn/list=%s", StringUtils.join(codes,","));
         String response = Tools.sendHTTPGET(url, "GBK");
         String[] responses = response.split(";");
         for (int i = 0; i < responses.length; i++) {

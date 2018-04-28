@@ -15,11 +15,7 @@ public class DataPropertiesTest  {
     @Autowired
     private DataProperties dataProperties;
 
-    @Test
-    public void testGetMap() throws Exception {
 
-
-    }
 
     @Test
     public void testGetList() throws Exception {

@@ -16,6 +16,7 @@ import xyz.geekweb.stock.savesinastockdata.RealTimeData;
 import xyz.geekweb.stock.savesinastockdata.RealTimeDataPOJO;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,18 +35,18 @@ public class SearchFinanceData {
      * 国债逆回购
      */
     //private final static String[] REVERSE_BONDS = {"sh204001", "sh204002", "sh204003", "sh204004", "sh204007", "sh204014"};
-    /**
-     * 货币基金
-     */
-    private final static String[] MONETARY_FUNDS = {"sh511990", "sh511660", "sh511810", "sh511690", "sh511900"};
-    /**
-     * 股票
-     */
-    private final static String[] STOCKS = {"sh600185", "sh600448", "sh601098", "sz000066", "sz002570", "sh601828", "sh601928", "sh601369", "sz000417"};
-    /**
-     * 可转债，元和
-     */
-    private final static String[] STOCKS_OTHERS = {"sh132003", "sh110030", "sh505888"};
+//    /**
+//     * 货币基金
+//     */
+//    private final static String[] MONETARY_FUNDS = {"sh511990", "sh511660", "sh511810", "sh511690", "sh511900"};
+//    /**
+//     * 股票
+//     */
+//    private final static String[] STOCKS = {"sh600185", "sh600448", "sh601098", "sz000066", "sz002570", "sh601828", "sh601928", "sh601369", "sz000417"};
+//    /**
+//     * 可转债，元和
+//     */
+//    private final static String[] STOCKS_OTHERS = {"sh132003", "sh110030", "sh505888"};
 
     private Logger logger = LoggerFactory.getLogger(SearchFinanceData.class);
     private Map<FinanceTypeEnum, FinanceData> lstFinanceData;
@@ -102,13 +103,18 @@ public class SearchFinanceData {
     }
 
     private List<RealTimeDataPOJO> fetchSinaData() {
-        String[] reverseBonds = dataProperties.getReverse_bonds().toArray(new String[0]);
-        logger.debug("REVERSE_BONDS[{}]",reverseBonds);
-        String[] codes = ArrayUtils.addAll((ArrayUtils.addAll(ArrayUtils.addAll(reverseBonds, MONETARY_FUNDS), STOCKS_OTHERS)), STOCKS);
-        return RealTimeData.getRealTimeDataObjects(codes);
+
+        List lstALL=new ArrayList(30);
+        lstALL.addAll(dataProperties.getReverse_bonds());
+        lstALL.addAll(dataProperties.getMonetary_funds());
+        lstALL.addAll(dataProperties.getStocks());
+        lstALL.addAll(dataProperties.getStocks_others());
+
+        logger.debug("codes[{}]",lstALL);
+        return RealTimeData.getRealTimeDataObjects(lstALL);
     }
 
-    private List<Rows> fetchJSLData() {
+    public List<Rows> fetchJSLData() {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(URL)

@@ -332,11 +332,8 @@ public class SaveData {
      * @param fullCodeList 股票代码list，注意股票代码要有sz或sh前缀
      */
     public void saveRealTimeData(List<String> fullCodeList) {
-        String[] codes = new String[fullCodeList.size()];
-        for (int i = 0; i < fullCodeList.size(); i++) {
-            codes[i] = fullCodeList.get(i);
-        }
-        List<RealTimeDataPOJO> lr = RealTimeData.getRealTimeDataObjects(codes);
+
+        List<RealTimeDataPOJO> lr = RealTimeData.getRealTimeDataObjects(fullCodeList);
         Connection conn = getConnection();
         Statement stmt = null;
         if (conn != null) {

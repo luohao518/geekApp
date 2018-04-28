@@ -20,8 +20,6 @@ public class HolidayUtilTest {
         assertEquals(isStockTime("1200"), false);
         assertEquals(isStockTime("1501"), false);
         assertEquals(isStockTime("1401"), true);
-//        assertEquals(isStockTimeEnd(), true);
-
 
     }
 
