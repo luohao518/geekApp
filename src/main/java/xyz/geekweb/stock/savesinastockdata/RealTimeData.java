@@ -31,7 +31,7 @@ public class RealTimeData {
         String stockPatterString = "var hq_str_(\\w{8})=\"(.+)\"";
         Pattern stockPatter = Pattern.compile(stockPatterString);
         List<String[]> result = new ArrayList<>();
-        String response = Tools.sendHTTPGET(String.format("http://hq.sinajs.cn/list=%s", StringUtils.join(codes,",")), "GBK");
+        String response = Tools.sendHTTPGET(String.format("http://hq.sinajs.cn/list=%s", StringUtils.join(codes, ",")), "GBK");
         String[] responses = response.split(";");
         for (int i = 0; i < responses.length; i++) {
             String reresponseString = responses[i];
@@ -64,7 +64,7 @@ public class RealTimeData {
         Pattern indexPatter = Pattern.compile(indexPatternString);
         Pattern stockPatter = Pattern.compile(stockPatterString);
         List<RealTimeDataPOJO> result = new ArrayList<>();
-        String url = String.format("http://hq.sinajs.cn/list=%s", StringUtils.join(codes,","));
+        String url = String.format("http://hq.sinajs.cn/list=%s", StringUtils.join(codes, ","));
         String response = Tools.sendHTTPGET(url, "GBK");
         String[] responses = response.split(";");
         for (int i = 0; i < responses.length; i++) {

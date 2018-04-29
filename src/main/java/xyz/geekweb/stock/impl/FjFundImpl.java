@@ -1,13 +1,18 @@
 package xyz.geekweb.stock.impl;
 
+import com.google.gson.Gson;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.thymeleaf.util.ArrayUtils;
+import xyz.geekweb.stock.DataProperties;
 import xyz.geekweb.stock.FinanceData;
 import xyz.geekweb.stock.pojo.FJFundaPO;
+import xyz.geekweb.stock.pojo.json.JsonRootBean;
 import xyz.geekweb.stock.pojo.json.Rows;
 
 import java.io.IOException;
@@ -21,22 +26,36 @@ import static java.util.stream.Collectors.toList;
  * @date 2018/4/25
  * 分级基金
  */
+@Service
 public class FjFundImpl implements FinanceData {
 
-    private final static String[] FJ_FUNDS = {"150022", "150181", "150018", "150171", "150227", "150200",};
-    private final static String[] FJ_FUNDS_HAVE = {"150181", "150018"};
-    private final static double MAX_DIFF_VALUE = 0.003;
+
+    //腾讯数据（查询量）
     private static final String QT_URL = "http://qt.gtimg.cn/q=%s";
+    //集思录数据
+    private static final String URL = "https://www.jisilu.cn/data/sfnew/funda_list/";
     private org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
     private List<FJFundaPO> data;
 
-    public FjFundImpl(List<Rows> rows) {
-        this.data = initData(rows);
+    private DataProperties dataProperties;
+
+    @Autowired
+    public FjFundImpl(DataProperties dataProperties) {
+        this.dataProperties = dataProperties;
+        this.data = initData();
     }
 
-    private List<FJFundaPO> initData(List<Rows> rows) {
-        getQTData(FJ_FUNDS);
-        List<String> strFjFunds = Arrays.asList(FJ_FUNDS);
+    /**
+     * init
+     *
+     * @return
+     */
+    private List<FJFundaPO> initData() {
+        final List<Rows> rows = fetchJSLData();
+
+        String[] fJFunds = this.dataProperties.getFj_funds().toArray(new String[0]);
+        getQTData(fJFunds);
+        List<String> strFjFunds = Arrays.asList(fJFunds);
         List<FJFundaPO> lstFJFundaPO = new ArrayList<>(10);
         rows.forEach(row -> {
             if (strFjFunds.contains(row.getId())) {
@@ -60,7 +79,8 @@ public class FjFundImpl implements FinanceData {
         //删除022
         lstFJFundaPO.remove(0);
 
-        for (String i : FJ_FUNDS_HAVE) {
+        List<String> fj_funds_have = this.dataProperties.getFj_funds_have();
+        for (String i : fj_funds_have) {
             if ("150181".equals(i)) {
                 //忽略军工A
                 continue;
@@ -120,6 +140,29 @@ public class FjFundImpl implements FinanceData {
         }
     }
 
+    private List<Rows> fetchJSLData() {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(URL)
+                .build();
+        Response response;
+        try {
+            response = client.newCall(request).execute();
+        } catch (IOException e) {
+            throw new RuntimeException("服务器端错误: ", e);
+        }
+        if (!response.isSuccessful()) {
+            throw new RuntimeException("服务器端错误: " + response.message());
+        }
+        JsonRootBean jsonData;
+        try {
+            jsonData = new Gson().fromJson(response.body().string(), JsonRootBean.class);
+        } catch (IOException e) {
+            throw new RuntimeException("服务器端错误: ", e);
+        }
+        return jsonData.getRows();
+    }
+
     @Override
     public String print() {
         StringBuilder sb = new StringBuilder("\n");
@@ -131,7 +174,7 @@ public class FjFundImpl implements FinanceData {
         //取最小值
         FJFundaPO minFJFundaPO = this.data.stream().min(comparing(FJFundaPO::getDiffValue)).get();
 
-        if (this.data.get(0).getDiffValue() - minFJFundaPO.getDiffValue() > MAX_DIFF_VALUE) {
+        if (this.data.get(0).getDiffValue() - minFJFundaPO.getDiffValue() > Double.parseDouble(dataProperties.getMap().get("FJ_MIN_DIFF"))) {
 
             logger.warn(String.format("分级A可以做轮动 买入：[%5s %6s][%5.3f]%n", minFJFundaPO.getFundaName(), minFJFundaPO.getFundaId(), minFJFundaPO.getFundaValue()));
             logger.warn(String.format("              卖出：[%5s %6s][%5.3f]%n", this.data.get(0).getFundaName(), this.data.get(0).getFundaId(), this.data.get(0).getFundaValue()));

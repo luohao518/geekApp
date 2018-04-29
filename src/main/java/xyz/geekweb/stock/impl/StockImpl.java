@@ -1,5 +1,8 @@
 package xyz.geekweb.stock.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import xyz.geekweb.stock.DataProperties;
 import xyz.geekweb.stock.FinanceData;
 import xyz.geekweb.stock.savesinastockdata.RealTimeDataPOJO;
 
@@ -12,19 +15,22 @@ import static java.util.stream.Collectors.toList;
  * @date 2018/4/25
  * 股票
  */
+@Service
 public class StockImpl implements FinanceData {
-
-    private final static double MAX_STOCKS_PERCENT = 3.0d;
 
     private List<RealTimeDataPOJO> data;
 
-    public StockImpl(List<RealTimeDataPOJO> data) {
-        this.data = initData(data);
+    private DataProperties dataProperties;
+
+    @Autowired
+    public StockImpl(DataProperties dataProperties) {
+        this.dataProperties = dataProperties;
     }
 
-    private List<RealTimeDataPOJO> initData(List<RealTimeDataPOJO> data) {
 
-        return data.stream().filter(item -> (item.getFullCode().startsWith("sh60") || item.getFullCode().startsWith("sz00")) && Math.abs(((item.getNow() - item.getClose()) / item.getClose()) * 100) >= MAX_STOCKS_PERCENT).collect(toList());
+    public void initData(List<RealTimeDataPOJO> data) {
+
+        this.data = data.stream().filter(item -> (item.getFullCode().startsWith("sh60") || item.getFullCode().startsWith("sz00")) && Math.abs(((item.getNow() - item.getClose()) / item.getClose()) * 100) >= Double.parseDouble(dataProperties.getMap().get("MAX_STOCKS_PERCENT"))).collect(toList());
     }
 
     @Override

@@ -1,12 +1,12 @@
 package xyz.geekweb.stock;
 
+import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 import java.util.List;
 import java.util.Map;
-import lombok.Data;
 
 /**
  * @author lhao
@@ -14,10 +14,10 @@ import lombok.Data;
 @Data
 @Configuration
 @ConfigurationProperties(prefix = "data")
-@PropertySource(value ={"classpath:data.properties"})
+@PropertySource(value = {"classpath:data.properties"})
 public class DataProperties {
 
-    private Map<String,String> map;
+    private Map<String, String> map;
 
     //国债逆回购
     private List<String> reverse_bonds;
@@ -34,5 +34,8 @@ public class DataProperties {
     //分级
     private List<String> fj_funds;
     private List<String> fj_funds_have;
+
+    //FX
+    private List<String> fx;
 
 }

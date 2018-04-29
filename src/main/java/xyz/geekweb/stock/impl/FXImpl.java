@@ -1,5 +1,7 @@
 package xyz.geekweb.stock.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.OkHttpClient;
@@ -23,22 +25,28 @@ import java.util.List;
  */
 public class FXImpl implements FinanceData {
 
-    private final static String[] FX_ARRAY = {"USDJPY", ",EURUSD", "AUDUSD"};
+
     private static final String DATA_URL = "https://forex.1forge.com/1.0.3/quotes?pairs=%s&api_key=iOrFNzxp8Fuus91yAMYRO7nTkSImR5Gm";
+    private static final String MARKET_STATUS = "https://forex.1forge.com/1.0.3/market_status?api_key=iOrFNzxp8Fuus91yAMYRO7nTkSImR5Gm";
+    private static final String QUOTA = "https://forex.1forge.com/1.0.3/quota?api_key=iOrFNzxp8Fuus91yAMYRO7nTkSImR5Gm";
     private org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
     private List<FXBean> data;
 
-    public FXImpl() {
-        this.data = initData();
+    public FXImpl(String[] fxs) {
+        this.data = initData(fxs);
     }
 
-    private List<FXBean> initData() {
-        return fetchData(StringUtils.join(FX_ARRAY, ","));
+    private List<FXBean> initData(String[] fxs) {
+        if (isRemaining()) {
+            return fetchData(StringUtils.join(fxs, ","));
+        } else {
+            logger.warn("今天调用API次数到，明天再试");
+            return null;
+        }
     }
 
 
     private List<FXBean> fetchData(String strLst) {
-        logger.debug("fetchData[{}]", strLst);
         OkHttpClient client = new OkHttpClient();
         String url = String.format(DATA_URL, strLst);
         logger.debug(url);
@@ -68,13 +76,67 @@ public class FXImpl implements FinanceData {
 
     }
 
+    private boolean isRemaining() {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(QUOTA)
+                .build();
+        Response response;
+        try {
+            response = client.newCall(request).execute();
+        } catch (IOException e) {
+            throw new RuntimeException("服务器端错误: ", e);
+        }
+        if (!response.isSuccessful()) {
+            throw new RuntimeException("服务器端错误: " + response.message());
+        }
+
+        try {
+
+            JSONObject map = JSON.parseObject(response.body().string());
+            return map.getInteger("quota_remaining") > 0;
+        } catch (IOException e) {
+            throw new RuntimeException("服务器端错误: ", e);
+        }
+
+
+    }
+
+    private boolean isOpen() {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(MARKET_STATUS)
+                .build();
+        Response response;
+        try {
+            response = client.newCall(request).execute();
+        } catch (IOException e) {
+            throw new RuntimeException("服务器端错误: ", e);
+        }
+        if (!response.isSuccessful()) {
+            throw new RuntimeException("服务器端错误: " + response.message());
+        }
+
+        try {
+
+            JSONObject map = JSON.parseObject(response.body().string());
+            return "true".equalsIgnoreCase(map.getString("market_is_open"));
+        } catch (IOException e) {
+            throw new RuntimeException("服务器端错误: ", e);
+        }
+    }
+
     @Override
     public String print() {
         StringBuilder sb = new StringBuilder("\n");
         sb.append("--------------外汇-----------------\n");
-
-        this.data.forEach(item -> sb.append(String.format("外汇购买:%s 当前价[%7.3f]%n", item.getSymbol(), item.getPrice())));
-        sb.append("-----------------------------------------\n");
+        if (this.data != null) {
+            if (!isOpen()) {
+                sb.append("!!!已休市!!!\n");
+            }
+            this.data.forEach(item -> sb.append(String.format("外汇购买:%s 当前价[%7.3f]%n", item.getSymbol(), item.getPrice())));
+        }
+        sb.append("------------------------------------\n");
         return sb.toString();
     }
 }

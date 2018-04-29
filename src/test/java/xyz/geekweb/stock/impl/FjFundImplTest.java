@@ -13,12 +13,12 @@ import xyz.geekweb.stock.SearchFinanceData;
 public class FjFundImplTest {
 
     @Autowired
-    private SearchFinanceData searchFinanceData;
-
+    private  FjFundImpl fjFund;
 
     @Test
     public void test1() throws Exception {
-        System.out.println(new FjFundImpl(searchFinanceData.fetchJSLData()).print());
+        System.out.println(fjFund.print());
+
     }
 
 }

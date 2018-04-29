@@ -1,21 +1,13 @@
 package xyz.geekweb.stock;
 
-import com.google.gson.Gson;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xyz.geekweb.stock.impl.*;
-import xyz.geekweb.stock.pojo.json.JsonRootBean;
-import xyz.geekweb.stock.pojo.json.Rows;
 import xyz.geekweb.stock.savesinastockdata.RealTimeData;
 import xyz.geekweb.stock.savesinastockdata.RealTimeDataPOJO;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,33 +19,26 @@ import java.util.Map;
 @Service
 public class SearchFinanceData {
 
-    private static final String URL = "https://www.jisilu.cn/data/sfnew/funda_list/";
-
     @Autowired
     private DataProperties dataProperties;
-    /**
-     * 国债逆回购
-     */
-    //private final static String[] REVERSE_BONDS = {"sh204001", "sh204002", "sh204003", "sh204004", "sh204007", "sh204014"};
-//    /**
-//     * 货币基金
-//     */
-//    private final static String[] MONETARY_FUNDS = {"sh511990", "sh511660", "sh511810", "sh511690", "sh511900"};
-//    /**
-//     * 股票
-//     */
-//    private final static String[] STOCKS = {"sh600185", "sh600448", "sh601098", "sz000066", "sz002570", "sh601828", "sh601928", "sh601369", "sz000417"};
-//    /**
-//     * 可转债，元和
-//     */
-//    private final static String[] STOCKS_OTHERS = {"sh132003", "sh110030", "sh505888"};
+
+    @Autowired
+    private FjFundImpl fjFund;
+
+    @Autowired
+    private StockImpl stock;
+
+    @Autowired
+    private KZZImpl kzz;
+
+    @Autowired
+    private HBFundImpl hbFund;
+
+    @Autowired
+    private GZNHGImpl gznhg;
 
     private Logger logger = LoggerFactory.getLogger(SearchFinanceData.class);
     private Map<FinanceTypeEnum, FinanceData> lstFinanceData;
-
-    public Map<FinanceTypeEnum, FinanceData> getLstFinanceData() {
-        return lstFinanceData;
-    }
 
     /**
      * getALLDataForOutput
@@ -80,62 +65,34 @@ public class SearchFinanceData {
 
         final List<RealTimeDataPOJO> realTimeDataPOJOS = fetchSinaData();
 
-        final List<Rows> rows = fetchJSLData();
-
         this.lstFinanceData = new HashMap<>(10);
-        FinanceData monetaryBondImpl = new GZNHGImpl(realTimeDataPOJOS);
-        this.lstFinanceData.put(FinanceTypeEnum.GZNHG, monetaryBondImpl);
+        this.gznhg.initData(realTimeDataPOJOS);
+        this.lstFinanceData.put(FinanceTypeEnum.GZNHG, gznhg);
 
-        FinanceData reverseBondImpl = new HBFundImpl(realTimeDataPOJOS);
-        this.lstFinanceData.put(FinanceTypeEnum.HB_FUND, reverseBondImpl);
+        this.hbFund.initData(realTimeDataPOJOS);
+        this.lstFinanceData.put(FinanceTypeEnum.HB_FUND, hbFund);
 
-        FinanceData convertibleBondImpl = new KZZImpl(realTimeDataPOJOS);
-        this.lstFinanceData.put(FinanceTypeEnum.KZZ, convertibleBondImpl);
+        this.kzz.initData(realTimeDataPOJOS);
+        this.lstFinanceData.put(FinanceTypeEnum.KZZ, kzz);
 
-        FinanceData stockImpl = new StockImpl(realTimeDataPOJOS);
-        this.lstFinanceData.put(FinanceTypeEnum.STOCK, stockImpl);
+        this.stock.initData(realTimeDataPOJOS);
+        this.lstFinanceData.put(FinanceTypeEnum.STOCK, stock);
 
-        FinanceData fjFundImpl = new FjFundImpl(rows);
-        this.lstFinanceData.put(FinanceTypeEnum.FJ_FUND, fjFundImpl);
+        this.lstFinanceData.put(FinanceTypeEnum.FJ_FUND, fjFund);
 
-        FXImpl fXImpl = new FXImpl();
-        this.lstFinanceData.put(FinanceTypeEnum.FX, fXImpl);
+        this.lstFinanceData.put(FinanceTypeEnum.FX, new FXImpl(this.dataProperties.getFx().toArray(new String[0])));
     }
 
     private List<RealTimeDataPOJO> fetchSinaData() {
 
-        List lstALL=new ArrayList(30);
+        List lstALL = new ArrayList(30);
         lstALL.addAll(dataProperties.getReverse_bonds());
         lstALL.addAll(dataProperties.getMonetary_funds());
         lstALL.addAll(dataProperties.getStocks());
         lstALL.addAll(dataProperties.getStocks_others());
 
-        logger.debug("codes[{}]",lstALL);
+        logger.debug("codes[{}]", lstALL);
         return RealTimeData.getRealTimeDataObjects(lstALL);
     }
-
-    public List<Rows> fetchJSLData() {
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url(URL)
-                .build();
-        Response response;
-        try {
-            response = client.newCall(request).execute();
-        } catch (IOException e) {
-            throw new RuntimeException("服务器端错误: ", e);
-        }
-        if (!response.isSuccessful()) {
-            throw new RuntimeException("服务器端错误: " + response.message());
-        }
-        JsonRootBean jsonData;
-        try {
-            jsonData = new Gson().fromJson(response.body().string(), JsonRootBean.class);
-        } catch (IOException e) {
-            throw new RuntimeException("服务器端错误: ", e);
-        }
-        return jsonData.getRows();
-    }
-
 
 }

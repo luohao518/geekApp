@@ -38,7 +38,7 @@ public class PayPalServiceImpl implements PayPalService {
                 "payment description",
                 "/paypal/cancel",
                 "/paypal/success");
-        //TODO URL need fix
+
     }
 
     @Override

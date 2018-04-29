@@ -15,6 +15,11 @@ public class DataPropertiesTest  {
     @Autowired
     private DataProperties dataProperties;
 
+    @Test
+    public void testMap(){
+        Assert.assertNotNull(dataProperties);
+        Assert.assertNotNull(dataProperties.getMap());
+    }
 
 
     @Test
