@@ -30,14 +30,18 @@ public class PayPalServiceImpl implements PayPalService {
 
     @Override
     public Payment createPayment(
-            Double total
+            Double total,
+            String cancelUrl,
+            String successUrl,
+            String orderNO
     ) throws PayPalRESTException {
 
         return createPayment(total, "USD", PayPalPaymentMethodEnum.paypal,
                 PayPalPaymentIntentEnum.sale,
-                "payment description",
-                "/paypal/cancel",
-                "/paypal/success");
+                "",
+                cancelUrl,
+                successUrl,
+                orderNO);
 
     }
 
@@ -49,28 +53,54 @@ public class PayPalServiceImpl implements PayPalService {
             PayPalPaymentIntentEnum intent,
             String description,
             String cancelUrl,
-            String successUrl) throws PayPalRESTException {
+            String successUrl,
+            String orderNO) throws PayPalRESTException {
         logger.info("createPayment():[{}],[{}],[{}],[{}],[{}],[{}],[{}]", total, currency, method, intent, description, cancelUrl, successUrl);
 
         APIContext apiContext = getApiContext();
+
+        // ###Details
+        Details details = new Details();
+        details.setShipping("0");
+        String strTotal = String.format("%.2f", total);
+        details.setSubtotal(strTotal);
+        details.setTax("0");
+
+        // ###Amount
         Amount amount = new Amount();
         amount.setCurrency(currency);
-        amount.setTotal(String.format("%.2f", total));
+        // Total must be equal to sum of shipping, tax and subtotal.
+        amount.setTotal(strTotal);
+        amount.setDetails(details);
 
+        // ###Transaction
         Transaction transaction = new Transaction();
-        transaction.setDescription(description);
         transaction.setAmount(amount);
-
+        transaction.setDescription(description);
+        // ###Transactions
         List<Transaction> transactions = new ArrayList<>();
         transactions.add(transaction);
 
+        // ### Items
+        Item item = new Item();
+        item.setName(orderNO).setQuantity("1").setCurrency(currency).setPrice(strTotal);
+        ItemList itemList = new ItemList();
+        List<Item> items = new ArrayList<>();
+        items.add(item);
+        itemList.setItems(items);
+        transaction.setItemList(itemList);
+
+        // ###Payer
         Payer payer = new Payer();
         payer.setPaymentMethod(method.toString());
 
+        // ###Payment
         Payment payment = new Payment();
         payment.setIntent(intent.toString());
         payment.setPayer(payer);
         payment.setTransactions(transactions);
+
+        // ###Redirect URLs
         RedirectUrls redirectUrls = new RedirectUrls();
         redirectUrls.setCancelUrl(cancelUrl);
         redirectUrls.setReturnUrl(successUrl);

@@ -9,8 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import xyz.geekweb.paypal.config.PayPalPaymentIntentEnum;
-import xyz.geekweb.paypal.config.PayPalPaymentMethodEnum;
 import xyz.geekweb.paypal.result.ExceptionMsg;
 import xyz.geekweb.paypal.result.ResponseData;
 import xyz.geekweb.paypal.service.PayPalService;
@@ -44,12 +42,8 @@ public class PaymentController {
             logger.debug("do pay() start");
             Payment payment = payPalService.createPayment(
                     50.00,
-                    "USD",
-                    PayPalPaymentMethodEnum.paypal,
-                    PayPalPaymentIntentEnum.sale,
-                    "payment description",
                     cancelUrl,
-                    successUrl);
+                    successUrl,"O1111111");
             logger.debug("do pay() end");
             for (Links links : payment.getLinks()) {
                 if (links.getRel().equals("approval_url")) {
