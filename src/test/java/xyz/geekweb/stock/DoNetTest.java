@@ -9,7 +9,7 @@ import java.util.Random;
 import static org.junit.Assert.*;
 
 public class DoNetTest {
-    @Test
+    //@Test
     public void doPost() throws Exception {
         Random random = new Random();//创建随机对象
         int arrIdx = random.nextInt(100);//随机数组索引，nextInt(len-1)表示随机整数[0,(len-1)]之间的值

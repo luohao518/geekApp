@@ -1,5 +1,6 @@
 package xyz.geekweb.stock;
 
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import xyz.geekweb.util.MailService;
 import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -37,7 +39,7 @@ public class ScheduledTask {
 //        System.out.println(String.format("===第%s次执行，当前时间为：%s", count1++, dateFormat.format(new Date())));
 //    }
 
-    @Scheduled(cron = "0 15 9 ? * MON-FRI") //表示周一到周五每天上午9：15执行作业
+    @Scheduled(cron = "0 41 10 ? * MON-FRI") //表示周一到周五每天上午9：15执行作业
     public void reportCurrentTimeCron() throws InterruptedException, IOException {
 
         logger.info("reportCurrentTimeCron() start");
@@ -47,7 +49,10 @@ public class ScheduledTask {
             return;
         }
 
-        ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(2);
+        ScheduledExecutorService scheduledThreadPool = new ScheduledThreadPoolExecutor(
+                5,
+                new BasicThreadFactory.Builder().namingPattern("scheduled-pool-%d").daemon(true).build());
+
         scheduledThreadPool.scheduleAtFixedRate(() -> {
 
             logger.info("执行轮询");
@@ -58,10 +63,12 @@ public class ScheduledTask {
             }
             if (HolidayUtil.isStockTime()) {
                 String result = searchFinanceData.getALLDataForOutput();
-                logger.warn(result);
+                logger.info(result);
+            }else{
+                logger.info("休市时间！");
             }
 
-        }, 3, 60, TimeUnit.SECONDS);
+        }, 0, 60, TimeUnit.SECONDS);
 
         scheduledThreadPool.scheduleAtFixedRate(() -> {
 
@@ -72,7 +79,9 @@ public class ScheduledTask {
             }
             if (HolidayUtil.isStockTime()) {
                 mailService.sendSimpleMail(searchFinanceData.getALLDataForOutput());
+            }else{
+                logger.info("休市时间！");
             }
-        }, 3, 1800, TimeUnit.SECONDS);
+        }, 0, 1800, TimeUnit.SECONDS);
     }
 }

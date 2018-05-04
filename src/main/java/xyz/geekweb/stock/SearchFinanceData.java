@@ -49,9 +49,7 @@ public class SearchFinanceData {
         logger.debug("execute getALLDataForOutput()");
 
         StringBuilder sb = new StringBuilder();
-        if (this.lstFinanceData == null) {
-            this.fillALLData();
-        }
+        this.fillALLData();
         lstFinanceData.forEach((k, v) -> sb.append(v.print()));
         return sb.toString();
     }
