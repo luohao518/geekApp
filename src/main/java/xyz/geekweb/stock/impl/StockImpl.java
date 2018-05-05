@@ -24,6 +24,7 @@ public class StockImpl implements FinanceData {
 
     @Autowired
     public StockImpl(DataProperties dataProperties) {
+
         this.dataProperties = dataProperties;
     }
 
@@ -34,7 +35,12 @@ public class StockImpl implements FinanceData {
     }
 
     @Override
-    public String print() {
+    public boolean isNotify(){
+        return this.data!=null && this.data.size()>0;
+    }
+
+    @Override
+    public String toPrintout() {
         StringBuilder sb = new StringBuilder("\n");
         sb.append("-------------------股票-------------------\n");
         this.data.forEach(item -> sb.append(String.format("%8s 当前价[%6.2f] 卖出价[%6.2f] 买入价[%6.2f] 涨跌幅[%6.2f] %-6s %n", item.getFullCode(), item.getNow(), item.getSell1Pricae(), item.getBuy1Pricae(),(((item.getNow() - item.getClose()) / item.getClose()) * 100),item.getName())));

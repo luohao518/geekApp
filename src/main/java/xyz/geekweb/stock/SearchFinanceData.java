@@ -1,5 +1,6 @@
 package xyz.geekweb.stock;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Service;
 import xyz.geekweb.stock.impl.*;
 import xyz.geekweb.stock.savesinastockdata.RealTimeData;
 import xyz.geekweb.stock.savesinastockdata.RealTimeDataPOJO;
+import xyz.geekweb.util.MailService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,20 +39,37 @@ public class SearchFinanceData {
     @Autowired
     private GZNHGImpl gznhg;
 
+    @Autowired
+    private MailService mailService;
+
+    @Autowired
+    private FXImpl fx;
+
     private Logger logger = LoggerFactory.getLogger(SearchFinanceData.class);
     private Map<FinanceTypeEnum, FinanceData> lstFinanceData;
 
     /**
-     * getALLDataForOutput
+     * watchALLFinanceData
      *
      * @return str
      */
-    public String getALLDataForOutput() {
-        logger.debug("execute getALLDataForOutput()");
+    public String watchALLFinanceData() {
+        logger.debug("execute watchALLFinanceData()");
 
         StringBuilder sb = new StringBuilder();
         this.fillALLData();
-        lstFinanceData.forEach((k, v) -> sb.append(v.print()));
+        StringBuilder sbMail=new StringBuilder();
+        lstFinanceData.forEach((k, v) -> {
+            sb.append(v.toPrintout());
+            if(v.isNotify()){
+                sbMail.append(v.toPrintout());
+            }
+        });
+
+        if(StringUtils.isNotEmpty(sbMail.toString())){
+            mailService.sendSimpleMail(sbMail.toString());
+        }
+
         return sb.toString();
     }
 
@@ -78,7 +97,8 @@ public class SearchFinanceData {
 
         this.lstFinanceData.put(FinanceTypeEnum.FJ_FUND, fjFund);
 
-        this.lstFinanceData.put(FinanceTypeEnum.FX, new FXImpl(this.dataProperties.getFx().toArray(new String[0])));
+        fx.initData(this.dataProperties.getFx().toArray(new String[0]));
+        this.lstFinanceData.put(FinanceTypeEnum.FX, fx);
     }
 
     private List<RealTimeDataPOJO> fetchSinaData() {

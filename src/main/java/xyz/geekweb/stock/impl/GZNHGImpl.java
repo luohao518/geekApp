@@ -37,7 +37,12 @@ public class GZNHGImpl implements FinanceData {
     }
 
     @Override
-    public String print() {
+    public boolean isNotify(){
+        return this.data!=null && this.data.size()>0;
+    }
+
+    @Override
+    public String toPrintout() {
         StringBuilder sb = new StringBuilder("\n");
         sb.append("-----------国债逆回购-------------\n");
         this.data.forEach(item -> sb.append(String.format("%5s 当前价[%2.2f] 买入价[%2.2f]%n", item.getName(), item.getNow(), item.getBuy1Pricae())));

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import xyz.geekweb.stock.mq.Sender;
 import xyz.geekweb.util.MailService;
 
 import java.io.IOException;
@@ -21,22 +22,23 @@ public class StockController {
 
     private SearchFinanceData searchFinanceData;
 
-    private MailService mailService;
+    private Sender sender;
 
     @Autowired
-    public StockController(SearchFinanceData searchFinanceData, MailService mailService) {
+    public StockController(SearchFinanceData searchFinanceData,Sender sender) {
         this.searchFinanceData = searchFinanceData;
-        this.mailService = mailService;
+        this.sender=sender;
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public String showList() throws IOException {
         logger.info("do Get()");
 
-        String s = searchFinanceData.getALLDataForOutput();
+        String s = searchFinanceData.watchALLFinanceData();
         logger.warn(s);
 
-        mailService.sendSimpleMail(s);
+        sender.sendMail(s);
+
         return "stock";
     }
 }

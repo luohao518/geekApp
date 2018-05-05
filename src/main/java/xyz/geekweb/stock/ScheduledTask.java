@@ -6,10 +6,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import xyz.geekweb.util.HolidayUtil;
 import xyz.geekweb.util.MailService;
 
 import java.io.IOException;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -62,7 +62,7 @@ public class ScheduledTask {
                 scheduledThreadPool.shutdown();
             }
             if (HolidayUtil.isStockTime()) {
-                String result = searchFinanceData.getALLDataForOutput();
+                String result = searchFinanceData.watchALLFinanceData();
                 logger.info(result);
             }else{
                 logger.info("休市时间！");
@@ -78,7 +78,7 @@ public class ScheduledTask {
                 scheduledThreadPool.shutdown();
             }
             if (HolidayUtil.isStockTime()) {
-                mailService.sendSimpleMail(searchFinanceData.getALLDataForOutput());
+                mailService.sendSimpleMail(searchFinanceData.watchALLFinanceData());
             }else{
                 logger.info("休市时间！");
             }

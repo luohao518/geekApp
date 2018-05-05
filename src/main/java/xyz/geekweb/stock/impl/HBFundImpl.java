@@ -30,6 +30,11 @@ public class HBFundImpl implements FinanceData {
 
     }
 
+    @Override
+    public boolean isNotify(){
+        return this.data!=null && this.data.size()>0;
+    }
+
     public void initData(List<RealTimeDataPOJO> data) {
         final double low_monetary_funds_value = Double.parseDouble(this.dataProperties.getMap().get("MONETARY_FUNDS_VALUE").split(",")[0]);
         final double up_monetary_funds_value = Double.parseDouble(this.dataProperties.getMap().get("MONETARY_FUNDS_VALUE").split(",")[1]);
@@ -39,7 +44,7 @@ public class HBFundImpl implements FinanceData {
     }
 
     @Override
-    public String print() {
+    public String toPrintout() {
         StringBuilder sb = new StringBuilder("\n");
         sb.append("------------货币基金---------------\n");
         this.data.forEach(item -> sb.append(String.format("购买货币基金:%s 当前价[%7.3f] 卖出价[%7.3f] 卖量[%5.0f]%n", item.getFullCode(), item.getNow(), item.getSell1Pricae(), item.getSell1Num())));

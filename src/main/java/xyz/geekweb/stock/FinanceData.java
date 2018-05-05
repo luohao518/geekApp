@@ -11,5 +11,11 @@ public interface FinanceData {
      *
      * @return str
      */
-    String print();
+    String toPrintout();
+
+    /**
+     * 是否通知（有监测值）
+     * @return
+     */
+    boolean isNotify();
 }

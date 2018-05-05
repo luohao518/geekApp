@@ -39,12 +39,13 @@ public class FjFundImpl implements FinanceData {
     private org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
     private List<FJFundaPO> data;
 
+    private List<FJFundaPO> watchData = new ArrayList<>();
+
     private DataProperties dataProperties;
 
     @Autowired
     public FjFundImpl(DataProperties dataProperties) {
         this.dataProperties = dataProperties;
-        this.data = initData();
     }
 
     /**
@@ -52,7 +53,7 @@ public class FjFundImpl implements FinanceData {
      *
      * @return
      */
-    private List<FJFundaPO> initData() {
+    private void initData() {
         final List<Rows> rows = fetchJSLData();
 
         String[] fJFunds = this.dataProperties.getFj_funds().toArray(new String[0]);
@@ -63,6 +64,7 @@ public class FjFundImpl implements FinanceData {
             if (strFjFunds.contains(row.getId())) {
                 double fundaCurrentPrice = Double.parseDouble(row.getCell().getFunda_current_price());
                 double fundaValue = Double.parseDouble(row.getCell().getFunda_value());
+                //净价
                 double diffValue = fundaCurrentPrice - (fundaValue - 1.0);
                 FJFundaPO item = new FJFundaPO();
                 item.setFundaId(row.getId());
@@ -73,6 +75,8 @@ public class FjFundImpl implements FinanceData {
                 lstFJFundaPO.add(item);
             }
         });
+
+        //按照净价从低到高排序
         lstFJFundaPO.sort(comparing(FJFundaPO::getDiffValue));
 
         //计算是否轮动
@@ -83,16 +87,23 @@ public class FjFundImpl implements FinanceData {
 
         List<String> fj_funds_have = this.dataProperties.getFj_funds_have();
         for (String i : fj_funds_have) {
-            if ("150181".equals(i)) {
-                //忽略军工A
-                continue;
-            }
+
 
             final String tmpStr = i;
             List<FJFundaPO> lst = lstFJFundaPO.stream().filter(item -> item.getFundaId().equals(tmpStr)).collect(toList());
             assert (lst.size() == 1);
+
+            if ("150181".equals(i)) {
+                //军工A的场合，净价计算减1.2分钱
+                lst.get(0).setDiffValue(lst.get(0).getDiffValue()-0.12d);
+            }
+
+            if( (lst.get(0).getDiffValue()-lstFJFundaPO.get(0).getDiffValue()) >= Double.parseDouble(dataProperties.getMap().get("FJ_MIN_DIFF"))){
+            //持有的分级净价比最低的分级净价大
+                this.watchData.add(lst.get(0));
+            }
         }
-        return lstFJFundaPO;
+        this.data=lstFJFundaPO;
     }
 
     private void getQTData(final String[] fJFunds) {
@@ -168,7 +179,12 @@ public class FjFundImpl implements FinanceData {
     }
 
     @Override
-    public String print() {
+    public boolean isNotify(){
+        return this.watchData!=null && this.watchData.size()>0;
+    }
+
+    @Override
+    public String toPrintout() {
         initData();
         StringBuilder sb = new StringBuilder("\n");
         sb.append("--------------分级基金-------------------\n");

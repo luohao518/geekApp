@@ -15,10 +15,14 @@ public class FXImplTest {
     @Autowired
     private DataProperties dataProperties;
 
+    @Autowired
+    private  FXImpl fx;
+
     @Test
     public void testPrint() throws Exception {
 
-        System.out.println(new FXImpl(dataProperties.getFx().toArray(new String[0])).print());
+        fx.initData(dataProperties.getFx().toArray(new String[0]));
+        System.out.println(fx.toPrintout());
     }
 
 }

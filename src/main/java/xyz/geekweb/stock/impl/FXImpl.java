@@ -9,6 +9,7 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 import xyz.geekweb.stock.FinanceData;
 import xyz.geekweb.stock.pojo.json.FXBean;
 
@@ -23,6 +24,7 @@ import java.util.List;
  * <p>
  * 外汇
  */
+@Service
 public class FXImpl implements FinanceData {
 
 
@@ -31,20 +33,24 @@ public class FXImpl implements FinanceData {
     private static final String QUOTA = "https://forex.1forge.com/1.0.3/quota?api_key=iOrFNzxp8Fuus91yAMYRO7nTkSImR5Gm";
     private org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
     private List<FXBean> data;
+    private List<FXBean> watchData =new ArrayList<>();
 
-    public FXImpl(String[] fxs) {
-        this.data = initData(fxs);
+    public FXImpl() {
+
     }
 
-    private List<FXBean> initData(String[] fxs) {
+    public void initData(String[] fxs) {
         if (isRemaining()) {
-            return fetchData(StringUtils.join(fxs, ","));
+            this.data=fetchData(StringUtils.join(fxs, ","));
         } else {
             logger.warn("今天调用API次数到，明天再试");
-            return null;
         }
     }
 
+    @Override
+    public boolean isNotify(){
+        return this.watchData!=null && this.watchData.size()>0;
+    }
 
     private List<FXBean> fetchData(String strLst) {
         OkHttpClient client = new OkHttpClient();
@@ -127,14 +133,21 @@ public class FXImpl implements FinanceData {
     }
 
     @Override
-    public String print() {
+    public String toPrintout() {
         StringBuilder sb = new StringBuilder("\n");
         sb.append("--------------外汇-----------------\n");
         if (this.data != null) {
             if (!isOpen()) {
                 sb.append("!!!已休市!!!\n");
             }
-            this.data.forEach(item -> sb.append(String.format("外汇购买:%s 当前价[%7.3f]%n", item.getSymbol(), item.getPrice())));
+            this.data.forEach(item -> {
+                sb.append(String.format("外汇购买:%s 当前价[%7.3f]%n", item.getSymbol(), item.getPrice()));
+                if(item.getSymbol().equals("USDJPY")){
+                    if(item.getPrice()>112.0d){
+                        this.watchData.add(item);
+                    }
+                }
+            });
         }
         sb.append("------------------------------------\n");
         return sb.toString();

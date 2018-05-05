@@ -1,4 +1,4 @@
-package xyz.geekweb.stock;
+package xyz.geekweb.util;
 
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;

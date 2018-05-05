@@ -9,6 +9,8 @@ public class DoNet {
     public  static void doPost(String name){
         OkHttpClient client = new OkHttpClient();
 
+        //curl -d "email=1231@qq.com&pass=123456" https://www.import-express.com/reg/reg
+
         String email=name+"abc@qq.com";
         RequestBody formBody = new FormEncodingBuilder()
                 .add("email", email)

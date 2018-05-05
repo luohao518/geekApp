@@ -29,7 +29,7 @@ public class MailServiceImpl implements MailService {
 
 
     @Override
-    @Async
+    //采用MQ异步处理 @Async
     public void sendSimpleMail(String content) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(from);
