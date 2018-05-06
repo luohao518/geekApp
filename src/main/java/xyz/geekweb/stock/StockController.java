@@ -22,12 +22,10 @@ public class StockController {
 
     private SearchFinanceData searchFinanceData;
 
-    private Sender sender;
 
     @Autowired
-    public StockController(SearchFinanceData searchFinanceData,Sender sender) {
+    public StockController(SearchFinanceData searchFinanceData) {
         this.searchFinanceData = searchFinanceData;
-        this.sender=sender;
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -37,7 +35,6 @@ public class StockController {
         String s = searchFinanceData.watchALLFinanceData();
         logger.warn(s);
 
-        sender.sendMail(s);
 
         return "stock";
     }

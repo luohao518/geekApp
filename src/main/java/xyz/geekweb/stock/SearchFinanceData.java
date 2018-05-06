@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xyz.geekweb.stock.impl.*;
+import xyz.geekweb.stock.mq.Sender;
 import xyz.geekweb.stock.savesinastockdata.RealTimeData;
 import xyz.geekweb.stock.savesinastockdata.RealTimeDataPOJO;
 import xyz.geekweb.util.MailService;
@@ -40,7 +41,7 @@ public class SearchFinanceData {
     private GZNHGImpl gznhg;
 
     @Autowired
-    private MailService mailService;
+    private Sender sender;
 
     @Autowired
     private FXImpl fx;
@@ -67,7 +68,7 @@ public class SearchFinanceData {
         });
 
         if(StringUtils.isNotEmpty(sbMail.toString())){
-            mailService.sendSimpleMail(sbMail.toString());
+            sender.sendMail(sbMail.toString());
         }
 
         return sb.toString();

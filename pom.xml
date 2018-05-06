@@ -5,8 +5,8 @@
 
 	<groupId>xyz.geekweb</groupId>
 	<artifactId>geekApp</artifactId>
-	<version>1.4.0-Release</version>
-	<packaging>war</packaging>
+	<version>1.5.0-Release</version>
+	<packaging>jar</packaging>
 	<name>geekApp</name>
 	<description>Demo project for Spring Boot</description>
 	<parent>
