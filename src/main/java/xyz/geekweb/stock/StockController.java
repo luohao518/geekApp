@@ -32,9 +32,7 @@ public class StockController {
     public String showList() throws IOException {
         logger.info("do Get()");
 
-        String s = searchFinanceData.watchALLFinanceData();
-        logger.warn(s);
-
+        searchFinanceData.watchALLFinanceData();
 
         return "stock";
     }

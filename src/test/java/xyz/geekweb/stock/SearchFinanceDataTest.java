@@ -17,7 +17,7 @@ public class SearchFinanceDataTest {
     @Test
     public void testGetALLData() throws Exception {
 
-        System.out.println(searchFinanceData.watchALLFinanceData());
+        searchFinanceData.watchALLFinanceData();
 
     }
 

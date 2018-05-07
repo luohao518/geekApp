@@ -5,6 +5,7 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,9 +35,11 @@ public class FjFundImpl implements FinanceData {
 
     //腾讯数据（查询量）
     private static final String QT_URL = "http://qt.gtimg.cn/q=%s";
+
     //集思录数据
     private static final String URL = "https://www.jisilu.cn/data/sfnew/funda_list/?___t=%d";
-    private org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
     private List<FJFundaPO> data;
 
     private List<FJFundaPO> watchData = new ArrayList<>();
@@ -88,14 +91,13 @@ public class FjFundImpl implements FinanceData {
         List<String> fj_funds_have = this.dataProperties.getFj_funds_have();
         for (String i : fj_funds_have) {
 
-
             final String tmpStr = i;
             List<FJFundaPO> lst = lstFJFundaPO.stream().filter(item -> item.getFundaId().equals(tmpStr)).collect(toList());
             assert (lst.size() == 1);
 
             if ("150181".equals(i)) {
                 //军工A的场合，净价计算减1.2分钱
-                lst.get(0).setDiffValue(lst.get(0).getDiffValue()-0.12d);
+                //lst.get(0).setDiffValue(lst.get(0).getDiffValue()-0.12d);
             }
 
             if( (lst.get(0).getDiffValue()-lstFJFundaPO.get(0).getDiffValue()) >= Double.parseDouble(dataProperties.getMap().get("FJ_MIN_DIFF"))){
@@ -184,7 +186,7 @@ public class FjFundImpl implements FinanceData {
     }
 
     @Override
-    public String toPrintout() {
+    public void printInfo() {
         initData();
         StringBuilder sb = new StringBuilder("\n");
         sb.append("--------------分级基金-------------------\n");
@@ -202,6 +204,6 @@ public class FjFundImpl implements FinanceData {
 
         }
         sb.append("-----------------------------------------\n");
-        return sb.toString();
+        logger.info(sb.toString());
     }
 }

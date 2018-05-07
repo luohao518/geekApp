@@ -22,7 +22,7 @@ public class FXImplTest {
     public void testPrint() throws Exception {
 
         fx.initData(dataProperties.getFx().toArray(new String[0]));
-        System.out.println(fx.toPrintout());
+        fx.printInfo();
     }
 
 }

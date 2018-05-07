@@ -8,6 +8,7 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import xyz.geekweb.stock.FinanceData;
@@ -31,7 +32,7 @@ public class FXImpl implements FinanceData {
     private static final String DATA_URL = "https://forex.1forge.com/1.0.3/quotes?pairs=%s&api_key=iOrFNzxp8Fuus91yAMYRO7nTkSImR5Gm";
     private static final String MARKET_STATUS = "https://forex.1forge.com/1.0.3/market_status?api_key=iOrFNzxp8Fuus91yAMYRO7nTkSImR5Gm";
     private static final String QUOTA = "https://forex.1forge.com/1.0.3/quota?api_key=iOrFNzxp8Fuus91yAMYRO7nTkSImR5Gm";
-    private org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
     private List<FXBean> data;
     private List<FXBean> watchData =new ArrayList<>();
 
@@ -133,7 +134,7 @@ public class FXImpl implements FinanceData {
     }
 
     @Override
-    public String toPrintout() {
+    public void printInfo() {
         StringBuilder sb = new StringBuilder("\n");
         sb.append("--------------外汇-----------------\n");
         if (this.data != null) {
@@ -150,6 +151,6 @@ public class FXImpl implements FinanceData {
             });
         }
         sb.append("------------------------------------\n");
-        return sb.toString();
+        logger.info(sb.toString());
     }
 }

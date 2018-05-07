@@ -54,24 +54,16 @@ public class SearchFinanceData {
      *
      * @return str
      */
-    public String watchALLFinanceData() {
+    public void watchALLFinanceData() {
         logger.debug("execute watchALLFinanceData()");
 
-        StringBuilder sb = new StringBuilder();
         this.fillALLData();
-        StringBuilder sbMail=new StringBuilder();
         lstFinanceData.forEach((k, v) -> {
-            sb.append(v.toPrintout());
-            if(v.isNotify()){
-                sbMail.append(v.toPrintout());
-            }
+            v.printInfo();
+//            if(v.isNotify()){
+//                sbMail.append(v.printInfo());
+//            }
         });
-
-        if(StringUtils.isNotEmpty(sbMail.toString())){
-            sender.sendMail(sbMail.toString());
-        }
-
-        return sb.toString();
     }
 
     /**

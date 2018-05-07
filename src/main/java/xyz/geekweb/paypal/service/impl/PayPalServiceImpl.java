@@ -33,7 +33,7 @@ public class PayPalServiceImpl implements PayPalService {
             Double total,
             String cancelUrl,
             String successUrl,
-            String orderNO
+            String orderNO,String customMsg
     ) throws PayPalRESTException {
 
         return createPayment(total, "USD", PayPalPaymentMethodEnum.paypal,
@@ -41,7 +41,7 @@ public class PayPalServiceImpl implements PayPalService {
                 "",
                 cancelUrl,
                 successUrl,
-                orderNO);
+                orderNO,customMsg);
 
     }
 
@@ -54,7 +54,8 @@ public class PayPalServiceImpl implements PayPalService {
             String description,
             String cancelUrl,
             String successUrl,
-            String orderNO) throws PayPalRESTException {
+            String orderNO,
+            String customMsg) throws PayPalRESTException {
         logger.info("createPayment():[{}],[{}],[{}],[{}],[{}],[{}],[{}]", total, currency, method, intent, description, cancelUrl, successUrl);
 
         APIContext apiContext = getApiContext();
@@ -77,6 +78,7 @@ public class PayPalServiceImpl implements PayPalService {
         Transaction transaction = new Transaction();
         transaction.setAmount(amount);
         transaction.setDescription(description);
+        transaction.setCustom(customMsg);
         // ###Transactions
         List<Transaction> transactions = new ArrayList<>();
         transactions.add(transaction);

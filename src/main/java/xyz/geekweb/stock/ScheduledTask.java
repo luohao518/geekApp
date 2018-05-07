@@ -39,7 +39,7 @@ public class ScheduledTask {
 //        System.out.println(String.format("===第%s次执行，当前时间为：%s", count1++, dateFormat.format(new Date())));
 //    }
 
-    @Scheduled(cron = "0 15 9 ? * MON-FRI") //表示周一到周五每天上午9：15执行作业
+    @Scheduled(cron = "0 27 11 ? * MON-FRI") //表示周一到周五每天上午9：15执行作业
     public void reportCurrentTimeCron() throws InterruptedException, IOException {
 
         logger.info("reportCurrentTimeCron() start");
@@ -62,8 +62,8 @@ public class ScheduledTask {
                 scheduledThreadPool.shutdown();
             }
             if (HolidayUtil.isStockTime()) {
-                String result = searchFinanceData.watchALLFinanceData();
-                logger.info(result);
+                searchFinanceData.watchALLFinanceData();
+
             }else{
                 logger.info("休市时间！");
             }
@@ -78,7 +78,7 @@ public class ScheduledTask {
                 scheduledThreadPool.shutdown();
             }
             if (HolidayUtil.isStockTime()) {
-                mailService.sendSimpleMail(searchFinanceData.watchALLFinanceData());
+                //mailService.sendSimpleMail(searchFinanceData.watchALLFinanceData());
             }else{
                 logger.info("休市时间！");
             }
