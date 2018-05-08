@@ -67,41 +67,44 @@ public class FjFundImpl implements FinanceData {
                 double fundaCurrentPrice = Double.parseDouble(row.getCell().getFunda_current_price());
                 double fundaValue = Double.parseDouble(row.getCell().getFunda_value());
                 //净价
-                double diffValue = fundaCurrentPrice - (fundaValue - 1.0);
+                double trueValue = fundaCurrentPrice - (fundaValue - 1.0);
                 DataPO item = new DataPO();
-                item.setId(row.getId());
+                item.setType(FinanceTypeEnum.FJ_FUND);
+                item.setFullCode(row.getId());
                 item.setName(row.getCell().getFunda_name());
-                item.setCurrentPrice(fundaCurrentPrice);
+                item.setNow(fundaCurrentPrice);
                 item.setValue(fundaValue);
-                item.setDiffValue(diffValue);
+                item.setTrueValue(trueValue);
+                item.setBuyOrSaleEnum(BuyOrSaleEnum.BUY);
                 lstDataPO.add(item);
             }
         });
 
         //按照净价从低到高排序
-        lstDataPO.sort(comparing(DataPO::getDiffValue));
+        lstDataPO.sort(comparing(DataPO::getTrueValue));
 
         List<String> fj_funds_have = this.dataProperties.getFj_funds_have();
         for (String i : fj_funds_have) {
 
             //取出持有的项目
             final String tmpStr = i;
-            List<DataPO> lst = lstDataPO.stream().filter(item -> item.getId().equals(tmpStr)).collect(toList());
+            List<DataPO> lst = lstDataPO.stream().filter(item -> item.getFullCode().equals(tmpStr)).collect(toList());
             assert (lst.size() == 1);
             DataPO haveItem = lst.get(0);
+            haveItem.setBuyOrSaleEnum(BuyOrSaleEnum.SALE);
 
             //最低价的项目
             DataPO lowestItem = lstDataPO.get(0);
-            if("150022".equalsIgnoreCase(lowestItem.getId())){
+            if("150022".equalsIgnoreCase(lowestItem.getFullCode())){
                 lowestItem = lstDataPO.get(1);
             }
             //阈值
             final double fj_min_diff = Double.parseDouble(dataProperties.getMap().get("FJ_MIN_DIFF"));
 
-            if( (haveItem.getDiffValue()- lowestItem.getDiffValue()) >= fj_min_diff){
+            if( (haveItem.getTrueValue()- lowestItem.getTrueValue()) >= fj_min_diff){
             //持有的分级净价比最低的分级净价大
 
-                if ("150181".equals(i) && (haveItem.getDiffValue()+0.12d- lowestItem.getDiffValue()) >= fj_min_diff) {
+                if ("150181".equals(i) && (haveItem.getTrueValue() - 0.12d- lowestItem.getTrueValue()) >= fj_min_diff) {
                     //军工A的场合，净价计算减1.2分钱
                     this.watchData.add(haveItem);
                 }else {
@@ -110,7 +113,7 @@ public class FjFundImpl implements FinanceData {
             }
         }
         if(this.watchData.size()>0){
-            if("150022".equalsIgnoreCase(lstDataPO.get(0).getId())){
+            if("150022".equalsIgnoreCase(lstDataPO.get(0).getFullCode())){
                 this.watchData.add(lstDataPO.get(1));
             }else{
                 this.watchData.add(lstDataPO.get(0));
@@ -203,18 +206,9 @@ public class FjFundImpl implements FinanceData {
         StringBuilder sb = new StringBuilder("\n");
         sb.append("--------------分级基金-------------------\n");
         this.data.forEach(item -> sb.append(String.format("%5s  当前价[%5.3f] 净值[%5.3f] 净价[%5.3f] %-4s%n",
-                item.getId(), item.getCurrentPrice(),
-                item.getValue(), item.getDiffValue(), item.getName())));
+                item.getFullCode(), item.getNow(),
+                item.getValue(), item.getTrueValue(), item.getName())));
 
-        //取最小值
-        DataPO minDataPO = this.data.stream().min(comparing(DataPO::getDiffValue)).get();
-
-        if (this.data.get(0).getDiffValue() - minDataPO.getDiffValue() > Double.parseDouble(dataProperties.getMap().get("FJ_MIN_DIFF"))) {
-
-            sb.append(String.format("分级A可以做轮动 买入：[%5s %6s][%5.3f]%n", minDataPO.getName(), minDataPO.getId(), minDataPO.getValue()));
-            sb.append(String.format("              卖出：[%5s %6s][%5.3f]%n", this.data.get(0).getName(), this.data.get(0).getId(), this.data.get(0).getValue()));
-
-        }
         sb.append("-----------------------------------------\n");
         logger.info(sb.toString());
     }

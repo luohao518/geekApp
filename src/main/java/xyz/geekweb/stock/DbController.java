@@ -49,7 +49,7 @@ public class DbController {
             Set<String> set = dbmap.keySet();
 
             for (String key : set) {
-                if(key.equals("id")){
+                if(key.equals("fullCode")){
                     if(dbmap.get(key).equals(id)){
                         map = dbmap;
                     }

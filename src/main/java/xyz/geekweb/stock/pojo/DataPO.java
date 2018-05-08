@@ -1,92 +1,41 @@
 package xyz.geekweb.stock.pojo;
 
+import lombok.Data;
+import xyz.geekweb.stock.impl.BuyOrSaleEnum;
+import xyz.geekweb.stock.impl.FinanceTypeEnum;
+
 /**
  * @author lhao
  */
+@Data
 public class DataPO {
-    String id;
+    /**买入:0 卖出:1*/
+    BuyOrSaleEnum buyOrSaleEnum;
+    /**类型*/
+    FinanceTypeEnum type;
+    /**代码*/
+    String fullCode;
+    /**名称*/
     String name;
-    double currentPrice;
+    /**今日开盘价*/
+    double open;
+    /**昨日收盘价*/
+    double close;
+    /**当前价格*/
+    double now;
+    /**最高价*/
+    double high;
+    /**最低价*/
+    double low;
+    /**竞买价*/
+    double buyPrice;
+    /**竞卖价*/
+    double sellPrice;
+    /**成交量*/
+    double volume;
+    /**基金的净值*/
     double value;
-    double diffValue;
+    /**分级基金的净价*/
+    double trueValue;
 
-    @Override
-    public int hashCode() {
-        int result;
-        long temp;
-        result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        temp = Double.doubleToLongBits(currentPrice);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(value);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(diffValue);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        DataPO dataPO = (DataPO) o;
-
-        if (Double.compare(dataPO.currentPrice, currentPrice) != 0) return false;
-        if (Double.compare(dataPO.value, value) != 0) return false;
-        if (Double.compare(dataPO.diffValue, diffValue) != 0) return false;
-        if (id != null ? !id.equals(dataPO.id) : dataPO.id != null) return false;
-        return name != null ? name.equals(dataPO.name) : dataPO.name == null;
-    }
-
-    @Override
-    public String toString() {
-        return "DataPO{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", currentPrice=" + currentPrice +
-                ", value=" + value +
-                ", diffValue=" + diffValue +
-                '}';
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public double getCurrentPrice() {
-        return currentPrice;
-    }
-
-    public void setCurrentPrice(double currentPrice) {
-        this.currentPrice = currentPrice;
-    }
-
-    public double getValue() {
-        return value;
-    }
-
-    public void setValue(double value) {
-        this.value = value;
-    }
-
-    public double getDiffValue() {
-        return diffValue;
-    }
-
-    public void setDiffValue(double diffValue) {
-        this.diffValue = diffValue;
-    }
 }

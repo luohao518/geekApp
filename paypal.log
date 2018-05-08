@@ -101,7 +101,7 @@
 2018-04-20 17:42:10.641 DEBUG 14684 --- [http-nio-8088-exec-1] c.t.demo.controller.PaymentController    : do success
 2018-04-20 17:42:12.296 DEBUG 14684 --- [http-nio-8088-exec-1] c.testpaypal.demo.service.PaypalService  : accessToken[Bearer A21AAEsdTXDmb9qoiXLQ0jj88z-J42d9_hY2ub5EzzIh4XUrrjeWCs0NZz7KmwfCM6rz9JyjlVfYGYWmqWB9pX1ilpYsU85JQ]
 2018-04-20 17:42:15.586 DEBUG 14684 --- [http-nio-8088-exec-1] c.t.demo.controller.PaymentController    : do execute finished!!![{
-  "id": "PAY-9HB05258XX2943436LLM3KXA",
+  "fullCode": "PAY-9HB05258XX2943436LLM3KXA",
   "intent": "sale",
   "payer": {
     "payment_method": "paypal",
@@ -129,7 +129,7 @@
       "related_resources": [
         {
           "sale": {
-            "id": "1AC17541ET710325S",
+            "fullCode": "1AC17541ET710325S",
             "amount": {
               "currency": "USD",
               "total": "50.00",
@@ -211,7 +211,7 @@
 2018-04-20 17:44:07.229 DEBUG 14684 --- [http-nio-8088-exec-8] c.t.demo.controller.PaymentController    : do success
 2018-04-20 17:44:08.537 DEBUG 14684 --- [http-nio-8088-exec-8] c.testpaypal.demo.service.PaypalService  : accessToken[Bearer A21AAEsdTXDmb9qoiXLQ0jj88z-J42d9_hY2ub5EzzIh4XUrrjeWCs0NZz7KmwfCM6rz9JyjlVfYGYWmqWB9pX1ilpYsU85JQ]
 2018-04-20 17:44:11.171 DEBUG 14684 --- [http-nio-8088-exec-8] c.t.demo.controller.PaymentController    : do execute finished!!![{
-  "id": "PAY-82527157E3934043ELLM3MSY",
+  "fullCode": "PAY-82527157E3934043ELLM3MSY",
   "intent": "sale",
   "payer": {
     "payment_method": "paypal",
@@ -239,7 +239,7 @@
       "related_resources": [
         {
           "sale": {
-            "id": "2MW23469HR132742S",
+            "fullCode": "2MW23469HR132742S",
             "amount": {
               "currency": "USD",
               "total": "50.00",
@@ -317,7 +317,7 @@
 2018-04-20 17:51:40.642 DEBUG 14684 --- [http-nio-8088-exec-1] c.t.demo.controller.PaymentController    : do success
 2018-04-20 17:51:50.181 DEBUG 14684 --- [http-nio-8088-exec-1] c.testpaypal.demo.service.PaypalService  : accessToken[Bearer A21AAEsdTXDmb9qoiXLQ0jj88z-J42d9_hY2ub5EzzIh4XUrrjeWCs0NZz7KmwfCM6rz9JyjlVfYGYWmqWB9pX1ilpYsU85JQ]
 2018-04-20 17:51:52.334 DEBUG 14684 --- [http-nio-8088-exec-1] c.t.demo.controller.PaymentController    : do execute finished!!![{
-  "id": "PAY-6WW09538YH611304DLLM3QBQ",
+  "fullCode": "PAY-6WW09538YH611304DLLM3QBQ",
   "intent": "sale",
   "payer": {
     "payment_method": "paypal",
@@ -345,7 +345,7 @@
       "related_resources": [
         {
           "sale": {
-            "id": "7YV0802389135684T",
+            "fullCode": "7YV0802389135684T",
             "amount": {
               "currency": "USD",
               "total": "50.00",
