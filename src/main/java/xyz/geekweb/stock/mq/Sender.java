@@ -5,7 +5,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import xyz.geekweb.stock.pojo.DataPO;
 
+import java.util.List;
+
+import static xyz.geekweb.stock.mq.RabbitConfig.QUEUE_MAIL;
+import static xyz.geekweb.stock.mq.RabbitConfig.QUEUE_NOTIFY;
+
+/**
+ * @author lhao
+ */
 @Component
 public class Sender {
 
@@ -14,18 +23,16 @@ public class Sender {
     @Autowired
     private AmqpTemplate rabbitTemplate;
 
-//    public void send() {
-//        logger.info("do send()");
-//
-//        String context = "hello " + new Date();
-//        System.out.println("Sender : " + context);
-//        this.rabbitTemplate.convertAndSend("mail", context);
-//    }
-
     public void sendMail(String msg) {
-        logger.info("do sendMail()");
+        logger.info("call sendMail()");
 
-        this.rabbitTemplate.convertAndSend("mail", msg);
+        this.rabbitTemplate.convertAndSend(QUEUE_MAIL, msg);
+    }
+
+    public void sendNotify(List<DataPO> lstDataPO) {
+        logger.info("call sendNotify()");
+
+        this.rabbitTemplate.convertAndSend(QUEUE_NOTIFY, lstDataPO);
     }
 
 }

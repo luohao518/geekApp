@@ -21,7 +21,7 @@ public class FXImplTest {
     @Test
     public void testPrint() throws Exception {
 
-        fx.initData(dataProperties.getFx().toArray(new String[0]));
+        fx.fetchData(dataProperties.getFx().toArray(new String[0]));
         fx.printInfo();
     }
 

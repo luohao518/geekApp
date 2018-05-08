@@ -1,6 +1,5 @@
 package xyz.geekweb.stock;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +8,6 @@ import xyz.geekweb.stock.impl.*;
 import xyz.geekweb.stock.mq.Sender;
 import xyz.geekweb.stock.savesinastockdata.RealTimeData;
 import xyz.geekweb.stock.savesinastockdata.RealTimeDataPOJO;
-import xyz.geekweb.util.MailService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,8 +58,9 @@ public class SearchFinanceData {
         this.fillALLData();
         lstFinanceData.forEach((k, v) -> {
             v.printInfo();
-//            if(v.isNotify()){
-//                sbMail.append(v.printInfo());
+            v.sendNotify(sender);
+//            if(v.sendNotify() && v instanceof  KZZImpl){
+//                System.out.println((KZZImpl) ((KZZImpl) v).getWatchData());
 //            }
         });
     }
@@ -69,28 +68,28 @@ public class SearchFinanceData {
     /**
      * get all data
      */
-    public void fillALLData() {
+    private void fillALLData() {
 
         logger.debug("execute fillALLData()");
 
         final List<RealTimeDataPOJO> realTimeDataPOJOS = fetchSinaData();
 
         this.lstFinanceData = new HashMap<>(10);
-        this.gznhg.initData(realTimeDataPOJOS);
+        this.gznhg.fetchData(realTimeDataPOJOS);
         this.lstFinanceData.put(FinanceTypeEnum.GZNHG, gznhg);
 
-        this.hbFund.initData(realTimeDataPOJOS);
+        this.hbFund.fetchData(realTimeDataPOJOS);
         this.lstFinanceData.put(FinanceTypeEnum.HB_FUND, hbFund);
 
-        this.kzz.initData(realTimeDataPOJOS);
+        this.kzz.fetchData(realTimeDataPOJOS);
         this.lstFinanceData.put(FinanceTypeEnum.KZZ, kzz);
 
-        this.stock.initData(realTimeDataPOJOS);
+        this.stock.fetchData(realTimeDataPOJOS);
         this.lstFinanceData.put(FinanceTypeEnum.STOCK, stock);
 
         this.lstFinanceData.put(FinanceTypeEnum.FJ_FUND, fjFund);
 
-        fx.initData(this.dataProperties.getFx().toArray(new String[0]));
+        fx.fetchData(this.dataProperties.getFx().toArray(new String[0]));
         this.lstFinanceData.put(FinanceTypeEnum.FX, fx);
     }
 

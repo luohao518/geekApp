@@ -1,5 +1,7 @@
 package xyz.geekweb.stock;
 
+import xyz.geekweb.stock.mq.Sender;
+
 /**
  * @author lhao
  */
@@ -16,5 +18,5 @@ public interface FinanceData {
      * 是否通知（有监测值）
      * @return
      */
-    boolean isNotify();
+    void sendNotify(Sender sender);
 }

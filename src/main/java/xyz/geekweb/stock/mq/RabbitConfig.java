@@ -8,13 +8,25 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * @author lhao
+ */
 @Configuration
 public class RabbitConfig {
 
-    @Bean
-    public Queue helloQueue() {
+    public static final String QUEUE_MAIL = "mail";
+    public static final String QUEUE_NOTIFY = "notify";
 
-        return new Queue("mail");
+    @Bean
+    public Queue mailQueue() {
+
+        return new Queue(QUEUE_MAIL);
+    }
+
+    @Bean
+    public Queue notifyQueue() {
+
+        return new Queue(QUEUE_NOTIFY);
     }
 
     @Bean

@@ -12,13 +12,12 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.util.ArrayUtils;
 import xyz.geekweb.stock.DataProperties;
 import xyz.geekweb.stock.FinanceData;
-import xyz.geekweb.stock.pojo.FJFundaPO;
+import xyz.geekweb.stock.mq.Sender;
+import xyz.geekweb.stock.pojo.DataPO;
 import xyz.geekweb.stock.pojo.json.JsonRootBean;
 import xyz.geekweb.stock.pojo.json.Rows;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 
 import static java.util.Comparator.comparing;
@@ -40,9 +39,9 @@ public class FjFundImpl implements FinanceData {
     private static final String URL = "https://www.jisilu.cn/data/sfnew/funda_list/?___t=%d";
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private List<FJFundaPO> data;
+    private List<DataPO> data;
 
-    private List<FJFundaPO> watchData = new ArrayList<>();
+    private List<DataPO> watchData = new ArrayList<>();
 
     private DataProperties dataProperties;
 
@@ -56,56 +55,68 @@ public class FjFundImpl implements FinanceData {
      *
      * @return
      */
-    private void initData() {
+    private void fetchData() {
         final List<Rows> rows = fetchJSLData();
 
         String[] fJFunds = this.dataProperties.getFj_funds().toArray(new String[0]);
         getQTData(fJFunds);
         List<String> strFjFunds = Arrays.asList(fJFunds);
-        List<FJFundaPO> lstFJFundaPO = new ArrayList<>(10);
+        List<DataPO> lstDataPO = new ArrayList<>(10);
         rows.forEach(row -> {
             if (strFjFunds.contains(row.getId())) {
                 double fundaCurrentPrice = Double.parseDouble(row.getCell().getFunda_current_price());
                 double fundaValue = Double.parseDouble(row.getCell().getFunda_value());
                 //净价
                 double diffValue = fundaCurrentPrice - (fundaValue - 1.0);
-                FJFundaPO item = new FJFundaPO();
-                item.setFundaId(row.getId());
-                item.setFundaName(row.getCell().getFunda_name());
-                item.setFundaCurrentPrice(fundaCurrentPrice);
-                item.setFundaValue(fundaValue);
+                DataPO item = new DataPO();
+                item.setId(row.getId());
+                item.setName(row.getCell().getFunda_name());
+                item.setCurrentPrice(fundaCurrentPrice);
+                item.setValue(fundaValue);
                 item.setDiffValue(diffValue);
-                lstFJFundaPO.add(item);
+                lstDataPO.add(item);
             }
         });
 
         //按照净价从低到高排序
-        lstFJFundaPO.sort(comparing(FJFundaPO::getDiffValue));
-
-        //计算是否轮动
-        //删除军工A //TODO:未来可以参照历史偏差度做轮动（复杂）
-       // lstFJFundaPO.remove(lstFJFundaPO.size() - 1);
-        //删除022
-        //lstFJFundaPO.remove(0);
+        lstDataPO.sort(comparing(DataPO::getDiffValue));
 
         List<String> fj_funds_have = this.dataProperties.getFj_funds_have();
         for (String i : fj_funds_have) {
 
+            //取出持有的项目
             final String tmpStr = i;
-            List<FJFundaPO> lst = lstFJFundaPO.stream().filter(item -> item.getFundaId().equals(tmpStr)).collect(toList());
+            List<DataPO> lst = lstDataPO.stream().filter(item -> item.getId().equals(tmpStr)).collect(toList());
             assert (lst.size() == 1);
+            DataPO haveItem = lst.get(0);
 
-            if ("150181".equals(i)) {
-                //军工A的场合，净价计算减1.2分钱
-                //lst.get(0).setDiffValue(lst.get(0).getDiffValue()-0.12d);
+            //最低价的项目
+            DataPO lowestItem = lstDataPO.get(0);
+            if("150022".equalsIgnoreCase(lowestItem.getId())){
+                lowestItem = lstDataPO.get(1);
             }
+            //阈值
+            final double fj_min_diff = Double.parseDouble(dataProperties.getMap().get("FJ_MIN_DIFF"));
 
-            if( (lst.get(0).getDiffValue()-lstFJFundaPO.get(0).getDiffValue()) >= Double.parseDouble(dataProperties.getMap().get("FJ_MIN_DIFF"))){
+            if( (haveItem.getDiffValue()- lowestItem.getDiffValue()) >= fj_min_diff){
             //持有的分级净价比最低的分级净价大
-                this.watchData.add(lst.get(0));
+
+                if ("150181".equals(i) && (haveItem.getDiffValue()+0.12d- lowestItem.getDiffValue()) >= fj_min_diff) {
+                    //军工A的场合，净价计算减1.2分钱
+                    this.watchData.add(haveItem);
+                }else {
+                    this.watchData.add(haveItem);
+                }
             }
         }
-        this.data=lstFJFundaPO;
+        if(this.watchData.size()>0){
+            if("150022".equalsIgnoreCase(lstDataPO.get(0).getId())){
+                this.watchData.add(lstDataPO.get(1));
+            }else{
+                this.watchData.add(lstDataPO.get(0));
+            }
+        }
+        this.data= lstDataPO;
     }
 
     private void getQTData(final String[] fJFunds) {
@@ -181,26 +192,27 @@ public class FjFundImpl implements FinanceData {
     }
 
     @Override
-    public boolean isNotify(){
-        return this.watchData!=null && this.watchData.size()>0;
+    public void sendNotify(Sender sender){
+
+            sender.sendNotify(this.watchData);
     }
 
     @Override
     public void printInfo() {
-        initData();
+        fetchData();
         StringBuilder sb = new StringBuilder("\n");
         sb.append("--------------分级基金-------------------\n");
         this.data.forEach(item -> sb.append(String.format("%5s  当前价[%5.3f] 净值[%5.3f] 净价[%5.3f] %-4s%n",
-                item.getFundaId(), item.getFundaCurrentPrice(),
-                item.getFundaValue(), item.getDiffValue(), item.getFundaName())));
+                item.getId(), item.getCurrentPrice(),
+                item.getValue(), item.getDiffValue(), item.getName())));
 
         //取最小值
-        FJFundaPO minFJFundaPO = this.data.stream().min(comparing(FJFundaPO::getDiffValue)).get();
+        DataPO minDataPO = this.data.stream().min(comparing(DataPO::getDiffValue)).get();
 
-        if (this.data.get(0).getDiffValue() - minFJFundaPO.getDiffValue() > Double.parseDouble(dataProperties.getMap().get("FJ_MIN_DIFF"))) {
+        if (this.data.get(0).getDiffValue() - minDataPO.getDiffValue() > Double.parseDouble(dataProperties.getMap().get("FJ_MIN_DIFF"))) {
 
-            sb.append(String.format("分级A可以做轮动 买入：[%5s %6s][%5.3f]%n", minFJFundaPO.getFundaName(), minFJFundaPO.getFundaId(), minFJFundaPO.getFundaValue()));
-            sb.append(String.format("              卖出：[%5s %6s][%5.3f]%n", this.data.get(0).getFundaName(), this.data.get(0).getFundaId(), this.data.get(0).getFundaValue()));
+            sb.append(String.format("分级A可以做轮动 买入：[%5s %6s][%5.3f]%n", minDataPO.getName(), minDataPO.getId(), minDataPO.getValue()));
+            sb.append(String.format("              卖出：[%5s %6s][%5.3f]%n", this.data.get(0).getName(), this.data.get(0).getId(), this.data.get(0).getValue()));
 
         }
         sb.append("-----------------------------------------\n");

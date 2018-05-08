@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xyz.geekweb.stock.DataProperties;
 import xyz.geekweb.stock.FinanceData;
+import xyz.geekweb.stock.mq.Sender;
 import xyz.geekweb.stock.savesinastockdata.RealTimeDataPOJO;
 
 import java.util.List;
@@ -35,11 +36,11 @@ public class HBFundImpl implements FinanceData {
     }
 
     @Override
-    public boolean isNotify(){
-        return this.data!=null && this.data.size()>0;
+    public void sendNotify(Sender sender){
+       // sender.sendNotify(this.watchData);
     }
 
-    public void initData(List<RealTimeDataPOJO> data) {
+    public void fetchData(List<RealTimeDataPOJO> data) {
         final double low_monetary_funds_value = Double.parseDouble(this.dataProperties.getMap().get("MONETARY_FUNDS_VALUE").split(",")[0]);
         final double up_monetary_funds_value = Double.parseDouble(this.dataProperties.getMap().get("MONETARY_FUNDS_VALUE").split(",")[1]);
 

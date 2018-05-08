@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import xyz.geekweb.stock.FinanceData;
+import xyz.geekweb.stock.mq.Sender;
 import xyz.geekweb.stock.pojo.json.FXBean;
 
 import java.io.IOException;
@@ -40,7 +41,7 @@ public class FXImpl implements FinanceData {
 
     }
 
-    public void initData(String[] fxs) {
+    public void fetchData(String[] fxs) {
         if (isRemaining()) {
             this.data=fetchData(StringUtils.join(fxs, ","));
         } else {
@@ -49,8 +50,9 @@ public class FXImpl implements FinanceData {
     }
 
     @Override
-    public boolean isNotify(){
-        return this.watchData!=null && this.watchData.size()>0;
+    public void sendNotify(Sender sender){
+
+       // sender.sendNotify(this.watchData);
     }
 
     private List<FXBean> fetchData(String strLst) {

@@ -6,15 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xyz.geekweb.stock.DataProperties;
 import xyz.geekweb.stock.FinanceData;
+import xyz.geekweb.stock.mq.Sender;
 import xyz.geekweb.stock.savesinastockdata.RealTimeDataPOJO;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.Period;
 import java.time.temporal.*;
 import java.util.List;
 
-import static java.util.stream.Collectors.averagingDouble;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -37,7 +36,7 @@ public class KZZImpl implements FinanceData {
         this.dataProperties = dataProperties;
     }
 
-    public void initData(List<RealTimeDataPOJO> realTimeDataPOJO) {
+    public void fetchData(List<RealTimeDataPOJO> realTimeDataPOJO) {
 
         final double low_132003_value = Double.parseDouble(this.dataProperties.getMap().get("132003_VALUE").split(",")[0]);
         final double up_132003_value = Double.parseDouble(this.dataProperties.getMap().get("132003_VALUE").split(",")[1]);
@@ -53,9 +52,10 @@ public class KZZImpl implements FinanceData {
     }
 
     @Override
-    public boolean isNotify(){
-        return this.data!=null && this.data.size()>0;
+    public void sendNotify(Sender sender){
+       // sender.sendNotify(this.watchData);
     }
+
 
     @Override
     public void printInfo() {
@@ -116,6 +116,6 @@ public class KZZImpl implements FinanceData {
 
     public   static void main(String[] args){
 
-        KZZImpl.calcu132003(99.70d);
+        KZZImpl.calcu132003(100d);
     }
 }

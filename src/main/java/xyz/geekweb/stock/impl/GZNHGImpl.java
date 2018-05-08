@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xyz.geekweb.stock.DataProperties;
 import xyz.geekweb.stock.FinanceData;
+import xyz.geekweb.stock.mq.Sender;
 import xyz.geekweb.stock.savesinastockdata.RealTimeDataPOJO;
 
 import java.util.List;
@@ -33,7 +34,7 @@ public class GZNHGImpl implements FinanceData {
         this.dataProperties = dataProperties;
     }
 
-    public void initData(List<RealTimeDataPOJO> data) {
+    public void fetchData(List<RealTimeDataPOJO> data) {
 
         final double reverse_bonds_value = Double.parseDouble(this.dataProperties.getMap().get("REVERSE_BONDS_VALUE").split(",")[0]);
 
@@ -43,8 +44,8 @@ public class GZNHGImpl implements FinanceData {
     }
 
     @Override
-    public boolean isNotify(){
-        return this.data!=null && this.data.size()>0;
+    public void sendNotify(Sender sender){
+       // sender.sendNotify(this.watchData);
     }
 
     @Override
