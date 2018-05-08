@@ -59,9 +59,6 @@ public class SearchFinanceData {
         lstFinanceData.forEach((k, v) -> {
             v.printInfo();
             v.sendNotify(sender);
-//            if(v.sendNotify() && v instanceof  KZZImpl){
-//                System.out.println((KZZImpl) ((KZZImpl) v).getWatchData());
-//            }
         });
     }
 

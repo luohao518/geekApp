@@ -104,9 +104,11 @@ public class FjFundImpl implements FinanceData {
             if( (haveItem.getTrueValue()- lowestItem.getTrueValue()) >= fj_min_diff){
             //持有的分级净价比最低的分级净价大
 
-                if ("150181".equals(i) && (haveItem.getTrueValue() - 0.12d- lowestItem.getTrueValue()) >= fj_min_diff) {
-                    //军工A的场合，净价计算减1.2分钱
-                    this.watchData.add(haveItem);
+                if ("150181".equals(i) ){
+                    if((haveItem.getTrueValue() - 0.12d- lowestItem.getTrueValue()) >= fj_min_diff){
+                        //军工A的场合，净价计算减1.2分钱
+                        this.watchData.add(haveItem);
+                    }
                 }else {
                     this.watchData.add(haveItem);
                 }
