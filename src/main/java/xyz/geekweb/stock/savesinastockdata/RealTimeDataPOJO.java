@@ -675,4 +675,7 @@ public class RealTimeDataPOJO {
     }
 
 
+    public double getriseAndFall() {
+        return riseAndFall;
+    }
 }

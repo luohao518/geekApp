@@ -198,7 +198,6 @@ public class FjFundImpl implements FinanceData {
 
     @Override
     public void sendNotify(Sender sender){
-
             sender.sendNotify(this.watchData);
     }
 

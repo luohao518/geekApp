@@ -30,9 +30,12 @@ public class Sender {
     }
 
     public void sendNotify(List<DataPO> lstDataPO) {
-        logger.info("call sendNotify()");
 
-        this.rabbitTemplate.convertAndSend(QUEUE_NOTIFY, lstDataPO);
+        if(lstDataPO!=null && lstDataPO.size()>0) {
+
+            logger.info("call sendNotify()");
+            this.rabbitTemplate.convertAndSend(QUEUE_NOTIFY, lstDataPO);
+        }
     }
 
 }

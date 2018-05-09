@@ -71,13 +71,12 @@ public class ScheduledTask {
         }, 0, 180, TimeUnit.SECONDS);
 
         scheduledThreadPool.scheduleAtFixedRate(() -> {
-
-            logger.info("发送邮件，30分钟间隔");
             if (HolidayUtil.isStockTimeEnd()) {
                 logger.info("已收盘，今天执行程序退出！");
                 scheduledThreadPool.shutdown();
             }
             if (HolidayUtil.isStockTime()) {
+                //logger.info("发送邮件，30分钟间隔");
                 //mailService.sendSimpleMail(searchFinanceData.watchALLFinanceData());
             }else{
                 logger.info("休市时间！");
