@@ -62,7 +62,7 @@ public class StockImpl implements FinanceData {
                                 item.getName(), item.getNow(), item.getRiseAndFall(),
                                 item.getRiseAndFallPercent(),item.getVolumePrice()));
                     }else {
-                        sb.append(String.format("%8s 当前价[%6.2f] 卖出价[%6.2f]  卖量[%7.0f] 买入价[%6.2f] 涨跌幅[%6.2f] %-6s %n",
+                        sb.append(String.format("%8s 当前价[%6.2f] 卖出价[%6.2f]  卖量[%7.0f] 买入价[%6.2f] 涨跌幅[%6.2f%%] %-6s %n",
                                 item.getFullCode(), item.getNow(), item.getSell1Pricae(), item.getSell1Num(), item.getBuy1Pricae(), (((item.getNow() - item.getClose()) / item.getClose()) * 100), item.getName()));
                     }
                 });
