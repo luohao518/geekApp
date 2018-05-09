@@ -19,6 +19,7 @@ import static java.util.stream.Collectors.toList;
  * 货币基金
  */
 @Service
+@Deprecated
 public class HBFundImpl implements FinanceData {
 
 

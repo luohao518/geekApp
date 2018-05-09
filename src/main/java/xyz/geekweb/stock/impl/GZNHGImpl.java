@@ -19,6 +19,7 @@ import static java.util.stream.Collectors.toList;
  * 国债逆回购
  */
 @Service
+@Deprecated
 public class GZNHGImpl implements FinanceData {
 
 
