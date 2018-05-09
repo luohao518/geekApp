@@ -7,7 +7,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
-import xyz.geekweb.stock.impl.FinanceTypeEnum;
+import xyz.geekweb.stock.enums.FinanceTypeEnum;
 import xyz.geekweb.stock.pojo.DataPO;
 import xyz.geekweb.util.MailService;
 

@@ -1,8 +1,8 @@
 package xyz.geekweb.stock.pojo;
 
 import lombok.Data;
-import xyz.geekweb.stock.impl.BuyOrSaleEnum;
-import xyz.geekweb.stock.impl.FinanceTypeEnum;
+import xyz.geekweb.stock.enums.BuyOrSaleEnum;
+import xyz.geekweb.stock.enums.FinanceTypeEnum;
 
 /**
  * @author lhao

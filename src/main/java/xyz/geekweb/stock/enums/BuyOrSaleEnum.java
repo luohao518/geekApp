@@ -1,4 +1,4 @@
-package xyz.geekweb.stock.impl;
+package xyz.geekweb.stock.enums;
 
 public enum BuyOrSaleEnum {
     BUY, SALE

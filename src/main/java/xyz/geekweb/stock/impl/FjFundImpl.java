@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.util.ArrayUtils;
 import xyz.geekweb.stock.DataProperties;
 import xyz.geekweb.stock.FinanceData;
+import xyz.geekweb.stock.enums.BuyOrSaleEnum;
+import xyz.geekweb.stock.enums.FinanceTypeEnum;
 import xyz.geekweb.stock.mq.Sender;
 import xyz.geekweb.stock.pojo.DataPO;
 import xyz.geekweb.stock.pojo.json.JsonRootBean;
