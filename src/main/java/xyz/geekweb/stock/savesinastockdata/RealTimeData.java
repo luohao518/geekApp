@@ -60,8 +60,10 @@ public class RealTimeData {
      */
     public static List<RealTimeDataPOJO> getRealTimeDataObjects(List codes) {
         String indexPatternString = "var hq_str_s_(\\w{8})=\"(.+)\"";
+        String indexOtherPatterString = "var hq_str_int_(.+)=\"(.+)\"";
         String stockPatterString = "var hq_str_(\\w{8})=\"(.+)\"";
         Pattern indexPatter = Pattern.compile(indexPatternString);
+        Pattern indexOtherPatter = Pattern.compile(indexOtherPatterString);
         Pattern stockPatter = Pattern.compile(stockPatterString);
         List<RealTimeDataPOJO> result = new ArrayList<>();
         String url = String.format("http://hq.sinajs.cn/list=%s", StringUtils.join(codes, ","));
@@ -111,24 +113,33 @@ public class RealTimeData {
                 result.add(obj);
             } else {
                 Matcher indexMatcher = indexPatter.matcher(reresponseString);
+                Matcher indexOtherMatcher = indexOtherPatter.matcher(reresponseString);
                 if (indexMatcher.find()) {
-                    RealTimeDataPOJO obj = new RealTimeDataPOJO();
-                    obj.setType(RealTimeDataPOJO.INDEX);
-                    obj.setFullCode(indexMatcher.group(1));
-                    String[] array = indexMatcher.group(2).split(",");
-                    obj.setName(array[0]);
-                    obj.setNow(Double.parseDouble(array[1]));
-                    obj.setRiseAndFall(Double.parseDouble(array[2]));
-                    obj.setRiseAndFallPercent(Double.parseDouble(array[3]));
-                    obj.setVolume(Double.parseDouble(array[4]));
-                    obj.setVolumePrice(Double.parseDouble(array[5]));
-                    LocalDateTime ldt = LocalDateTime.now();
-                    obj.setDate(ldt.toLocalDate());
-                    obj.setTime(ldt.toLocalTime());
-                    result.add(obj);
+                    addData(result, indexMatcher,1);
+                }else if(indexOtherMatcher.find()){
+                    addData(result, indexOtherMatcher,2);
                 }
             }
         }
         return result;
+    }
+
+    private static void addData(List<RealTimeDataPOJO> result, Matcher indexMatcher,int type) {
+        RealTimeDataPOJO obj = new RealTimeDataPOJO();
+        obj.setType(RealTimeDataPOJO.INDEX);
+        obj.setFullCode(indexMatcher.group(1));
+        String[] array = indexMatcher.group(2).split(",");
+        obj.setName(array[0]);
+        obj.setNow(Double.parseDouble(array[1]));
+        obj.setRiseAndFall(Double.parseDouble(array[2]));
+        obj.setRiseAndFallPercent(Double.parseDouble(array[3]));
+        if(type==1) {
+            obj.setVolume(Double.parseDouble(array[4]));
+            obj.setVolumePrice(Double.parseDouble(array[5]));
+        }
+        LocalDateTime ldt = LocalDateTime.now();
+        obj.setDate(ldt.toLocalDate());
+        obj.setTime(ldt.toLocalTime());
+        result.add(obj);
     }
 }

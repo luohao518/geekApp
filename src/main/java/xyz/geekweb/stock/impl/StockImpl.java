@@ -1,5 +1,6 @@
 package xyz.geekweb.stock.impl;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +39,7 @@ public class StockImpl implements FinanceData {
 
         this.data = data.stream().filter(item -> (
                 item.getType()==RealTimeDataPOJO.INDEX ||
-                item.getFullCode().startsWith("sh60") ||
-                        item.getFullCode().startsWith("sz00")) ).collect(toList());
+                        StringUtils.startsWithAny(item.getFullCode(),new String[]{"sh60","sz00","int"}))).collect(toList());
         this.watchData = data.stream().filter(item -> (item.getFullCode().startsWith("sh60") || item.getFullCode().startsWith("sz00")) && Math.abs(((item.getNow() - item.getClose()) / item.getClose()) * 100) >= Double.parseDouble(dataProperties.getMap().get("MAX_STOCKS_PERCENT"))).collect(toList());
     }
 
