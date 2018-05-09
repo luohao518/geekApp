@@ -30,9 +30,6 @@ public class SearchFinanceData {
     private StockImpl stock;
 
     @Autowired
-    private KZZImpl kzz;
-
-    @Autowired
     private HBFundImpl hbFund;
 
     @Autowired
@@ -78,9 +75,6 @@ public class SearchFinanceData {
         this.hbFund.fetchData(realTimeDataPOJOS);
         this.lstFinanceData.put(FinanceTypeEnum.HB_FUND, hbFund);
 
-        this.kzz.fetchData(realTimeDataPOJOS);
-        this.lstFinanceData.put(FinanceTypeEnum.KZZ, kzz);
-
         this.stock.fetchData(realTimeDataPOJOS);
         this.lstFinanceData.put(FinanceTypeEnum.STOCK, stock);
 
@@ -96,7 +90,6 @@ public class SearchFinanceData {
         lstALL.addAll(dataProperties.getReverse_bonds());
         lstALL.addAll(dataProperties.getMonetary_funds());
         lstALL.addAll(dataProperties.getStocks());
-        lstALL.addAll(dataProperties.getStocks_others());
 
         logger.debug("codes[{}]", lstALL);
         return RealTimeData.getRealTimeDataObjects(lstALL);

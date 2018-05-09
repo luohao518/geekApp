@@ -28,9 +28,6 @@ public class DataProperties {
     //股票
     private List<String> stocks;
 
-    //可转债，元和
-    private List<String> stocks_others;
-
     //分级
     private List<String> fj_funds;
     private List<String> fj_funds_have;

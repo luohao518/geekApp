@@ -30,7 +30,6 @@ public class DataPropertiesTest  {
         Assert.assertNotNull(dataProperties.getFj_funds_have());
         Assert.assertNotNull(dataProperties.getMonetary_funds());
         Assert.assertNotNull(dataProperties.getStocks());
-        Assert.assertNotNull(dataProperties.getStocks_others());
     }
 
 }
