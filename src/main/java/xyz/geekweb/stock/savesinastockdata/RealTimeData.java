@@ -1,6 +1,7 @@
 package xyz.geekweb.stock.savesinastockdata;
 
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
@@ -132,7 +133,8 @@ public class RealTimeData {
         obj.setName(array[0]);
         obj.setNow(Double.parseDouble(array[1]));
         obj.setRiseAndFall(Double.parseDouble(array[2]));
-        obj.setRiseAndFallPercent(Double.parseDouble(array[3]));
+        obj.setRiseAndFallPercent(Double.parseDouble(StringUtils.remove(array[3],"%")));
+        //System.out.println(ArrayUtils.toString(array));
         if(type==1) {
             obj.setVolume(Double.parseDouble(array[4]));
             obj.setVolumePrice(Double.parseDouble(array[5]));

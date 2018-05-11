@@ -8,6 +8,7 @@ import xyz.geekweb.stock.enums.FinanceTypeEnum;
  * @author lhao
  */
 @Data
+@Deprecated
 public class DataPO {
     /**买入:0 卖出:1*/
     BuyOrSaleEnum buyOrSaleEnum;

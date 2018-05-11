@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import xyz.geekweb.stock.pojo.DataPO;
+import xyz.geekweb.stock.savesinastockdata.RealTimeDataPOJO;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ public class Sender {
         this.rabbitTemplate.convertAndSend(QUEUE_MAIL, msg);
     }
 
-    public void sendNotify(List<DataPO> lstDataPO) {
+    public void sendNotify(List<RealTimeDataPOJO> lstDataPO) {
 
         if(lstDataPO!=null && lstDataPO.size()>0) {
 

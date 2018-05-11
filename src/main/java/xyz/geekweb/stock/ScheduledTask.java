@@ -39,7 +39,7 @@ public class ScheduledTask {
 //        System.out.println(String.format("===第%s次执行，当前时间为：%s", count1++, dateFormat.format(new Date())));
 //    }
 
-    @Scheduled(cron = "0 20 09 ? * MON-FRI") //表示周一到周五每天上午9：15执行作业
+    @Scheduled(cron = "${geekweb.cron.exp}") //表示周一到周五每天上午9：15执行作业
     public void reportCurrentTimeCron() throws InterruptedException, IOException {
 
         logger.info("reportCurrentTimeCron() start");
@@ -68,7 +68,7 @@ public class ScheduledTask {
                 logger.info("休市时间！");
             }
 
-        }, 0, 180, TimeUnit.SECONDS);
+        }, 0, 60, TimeUnit.SECONDS);
 
         scheduledThreadPool.scheduleAtFixedRate(() -> {
             if (HolidayUtil.isStockTimeEnd()) {

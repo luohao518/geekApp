@@ -1,5 +1,6 @@
 package xyz.geekweb.stock.impl;
 
+import com.sun.org.apache.regexp.internal.RE;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,13 +44,14 @@ public class StockImpl implements FinanceData {
 
         this.data = data.stream().filter(item -> (
                 item.getType()==RealTimeDataPOJO.INDEX ||
-                        StringUtils.startsWithAny(item.getFullCode(),new String[]{"sh","sz","int"}))).collect(toList());
-        this.watchData = data.stream().filter(item -> (item.getFullCode().startsWith("sh60") || item.getFullCode().startsWith("sz00")) && Math.abs(((item.getNow() - item.getClose()) / item.getClose()) * 100) >= Double.parseDouble(dataProperties.getMap().get("MAX_STOCKS_PERCENT"))).collect(toList());
+                        (StringUtils.startsWithAny(item.getFullCode(),new String[]{"sh","sz","int"})
+                        && !StringUtils.startsWithAny(item.getFullCode(),new String[]{"sh511","sh204"})))).collect(toList());
+        this.watchData = this.data.stream().filter( item -> item.getType()== RealTimeDataPOJO.STOCK).filter(item -> Math.abs(((item.getNow() - item.getClose()) / item.getClose()) * 100) >= Double.parseDouble(dataProperties.getMap().get("MAX_STOCKS_PERCENT"))).collect(toList());
     }
 
     @Override
     public void sendNotify(Sender sender){
-        //sender.sendNotify(this.watchData);
+        sender.sendNotify(this.watchData);
     }
 
     @Override

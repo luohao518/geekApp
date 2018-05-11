@@ -15,9 +15,9 @@ import xyz.geekweb.stock.FinanceData;
 import xyz.geekweb.stock.enums.BuyOrSaleEnum;
 import xyz.geekweb.stock.enums.FinanceTypeEnum;
 import xyz.geekweb.stock.mq.Sender;
-import xyz.geekweb.stock.pojo.DataPO;
 import xyz.geekweb.stock.pojo.json.JsonRootBean;
 import xyz.geekweb.stock.pojo.json.Rows;
+import xyz.geekweb.stock.savesinastockdata.RealTimeDataPOJO;
 
 import java.io.IOException;
 import java.util.*;
@@ -41,9 +41,9 @@ public class FjFundImpl implements FinanceData {
     private static final String URL = "https://www.jisilu.cn/data/sfnew/funda_list/?___t=%d";
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private List<DataPO> data;
+    private List<RealTimeDataPOJO> data;
 
-    private List<DataPO> watchData = new ArrayList<>();
+    private List<RealTimeDataPOJO> watchData = new ArrayList<>();
 
     private DataProperties dataProperties;
 
@@ -63,15 +63,15 @@ public class FjFundImpl implements FinanceData {
         String[] fJFunds = this.dataProperties.getFj_funds().toArray(new String[0]);
         getQTData(fJFunds);
         List<String> strFjFunds = Arrays.asList(fJFunds);
-        List<DataPO> lstDataPO = new ArrayList<>(10);
+        List<RealTimeDataPOJO> lstDataPO = new ArrayList<>(10);
         rows.forEach(row -> {
             if (strFjFunds.contains(row.getId())) {
                 double fundaCurrentPrice = Double.parseDouble(row.getCell().getFunda_current_price());
                 double fundaValue = Double.parseDouble(row.getCell().getFunda_value());
                 //净价
                 double trueValue = fundaCurrentPrice - (fundaValue - 1.0);
-                DataPO item = new DataPO();
-                item.setType(FinanceTypeEnum.FJ_FUND);
+                RealTimeDataPOJO item = new RealTimeDataPOJO();
+                item.setSearchType(FinanceTypeEnum.FJ_FUND);
                 item.setFullCode(row.getId());
                 item.setName(row.getCell().getFunda_name());
                 item.setNow(fundaCurrentPrice);
@@ -83,20 +83,20 @@ public class FjFundImpl implements FinanceData {
         });
 
         //按照净价从低到高排序
-        lstDataPO.sort(comparing(DataPO::getTrueValue));
+        lstDataPO.sort(comparing(RealTimeDataPOJO::getTrueValue));
 
         List<String> fj_funds_have = this.dataProperties.getFj_funds_have();
         for (String i : fj_funds_have) {
 
             //取出持有的项目
             final String tmpStr = i;
-            List<DataPO> lst = lstDataPO.stream().filter(item -> item.getFullCode().equals(tmpStr)).collect(toList());
+            List<RealTimeDataPOJO> lst = lstDataPO.stream().filter(item -> item.getFullCode().equals(tmpStr)).collect(toList());
             assert (lst.size() == 1);
-            DataPO haveItem = lst.get(0);
+            RealTimeDataPOJO haveItem = lst.get(0);
             haveItem.setBuyOrSaleEnum(BuyOrSaleEnum.SALE);
 
             //最低价的项目
-            DataPO lowestItem = lstDataPO.get(0);
+            RealTimeDataPOJO lowestItem = lstDataPO.get(0);
             if("150022".equalsIgnoreCase(lowestItem.getFullCode())){
                 lowestItem = lstDataPO.get(1);
             }

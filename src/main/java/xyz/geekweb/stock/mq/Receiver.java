@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 import xyz.geekweb.stock.enums.FinanceTypeEnum;
-import xyz.geekweb.stock.pojo.DataPO;
+import xyz.geekweb.stock.savesinastockdata.RealTimeDataPOJO;
 import xyz.geekweb.util.MailService;
 
 import java.util.List;
@@ -40,7 +40,7 @@ public class Receiver {
     }
 
     @RabbitListener(queues = QUEUE_NOTIFY,containerFactory="rabbitListenerContainerFactory")
-    public void receiveNotify(@Payload List<DataPO> lstDataPO) {
+    public void receiveNotify(@Payload List<RealTimeDataPOJO> lstDataPO) {
         logger.info("call receiveNotify()");
 
         StringBuilder sb=new StringBuilder();
@@ -48,7 +48,7 @@ public class Receiver {
         lstDataPO.stream().forEach( i ->
         {
             //分级
-            if(i.getType()== FinanceTypeEnum.FJ_FUND){
+            if(i.getSearchType()== FinanceTypeEnum.FJ_FUND){
                 sb.append(String.format("%n分级A可以做轮动---%4s: 当前价[%5.3f] 净值[%5.3f] 净价[%5.3f] [%6s %6s]",
                         i.getBuyOrSaleEnum(), i.getNow(),i.getValue(),i.getTrueValue(), i.getFullCode(),i.getName()));
             }
