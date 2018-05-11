@@ -4,8 +4,8 @@ import lombok.Data;
 import xyz.geekweb.stock.enums.BuyOrSaleEnum;
 import xyz.geekweb.stock.enums.FinanceTypeEnum;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Date;
 
 /**
  * 负责储存实时数据的对象
@@ -66,8 +66,8 @@ public class RealTimeDataPOJO {
     private double sell4Pricae;
     private double sell5Num;
     private double sell5Pricae;
-    private LocalDate date;
-    private LocalTime time;
+    private Date date;
+    private Date time;
     private double riseAndFall;
     private double riseAndFallPercent;
 
@@ -146,7 +146,7 @@ public class RealTimeDataPOJO {
                             double buy1Pricae, double buy2Num, double buy2Pricae, double buy3Num, double buy3Pricae, double buy4Num,
                             double buy4Pricae, double buy5Num, double buy5Pricae, double sell1Num, double sell1Pricae, double sell2Num,
                             double sell2Pricae, double sell3Num, double sell3Pricae, double sell4Num, double sell4Pricae,
-                            double sell5Num, double sell5Pricae, LocalDate date, LocalTime time) {
+                            double sell5Num, double sell5Pricae, Date date, Date time) {
         super();
         this.type = type;
         this.fullCode = fullCode;

@@ -3,8 +3,12 @@ package xyz.geekweb.stock.savesinastockdata;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import xyz.geekweb.util.DateUtils;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -109,8 +113,8 @@ public class RealTimeData {
                 obj.setSell5Num(Double.parseDouble(array[28]));
                 obj.setSell5Pricae(Double.parseDouble(array[29]));
                 LocalDateTime ldt = Tools.string2LocalDateTime(array[30] + " " + array[31]);
-                obj.setDate(ldt.toLocalDate());
-                obj.setTime(ldt.toLocalTime());
+                obj.setDate(DateUtils.asDate(ldt.toLocalDate()));
+                obj.setTime(DateUtils.asDate(ldt.toLocalTime()));
                 result.add(obj);
             } else {
                 Matcher indexMatcher = indexPatter.matcher(reresponseString);
@@ -140,8 +144,8 @@ public class RealTimeData {
             obj.setVolumePrice(Double.parseDouble(array[5]));
         }
         LocalDateTime ldt = LocalDateTime.now();
-        obj.setDate(ldt.toLocalDate());
-        obj.setTime(ldt.toLocalTime());
+        obj.setDate(DateUtils.asDate(ldt.toLocalDate()));
+        obj.setTime(DateUtils.asDate(ldt.toLocalTime()));
         result.add(obj);
     }
 }

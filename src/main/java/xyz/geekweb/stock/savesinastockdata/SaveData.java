@@ -1,6 +1,8 @@
 package xyz.geekweb.stock.savesinastockdata;
 
 
+import xyz.geekweb.util.DateUtils;
+
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -342,7 +344,7 @@ public class SaveData {
                 stmt = conn.createStatement();
                 for (RealTimeDataPOJO obj : lr) {
                     PreparedStatement sql = conn.prepareStatement(SaveData.INSERT_REAL_TIME);
-                    LocalDateTime ld = LocalDateTime.of(obj.getDate(), obj.getTime());
+                    LocalDateTime ld = LocalDateTime.of(DateUtils.asLocalDate(obj.getDate()), DateUtils.asLocalTime(obj.getTime()));
                     sql.setDate(1, new java.sql.Date(Tools.LocalDateTime2Date(ld).getTime()));
                     sql.setTime(2, new java.sql.Time(Tools.LocalDateTime2Date(ld).getTime()));
                     sql.setString(3, obj.getFullCode());
