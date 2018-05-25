@@ -6,7 +6,10 @@
 	<groupId>xyz.geekweb</groupId>
 	<artifactId>geekApp</artifactId>
 	<version>1.5.0-Release</version>
-	<packaging>jar</packaging>
+    <modules>
+        <module>alibabaAPI</module>
+    </modules>
+    <packaging>pom</packaging>
 	<name>geekApp</name>
 	<description>Demo project for Spring Boot</description>
 	<parent>
