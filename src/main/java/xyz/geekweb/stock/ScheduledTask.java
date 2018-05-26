@@ -53,7 +53,8 @@ public class ScheduledTask {
                 5,
                 new BasicThreadFactory.Builder().namingPattern("scheduled-pool-%d").daemon(true).build());
 
-        scheduledThreadPool.scheduleAtFixedRate(() -> {
+        /*已做了网页版
+           scheduledThreadPool.scheduleAtFixedRate(() -> {
 
             logger.info("执行轮询");
 
@@ -68,7 +69,7 @@ public class ScheduledTask {
                 logger.info("休市时间！");
             }
 
-        }, 0, 60, TimeUnit.SECONDS);
+        }, 0, 60, TimeUnit.SECONDS);*/
 
         scheduledThreadPool.scheduleAtFixedRate(() -> {
             if (HolidayUtil.isStockTimeEnd()) {

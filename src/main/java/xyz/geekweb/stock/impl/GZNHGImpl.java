@@ -19,7 +19,6 @@ import static java.util.stream.Collectors.toList;
  * 国债逆回购
  */
 @Service
-@Deprecated
 public class GZNHGImpl implements FinanceData {
 
 
@@ -58,7 +57,7 @@ public class GZNHGImpl implements FinanceData {
     public void printInfo() {
         StringBuilder sb = new StringBuilder("\n");
         sb.append("-----------国债逆回购-------------\n");
-        this.data.forEach(item -> sb.append(String.format("%5s 当前价[%2.2f] 买入价[%2.2f]%n", item.getName(), item.getNow(), item.getBuy1Pricae())));
+        this.data.forEach(item -> sb.append(String.format("%5s 当前价[%2.2f] 买入价[%2.2f]%n", item.getName(), item.getNow(), item.getBuy1Price())));
         sb.append("---------------------------------\n");
 
         logger.info(sb.toString());

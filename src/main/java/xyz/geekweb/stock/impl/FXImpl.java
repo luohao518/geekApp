@@ -18,6 +18,7 @@ import xyz.geekweb.stock.savesinastockdata.RealTimeDataPOJO;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,6 +79,8 @@ public class FXImpl implements FinanceData {
             Type listType = new TypeToken<ArrayList<FXBean>>() {
             }.getType();
             fXBeans = new Gson().fromJson(response.body().string(), listType);
+            //set date
+            fXBeans.stream().forEach( item -> item.setTime(new Date(item.getTimestamp()*1000)));
         } catch (IOException e) {
             throw new RuntimeException("服务器端错误: ", e);
         }

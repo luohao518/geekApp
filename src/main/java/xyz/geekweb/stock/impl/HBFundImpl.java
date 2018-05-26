@@ -19,7 +19,6 @@ import static java.util.stream.Collectors.toList;
  * 货币基金
  */
 @Service
-@Deprecated
 public class HBFundImpl implements FinanceData {
 
 
@@ -59,7 +58,7 @@ public class HBFundImpl implements FinanceData {
     public void printInfo() {
         StringBuilder sb = new StringBuilder("\n");
         sb.append("------------货币基金---------------\n");
-        this.data.forEach(item -> sb.append(String.format("购买货币基金:%s 当前价[%7.3f] 卖出价[%7.3f] 卖量[%5.0f]%n", item.getFullCode(), item.getNow(), item.getSell1Pricae(), item.getSell1Num())));
+        this.data.forEach(item -> sb.append(String.format("购买货币基金:%s 当前价[%7.3f] 卖出价[%7.3f] 卖量[%5.0f]%n", item.getFullCode(), item.getNow(), item.getSell1Price(), item.getSell1Num())));
         sb.append("-----------------------------------\n");
         logger.info(sb.toString());
     }

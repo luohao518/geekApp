@@ -35,9 +35,8 @@ public class StockController {
 
     @RequestMapping(method = RequestMethod.GET)
     public String showList(Model model) throws IOException {
-        logger.info("do Get()");
+        logger.info("do getAllData()");
 
-        //searchFinanceData.watchALLFinanceData();
 
         Map<FinanceTypeEnum, FinanceData> allData = searchFinanceData.getAllData();
         allData.forEach((k, v) -> {
@@ -53,6 +52,14 @@ public class StockController {
                 case HB_FUND:
                     List<RealTimeDataPOJO> realTimeDataPOJO3= v.getData();
                     model.addAttribute(FinanceTypeEnum.HB_FUND.toString(),realTimeDataPOJO3);
+                    break;
+                case FJ_FUND:
+                    List<RealTimeDataPOJO> realTimeDataPOJO4= v.getData();
+                    model.addAttribute(FinanceTypeEnum.FJ_FUND.toString(),realTimeDataPOJO4);
+                    break;
+                case FX:
+                    List<RealTimeDataPOJO> realTimeDataPOJO5= v.getData();
+                    model.addAttribute(FinanceTypeEnum.FX.toString(),realTimeDataPOJO5);
                     break;
             }
         });

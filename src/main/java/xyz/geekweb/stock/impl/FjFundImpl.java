@@ -18,8 +18,12 @@ import xyz.geekweb.stock.mq.Sender;
 import xyz.geekweb.stock.pojo.json.JsonRootBean;
 import xyz.geekweb.stock.pojo.json.Rows;
 import xyz.geekweb.stock.savesinastockdata.RealTimeDataPOJO;
+import xyz.geekweb.util.DateUtils;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static java.util.Comparator.comparing;
@@ -62,7 +66,7 @@ public class FjFundImpl implements FinanceData {
      *
      * @return
      */
-    private void fetchData() {
+    public void fetchData() {
         final List<Rows> rows = fetchJSLData();
 
         String[] fJFunds = this.dataProperties.getFj_funds().toArray(new String[0]);
@@ -83,6 +87,10 @@ public class FjFundImpl implements FinanceData {
                 item.setValue(fundaValue);
                 item.setTrueValue(trueValue);
                 item.setBuyOrSaleEnum(BuyOrSaleEnum.BUY);
+                item.setRiseAndFallPercent(Double.parseDouble(StringUtils.remove(row.getCell().getFunda_increase_rt(),'%')));
+                String last_time = row.getCell().getLast_time();
+                LocalTime dt = LocalTime.parse(last_time, DateTimeFormatter.ISO_LOCAL_TIME);
+                item.setTime(DateUtils.asDate(dt));
                 lstDataPO.add(item);
             }
         });
@@ -210,7 +218,7 @@ public class FjFundImpl implements FinanceData {
 
     @Override
     public void printInfo() {
-        fetchData();
+
         StringBuilder sb = new StringBuilder("\n");
         sb.append("--------------分级基金-------------------\n");
         this.data.forEach(item -> sb.append(String.format("%5s  当前价[%5.3f] 净值[%5.3f] 净价[%5.3f] %-4s%n",

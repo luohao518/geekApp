@@ -22,7 +22,6 @@ import static java.util.stream.Collectors.toList;
  * 可转债,元和
  */
 @Service
-@Deprecated
 public class KZZImpl implements FinanceData {
 
     private List<RealTimeDataPOJO> data;
@@ -67,7 +66,7 @@ public class KZZImpl implements FinanceData {
     public void printInfo() {
         StringBuilder sb = new StringBuilder("\n");
         sb.append("--------------可转债,元和--------------\n");
-        this.data.forEach(item -> sb.append(String.format("%-6s 当前价[%7.3f] 卖出价[%7.3f] 卖量[%5.0f] %-6s %n", item.getFullCode(), item.getNow(), item.getSell1Pricae(), item.getSell1Num(), item.getName())));
+        this.data.forEach(item -> sb.append(String.format("%-6s 当前价[%7.3f] 卖出价[%7.3f] 卖量[%5.0f] %-6s %n", item.getFullCode(), item.getNow(), item.getSell1Price(), item.getSell1Num(), item.getName())));
         sb.append("--------------------------------------\n");
         logger.info(sb.toString());
     }

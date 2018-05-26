@@ -9,6 +9,7 @@ import xyz.geekweb.stock.impl.*;
 import xyz.geekweb.stock.mq.Sender;
 import xyz.geekweb.stock.savesinastockdata.RealTimeData;
 import xyz.geekweb.stock.savesinastockdata.RealTimeDataPOJO;
+import xyz.geekweb.util.HolidayUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,7 +44,8 @@ public class SearchFinanceData {
     private FXImpl fx;
 
     private Logger logger = LoggerFactory.getLogger(SearchFinanceData.class);
-    private Map<FinanceTypeEnum, FinanceData> lstFinanceData;
+
+    private static Map<FinanceTypeEnum, FinanceData> lstFinanceData;
 
     /**
      * watchALLFinanceData
@@ -61,8 +63,17 @@ public class SearchFinanceData {
     }
 
     public Map<FinanceTypeEnum, FinanceData> getAllData(){
-        fillALLData();
+
+        if (HolidayUtil.isStockTime()) {
+            fillALLData();
+        }else{
+            if(this.lstFinanceData==null){
+                fillALLData();
+            }
+        }
+
         return this.lstFinanceData;
+
     }
 
     /**
@@ -84,6 +95,7 @@ public class SearchFinanceData {
         this.stock.fetchData(realTimeDataPOJOS);
         this.lstFinanceData.put(FinanceTypeEnum.STOCK, stock);
 
+        this.fjFund.fetchData();
         this.lstFinanceData.put(FinanceTypeEnum.FJ_FUND, fjFund);
 
         fx.fetchData(this.dataProperties.getFx().toArray(new String[0]));
