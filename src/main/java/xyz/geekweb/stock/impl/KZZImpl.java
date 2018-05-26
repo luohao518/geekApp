@@ -37,6 +37,11 @@ public class KZZImpl implements FinanceData {
         this.dataProperties = dataProperties;
     }
 
+    @Override
+    public List<RealTimeDataPOJO>  getData(){
+        return this.data;
+    }
+
     public void fetchData(List<RealTimeDataPOJO> realTimeDataPOJO) {
 
         final double low_132003_value = Double.parseDouble(this.dataProperties.getMap().get("132003_VALUE").split(",")[0]);

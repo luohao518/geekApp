@@ -140,13 +140,14 @@ public class RealTimeDataPOJO {
      * @param sell5Pricae 卖五报价
      * @param date        日期
      * @param time        时间
+     * @param riseAndFallPercent 涨跌百分比
      */
     public RealTimeDataPOJO(int type, String fullCode, String name, double open, double close, double now, double high,
                             double low, double buyPrice, double sellPrice, double volume, double volumePrice, double buy1Num,
                             double buy1Pricae, double buy2Num, double buy2Pricae, double buy3Num, double buy3Pricae, double buy4Num,
                             double buy4Pricae, double buy5Num, double buy5Pricae, double sell1Num, double sell1Pricae, double sell2Num,
                             double sell2Pricae, double sell3Num, double sell3Pricae, double sell4Num, double sell4Pricae,
-                            double sell5Num, double sell5Pricae, Date date, Date time) {
+                            double sell5Num, double sell5Pricae, Date date, Date time, double riseAndFallPercent) {
         super();
         this.type = type;
         this.fullCode = fullCode;

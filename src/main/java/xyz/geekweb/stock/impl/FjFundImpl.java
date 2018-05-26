@@ -52,6 +52,11 @@ public class FjFundImpl implements FinanceData {
         this.dataProperties = dataProperties;
     }
 
+    @Override
+    public List<RealTimeDataPOJO>  getData(){
+        return this.data;
+    }
+
     /**
      * init
      *

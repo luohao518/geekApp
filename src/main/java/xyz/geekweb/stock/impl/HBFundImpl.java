@@ -37,6 +37,11 @@ public class HBFundImpl implements FinanceData {
     }
 
     @Override
+    public List<RealTimeDataPOJO>  getData(){
+        return this.data;
+    }
+
+    @Override
     public void sendNotify(Sender sender){
        // sender.sendNotify(this.watchData);
     }

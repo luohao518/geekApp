@@ -39,6 +39,10 @@ public class StockImpl implements FinanceData {
         this.dataProperties = dataProperties;
     }
 
+    @Override
+    public List<RealTimeDataPOJO>  getData(){
+        return this.data;
+    }
 
     public void fetchData(List<RealTimeDataPOJO> data) {
 
@@ -46,7 +50,7 @@ public class StockImpl implements FinanceData {
                 item.getType()==RealTimeDataPOJO.INDEX ||
                         (StringUtils.startsWithAny(item.getFullCode(),new String[]{"sh","sz","int"})
                         && !StringUtils.startsWithAny(item.getFullCode(),new String[]{"sh511","sh204"})))).collect(toList());
-        this.watchData = this.data.stream().filter( item -> item.getType()== RealTimeDataPOJO.STOCK).filter(item -> Math.abs(((item.getNow() - item.getClose()) / item.getClose()) * 100) >= Double.parseDouble(dataProperties.getMap().get("MAX_STOCKS_PERCENT"))).collect(toList());
+        this.watchData = this.data.stream().filter( item -> item.getType()== RealTimeDataPOJO.STOCK).filter(item -> Math.abs(item.getRiseAndFallPercent()) >= Double.parseDouble(dataProperties.getMap().get("MAX_STOCKS_PERCENT"))).collect(toList());
     }
 
     @Override
@@ -65,7 +69,7 @@ public class StockImpl implements FinanceData {
                                 item.getRiseAndFallPercent(),item.getVolumePrice()));
                     }else {
                         sb.append(String.format("%8s 当前价[%6.2f] 卖出价[%6.2f]  卖量[%7.0f] 买入价[%6.2f] 涨跌幅[%6.2f%%] %-6s %n",
-                                item.getFullCode(), item.getNow(), item.getSell1Pricae(), item.getSell1Num(), item.getBuy1Pricae(), (((item.getNow() - item.getClose()) / item.getClose()) * 100), item.getName()));
+                                item.getFullCode(), item.getNow(), item.getSell1Pricae(), item.getSell1Num(), item.getBuy1Pricae(), item.getRiseAndFallPercent(), item.getName()));
                     }
                 });
 
@@ -84,7 +88,7 @@ public class StockImpl implements FinanceData {
         }
 
         //计算年华利率
-        double endPrice=100.7d;
+        double endPrice=100d;
         long days=endDate.toEpochDay()- LocalDate.now().toEpochDay();
         double percent=(((endPrice-currentPrice)/currentPrice)/days)*365*100;
         System.out.println(String.format("公告完成日[%s]   剩余天数[%d天]   年华利率[%5.2f%%]", endDate,days,percent));
@@ -94,7 +98,7 @@ public class StockImpl implements FinanceData {
 
         days=endDate.toEpochDay()- LocalDate.now().toEpochDay();
         //计算年华利率
-        endPrice=100.8d;
+        endPrice=100d;
         percent=(((endPrice-currentPrice)/currentPrice)/days)*365*100;
         System.out.println(String.format("最终完成日[%s]   剩余天数[%d天]   年华利率[%5.2f%%]", endDate,days,percent));
     }
@@ -123,6 +127,6 @@ public class StockImpl implements FinanceData {
 
     public   static void main(String[] args){
 
-        StockImpl.calcu132003(100d);
+        StockImpl.calcu132003(99.48d);
     }
 }

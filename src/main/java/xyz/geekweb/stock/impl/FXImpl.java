@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import xyz.geekweb.stock.FinanceData;
 import xyz.geekweb.stock.mq.Sender;
 import xyz.geekweb.stock.pojo.json.FXBean;
+import xyz.geekweb.stock.savesinastockdata.RealTimeDataPOJO;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -34,7 +35,7 @@ public class FXImpl implements FinanceData {
     private static final String MARKET_STATUS = "https://forex.1forge.com/1.0.3/market_status?api_key=iOrFNzxp8Fuus91yAMYRO7nTkSImR5Gm";
     private static final String QUOTA = "https://forex.1forge.com/1.0.3/quota?api_key=iOrFNzxp8Fuus91yAMYRO7nTkSImR5Gm";
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private List<FXBean> data;
+    private List<FXBean> data = null;
     private List<FXBean> watchData =new ArrayList<>();
 
     public FXImpl() {
@@ -109,6 +110,11 @@ public class FXImpl implements FinanceData {
         }
 
 
+    }
+
+    @Override
+    public List<FXBean> getData(){
+        return this.data;
     }
 
     private boolean isOpen() {

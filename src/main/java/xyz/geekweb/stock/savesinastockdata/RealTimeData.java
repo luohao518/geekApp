@@ -115,6 +115,7 @@ public class RealTimeData {
                 LocalDateTime ldt = Tools.string2LocalDateTime(array[30] + " " + array[31]);
                 obj.setDate(DateUtils.asDate(ldt.toLocalDate()));
                 obj.setTime(DateUtils.asDate(ldt.toLocalTime()));
+                obj.setRiseAndFallPercent(((obj.getNow() - obj.getClose()) / obj.getClose()) * 100);
                 result.add(obj);
             } else {
                 Matcher indexMatcher = indexPatter.matcher(reresponseString);

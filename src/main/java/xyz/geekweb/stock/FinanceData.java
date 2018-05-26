@@ -1,11 +1,14 @@
 package xyz.geekweb.stock;
 
 import xyz.geekweb.stock.mq.Sender;
+import xyz.geekweb.stock.savesinastockdata.RealTimeDataPOJO;
+
+import java.util.List;
 
 /**
  * @author lhao
  */
-public interface FinanceData {
+public interface FinanceData<T> {
 
 
     /**
@@ -19,4 +22,6 @@ public interface FinanceData {
      * @return
      */
     void sendNotify(Sender sender);
+
+    List<T>  getData();
 }

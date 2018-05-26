@@ -60,6 +60,11 @@ public class SearchFinanceData {
         });
     }
 
+    public Map<FinanceTypeEnum, FinanceData> getAllData(){
+        fillALLData();
+        return this.lstFinanceData;
+    }
+
     /**
      * get all data
      */

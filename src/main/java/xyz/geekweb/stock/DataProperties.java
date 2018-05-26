@@ -32,6 +32,7 @@ public class DataProperties {
     private List<String> fj_funds;
     private List<String> fj_funds_have;
 
+
     //FX
     private List<String> fx;
 
