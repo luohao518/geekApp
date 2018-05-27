@@ -13,6 +13,9 @@ import xyz.geekweb.stock.savesinastockdata.RealTimeDataPOJO;
 import xyz.geekweb.util.MailService;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +41,7 @@ public class StockController {
         logger.info("do getAllData()");
 
         model.addAttribute("refresh",refresh);
+        model.addAttribute("datetime", LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
 
         Map<FinanceTypeEnum, FinanceData> allData = searchFinanceData.getAllData();
         allData.forEach((k, v) -> {
