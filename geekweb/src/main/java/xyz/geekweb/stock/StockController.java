@@ -34,9 +34,10 @@ public class StockController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public String showList(Model model) throws IOException {
+    public String showList(String refresh,Model model) throws IOException {
         logger.info("do getAllData()");
 
+        model.addAttribute("refresh",refresh);
 
         Map<FinanceTypeEnum, FinanceData> allData = searchFinanceData.getAllData();
         allData.forEach((k, v) -> {

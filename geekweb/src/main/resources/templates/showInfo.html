@@ -1,18 +1,42 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="zh-CN">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 引入 Bootstrap -->
-    <!-- 新 Bootstrap 核心 CSS 文件 -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>show info</title>
+    <meta http-equiv="refresh" th:attr="content=${refresh}">
+
+    <!-- Bootstrap -->
     <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 
-
-    <title>geek web</title>
+    <!-- HTML5 shim 和 Respond.js 是为了让 IE8 支持 HTML5 元素和媒体查询（media queries）功能 -->
+    <!-- 警告：通过 file:// 协议（就是直接将 html 页面拖拽到浏览器中）访问页面时 Respond.js 不起作用 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
 </head>
 <body>
 <div class="container">
+    <br/><br/>
+    <form>
     <div class="row clearfix">
-        <div class="col-md-12 column">
+        <div class="col-xs-4 column">
+            <button type="submit"  name="refresh" value="5" class="btn btn-default btn-warning btn-block">5秒</button>
+        </div>
+        <div class="col-xs-4 column">
+            <button type="submit"  name="refresh" value="30" class="btn btn-default btn-warning btn-block">30秒</button>
+        </div>
+        <div class="col-xs-4 column">
+            <button type="submit"  name="refresh" value="60" class="btn btn-default btn-warning btn-block">1分钟</button>
+        </div>
+    </div>
+    </form>
+    <br/><br/>
+    <div class="row clearfix">
+        <div class="col-sm-12 column">
             <table class="table table-bordered">
                 <thead>
                 <tr>
@@ -26,19 +50,13 @@
                         当前价
                     </th>
                     <th>
+                        买入价
+                    </th>
+                    <th>
                         卖出价
                     </th>
                     <th>
                         卖量
-                    </th>
-                    <th>
-                        买入价
-                    </th>
-                    <th>
-                        代码
-                    </th>
-                    <th>
-                        最终更新时间
                     </th>
                 </tr>
                 </thead>
@@ -48,17 +66,14 @@
                     <td th:text="${#numbers.formatDecimal(item.riseAndFallPercent,1,2)}+'%'" />
                     <td th:text="${item.now}" />
 
+                    <td th:if="${item.type==1}" th:text="'-'" >
+                    <td th:text="${item.buy1Price}" th:if="${item.type==2}" />
+
                     <td th:if="${item.type==1}" th:text="'-'" />
                     <td th:if="${item.type==2}" th:text="${item.sell1Price}"  />
 
                     <td th:if="${item.type==1}" th:text="'-'" />
                     <td th:if="${item.type==2}" th:text="${item.sell1Num}"  />
-
-                    <td th:if="${item.type==1}" th:text="'-'" >
-                    <td th:text="${item.buy1Price}" th:if="${item.type==2}" />
-
-                    <td th:text="${item.fullCode}" />
-                    <td th:text="${#dates.format(item.time, 'HH:mm:ss')}" />
                 </tr>
                 </tbody>
             </table>
@@ -66,7 +81,7 @@
             <table class="table table-bordered">
                 <thead>
                 <tr>
-                    <th>分级基金</th><th>涨跌幅</th><th>当前价</th><th>净值</th><th>净价</th><th>代码</th><th>最终更新时间</th>
+                    <th>分级基金</th><th>涨跌幅</th><th>当前价</th><th>净值</th><th>净价</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -76,8 +91,6 @@
                     <td th:text="${item.now}" />
                     <td th:text="${#numbers.formatDecimal(item.value,1,4)}" />
                     <td th:text="${#numbers.formatDecimal(item.trueValue,1,4)}" />
-                    <td th:text="${item.fullCode}" />
-                    <td th:text="${#dates.format(item.time, 'HH:mm:ss')}" />
                 </tr>
                 </tbody>
             </table>
@@ -86,7 +99,7 @@
             <table class="table table-bordered">
                 <thead>
                 <tr>
-                    <th>国债逆回购</th><th>当前价</th><th>买入价</th><th>代码</th><th>最终更新时间</th>
+                    <th>国债逆回购</th><th>当前价</th><th>买入价</th><th>代码</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -95,7 +108,7 @@
                     <td th:text="${item.now}" />
                     <td th:text="${item.buy1Price}" />
                     <td th:text="${item.fullCode}" />
-                    <td th:text="${#dates.format(item.time, 'HH:mm:ss')}" />
+                    <!--<td th:text="${#dates.format(it&lt;!&ndash;&ndash;&gt;em.time, 'HH:mm:ss')}" />-->
                 </tr>
                 </tbody>
             </table>
@@ -103,7 +116,7 @@
             <table class="table table-bordered">
                 <thead>
                 <tr>
-                    <th>货币基金</th><th>当前价</th><th>卖出价</th><th>卖量</th><th>代码</th><th>最终更新时间</th>
+                    <th>货币基金</th><th>当前价</th><th>卖出价</th><th>卖量</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -112,8 +125,6 @@
                     <td th:text="${item.now}" />
                     <td th:text="${item.sell1Price}" />
                     <td th:text="${item.sell1Num}" />
-                    <td th:text="${item.fullCode}" />
-                    <td th:text="${#dates.format(item.time, 'HH:mm:ss')}" />
                 </tr>
                 </tbody>
             </table>
@@ -136,17 +147,32 @@
         </div>
     </div>
 </div>
-<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
-<script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
-
-<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+<!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
 <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script type="text/javascript">
+<script th:inline="javascript">
     /*<![CDATA[*/
+
+    /*$(document).ready(function(){
+
+        $('#btn1').on("click", function (event) {
+            setTimeout('myrefresh()',5000);
+        });
+
+        $('#btn2').on("click", function (event) {
+            setTimeout('myrefresh()',30000);
+        });
+
+        $('#btn3').on("click", function (event) {
+            setTimeout('myrefresh()',60000);
+        });
+
+    });
+
     function myrefresh(){
         window.location.reload();
-    }
-    setTimeout('myrefresh()',5000);
+    }*/
     /*]]>*/
 
 </script>
