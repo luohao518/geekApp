@@ -1,17 +1,13 @@
-package xyz.geekweb.stock.impl;
+package xyz.geekweb.stock.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import xyz.geekweb.stock.DataProperties;
-import xyz.geekweb.stock.FinanceData;
+import xyz.geekweb.config.DataProperties;
 import xyz.geekweb.stock.mq.Sender;
-import xyz.geekweb.stock.savesinastockdata.RealTimeDataPOJO;
+import xyz.geekweb.stock.pojo.savesinastockdata.RealTimeDataPOJO;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.temporal.*;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -25,11 +21,15 @@ import static java.util.stream.Collectors.toList;
 public class KZZImpl implements FinanceData {
 
     private List<RealTimeDataPOJO> data;
-    private List<RealTimeDataPOJO> watchData;
+    private  List<RealTimeDataPOJO> watchData;
 
-    private DataProperties dataProperties;
+    private  DataProperties dataProperties;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private  Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    public KZZImpl() {
+
+    }
 
     @Autowired
     public KZZImpl(DataProperties dataProperties) {

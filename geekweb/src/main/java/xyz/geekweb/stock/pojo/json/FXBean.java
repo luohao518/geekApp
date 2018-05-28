@@ -2,6 +2,7 @@ package xyz.geekweb.stock.pojo.json;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -9,7 +10,7 @@ import java.util.Date;
  * @date 2018/4/27
  */
 @Data
-public class FXBean {
+public class FXBean implements Serializable{
 
     private String symbol;
     private double bid;

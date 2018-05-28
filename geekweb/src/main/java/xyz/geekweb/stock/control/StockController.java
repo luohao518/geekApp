@@ -1,4 +1,4 @@
-package xyz.geekweb.stock;
+package xyz.geekweb.stock.control;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,12 +8,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import xyz.geekweb.stock.enums.FinanceTypeEnum;
-import xyz.geekweb.stock.mq.Sender;
-import xyz.geekweb.stock.savesinastockdata.RealTimeDataPOJO;
-import xyz.geekweb.util.MailService;
+import xyz.geekweb.stock.pojo.savesinastockdata.RealTimeDataPOJO;
+import xyz.geekweb.stock.service.impl.SearchFinanceData;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -43,29 +41,24 @@ public class StockController {
         model.addAttribute("refresh",refresh);
         model.addAttribute("datetime", LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
 
-        Map<FinanceTypeEnum, FinanceData> allData = searchFinanceData.getAllData();
+        Map<FinanceTypeEnum, List<RealTimeDataPOJO>> allData = searchFinanceData.getAllDataFromRedis();
         allData.forEach((k, v) -> {
             switch (k){
                 case STOCK:
-                    List<RealTimeDataPOJO> realTimeDataPOJO1= v.getData();
-                    model.addAttribute(FinanceTypeEnum.STOCK.toString(),realTimeDataPOJO1);
+                    model.addAttribute(FinanceTypeEnum.STOCK.toString(),v);
                     break;
                 case GZNHG:
-                    List<RealTimeDataPOJO> realTimeDataPOJO2= v.getData();
-                    model.addAttribute(FinanceTypeEnum.GZNHG.toString(),realTimeDataPOJO2);
+                    model.addAttribute(FinanceTypeEnum.GZNHG.toString(),v);
                     break;
                 case HB_FUND:
-                    List<RealTimeDataPOJO> realTimeDataPOJO3= v.getData();
-                    model.addAttribute(FinanceTypeEnum.HB_FUND.toString(),realTimeDataPOJO3);
+                    model.addAttribute(FinanceTypeEnum.HB_FUND.toString(),v);
                     break;
                 case FJ_FUND:
-                    List<RealTimeDataPOJO> realTimeDataPOJO4= v.getData();
-                    model.addAttribute(FinanceTypeEnum.FJ_FUND.toString(),realTimeDataPOJO4);
+                    model.addAttribute(FinanceTypeEnum.FJ_FUND.toString(),v);
                     break;
-                case FX:
-                    List<RealTimeDataPOJO> realTimeDataPOJO5= v.getData();
-                    model.addAttribute(FinanceTypeEnum.FX.toString(),realTimeDataPOJO5);
-                    break;
+                /*case FX: TODO
+                    model.addAttribute(FinanceTypeEnum.FX.toString(),v);
+                    break;*/
             }
         });
 

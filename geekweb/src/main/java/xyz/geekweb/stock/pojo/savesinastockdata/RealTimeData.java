@@ -1,14 +1,10 @@
-package xyz.geekweb.stock.savesinastockdata;
+package xyz.geekweb.stock.pojo.savesinastockdata;
 
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import xyz.geekweb.util.DateUtils;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;

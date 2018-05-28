@@ -1,4 +1,4 @@
-package xyz.geekweb.stock.savesinastockdata;
+package xyz.geekweb.stock.pojo.savesinastockdata;
 
 
 import xyz.geekweb.util.DateUtils;

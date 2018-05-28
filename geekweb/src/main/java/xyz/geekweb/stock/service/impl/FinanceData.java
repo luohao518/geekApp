@@ -1,7 +1,6 @@
-package xyz.geekweb.stock;
+package xyz.geekweb.stock.service.impl;
 
 import xyz.geekweb.stock.mq.Sender;
-import xyz.geekweb.stock.savesinastockdata.RealTimeDataPOJO;
 
 import java.util.List;
 

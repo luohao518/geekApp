@@ -1,10 +1,10 @@
-package xyz.geekweb.stock.savesinastockdata;
+package xyz.geekweb.stock.pojo.savesinastockdata;
 
 import lombok.Data;
 import xyz.geekweb.stock.enums.BuyOrSaleEnum;
 import xyz.geekweb.stock.enums.FinanceTypeEnum;
 
-import java.time.LocalTime;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -14,7 +14,7 @@ import java.util.Date;
  * @version 1.0.0
  */
 @Data
-public class RealTimeDataPOJO {
+public class RealTimeDataPOJO implements Serializable {
     /**
      * 数据类型为指数
      */

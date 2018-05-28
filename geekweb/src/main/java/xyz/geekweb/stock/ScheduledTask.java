@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import xyz.geekweb.stock.service.impl.SearchFinanceData;
 import xyz.geekweb.util.HolidayUtil;
 import xyz.geekweb.util.MailService;
 
@@ -83,5 +84,16 @@ public class ScheduledTask {
                 logger.info("休市时间！");
             }
         }, 0, 1800, TimeUnit.SECONDS);
+
+        scheduledThreadPool.scheduleAtFixedRate(() -> {
+            if (HolidayUtil.isStockTimeEnd()) {
+                logger.info("已收盘，今天执行程序退出！");
+                scheduledThreadPool.shutdown();
+            }
+            if (HolidayUtil.isStockTime()) {
+                logger.info("执行任务");
+                searchFinanceData.saveAllToRedis();
+            }
+        }, 0, 10, TimeUnit.SECONDS);
     }
 }

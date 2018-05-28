@@ -1,4 +1,4 @@
-package xyz.geekweb.stock;
+package xyz.geekweb.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -1,4 +1,4 @@
-package xyz.geekweb.stock.savesinastockdata;
+package xyz.geekweb.stock.pojo.savesinastockdata;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;

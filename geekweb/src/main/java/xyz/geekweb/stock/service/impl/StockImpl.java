@@ -1,15 +1,13 @@
-package xyz.geekweb.stock.impl;
+package xyz.geekweb.stock.service.impl;
 
-import com.sun.org.apache.regexp.internal.RE;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import xyz.geekweb.stock.DataProperties;
-import xyz.geekweb.stock.FinanceData;
+import xyz.geekweb.config.DataProperties;
 import xyz.geekweb.stock.mq.Sender;
-import xyz.geekweb.stock.savesinastockdata.RealTimeDataPOJO;
+import xyz.geekweb.stock.pojo.savesinastockdata.RealTimeDataPOJO;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -25,13 +23,16 @@ import static java.util.stream.Collectors.toList;
  * 股票
  */
 @Service
-public class StockImpl implements FinanceData {
+public class StockImpl implements FinanceData{
 
     private List<RealTimeDataPOJO> data;
-    private List<RealTimeDataPOJO> watchData;
+    private  List<RealTimeDataPOJO> watchData;
 
-    private DataProperties dataProperties;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private  DataProperties dataProperties;
+    private  Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    public StockImpl() {
+    }
 
     @Autowired
     public StockImpl(DataProperties dataProperties) {

@@ -1,4 +1,4 @@
-package xyz.geekweb.stock.impl;
+package xyz.geekweb.stock.service.impl;
 
 import com.google.gson.Gson;
 import com.squareup.okhttp.OkHttpClient;
@@ -10,18 +10,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.util.ArrayUtils;
-import xyz.geekweb.stock.DataProperties;
-import xyz.geekweb.stock.FinanceData;
+import xyz.geekweb.config.DataProperties;
 import xyz.geekweb.stock.enums.BuyOrSaleEnum;
 import xyz.geekweb.stock.enums.FinanceTypeEnum;
 import xyz.geekweb.stock.mq.Sender;
 import xyz.geekweb.stock.pojo.json.JsonRootBean;
 import xyz.geekweb.stock.pojo.json.Rows;
-import xyz.geekweb.stock.savesinastockdata.RealTimeDataPOJO;
+import xyz.geekweb.stock.pojo.savesinastockdata.RealTimeDataPOJO;
 import xyz.geekweb.util.DateUtils;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -35,21 +33,27 @@ import static java.util.stream.Collectors.toList;
  * 分级基金
  */
 @Service
-public class FjFundImpl implements FinanceData {
+public class FjFundImpl implements FinanceData{
 
 
     //腾讯数据（查询量）
-    private static final String QT_URL = "http://qt.gtimg.cn/q=%s";
+    
+    private  static final String QT_URL = "http://qt.gtimg.cn/q=%s";
 
     //集思录数据
-    private static final String URL = "https://www.jisilu.cn/data/sfnew/funda_list/?___t=%d";
+    private  static final String URL = "https://www.jisilu.cn/data/sfnew/funda_list/?___t=%d";
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private  Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private List<RealTimeDataPOJO> data;
 
-    private List<RealTimeDataPOJO> watchData = new ArrayList<>();
+    private  List<RealTimeDataPOJO> watchData = new ArrayList<>();
 
-    private DataProperties dataProperties;
+    private  DataProperties dataProperties;
+
+    public FjFundImpl() {
+
+    }
 
     @Autowired
     public FjFundImpl(DataProperties dataProperties) {

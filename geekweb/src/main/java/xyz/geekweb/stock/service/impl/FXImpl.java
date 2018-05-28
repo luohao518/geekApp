@@ -1,4 +1,4 @@
-package xyz.geekweb.stock.impl;
+package xyz.geekweb.stock.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -11,10 +11,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import xyz.geekweb.stock.FinanceData;
 import xyz.geekweb.stock.mq.Sender;
 import xyz.geekweb.stock.pojo.json.FXBean;
-import xyz.geekweb.stock.savesinastockdata.RealTimeDataPOJO;
+import xyz.geekweb.stock.pojo.savesinastockdata.RealTimeDataPOJO;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -32,12 +31,14 @@ import java.util.List;
 public class FXImpl implements FinanceData {
 
 
-    private static final String DATA_URL = "https://forex.1forge.com/1.0.3/quotes?pairs=%s&api_key=iOrFNzxp8Fuus91yAMYRO7nTkSImR5Gm";
-    private static final String MARKET_STATUS = "https://forex.1forge.com/1.0.3/market_status?api_key=iOrFNzxp8Fuus91yAMYRO7nTkSImR5Gm";
-    private static final String QUOTA = "https://forex.1forge.com/1.0.3/quota?api_key=iOrFNzxp8Fuus91yAMYRO7nTkSImR5Gm";
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private List<FXBean> data = null;
-    private List<FXBean> watchData =new ArrayList<>();
+    private   static final String DATA_URL = "https://forex.1forge.com/1.0.3/quotes?pairs=%s&api_key=iOrFNzxp8Fuus91yAMYRO7nTkSImR5Gm";
+    private   static final String MARKET_STATUS = "https://forex.1forge.com/1.0.3/market_status?api_key=iOrFNzxp8Fuus91yAMYRO7nTkSImR5Gm";
+    private   static final String QUOTA = "https://forex.1forge.com/1.0.3/quota?api_key=iOrFNzxp8Fuus91yAMYRO7nTkSImR5Gm";
+    private   Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private List<RealTimeDataPOJO> data ;
+
+    private   List<RealTimeDataPOJO> watchData =new ArrayList<>();
 
     public FXImpl() {
 
@@ -57,7 +58,7 @@ public class FXImpl implements FinanceData {
        // sender.sendNotify(this.watchData);
     }
 
-    private List<FXBean> fetchData(String strLst) {
+    private List<RealTimeDataPOJO> fetchData(String strLst) {
         OkHttpClient client = new OkHttpClient();
         String url = String.format(DATA_URL, strLst);
         logger.debug(url);
@@ -85,7 +86,15 @@ public class FXImpl implements FinanceData {
             throw new RuntimeException("服务器端错误: ", e);
         }
 
-        return fXBeans;
+        List<RealTimeDataPOJO> result=new ArrayList<>(fXBeans.size());
+        fXBeans.forEach( bean -> {
+            RealTimeDataPOJO item = new RealTimeDataPOJO();
+            item.setName(bean.getSymbol());
+            item.setNow(bean.getPrice());
+            item.setTime(bean.getTime());
+            result.add(item);
+        });
+        return result;
 
     }
 
@@ -116,7 +125,7 @@ public class FXImpl implements FinanceData {
     }
 
     @Override
-    public List<FXBean> getData(){
+    public List<RealTimeDataPOJO> getData(){
         return this.data;
     }
 
@@ -153,9 +162,9 @@ public class FXImpl implements FinanceData {
                 sb.append("!!!已休市!!!\n");
             }
             this.data.forEach(item -> {
-                sb.append(String.format("外汇购买:%s 当前价[%7.3f]%n", item.getSymbol(), item.getPrice()));
-                if(item.getSymbol().equals("USDJPY")){
-                    if(item.getPrice()>112.0d){
+                sb.append(String.format("外汇购买:%s 当前价[%7.3f]%n", item.getName(), item.getNow()));
+                if(item.getName().equals("USDJPY")){
+                    if(item.getNow()>112.0d){
                         this.watchData.add(item);
                     }
                 }

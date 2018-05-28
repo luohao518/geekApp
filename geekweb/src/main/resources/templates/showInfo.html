@@ -142,8 +142,8 @@
                 </thead>
                 <tbody>
                 <tr th:each="item,iterStat : ${FX}" th:class="${iterStat.odd}? 'success'">
-                    <td th:text="${item.symbol}" />
-                    <td th:text="${item.price}" />
+                    <td th:text="${item.name}" />
+                    <td th:text="${item.now}" />
                     <td th:text="${#dates.format(item.time, 'YYYY/MM/dd HH:mm:ss')}" />
                 </tr>
                 </tbody>

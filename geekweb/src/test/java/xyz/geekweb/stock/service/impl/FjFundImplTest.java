@@ -1,4 +1,4 @@
-package xyz.geekweb.stock.impl;
+package xyz.geekweb.stock.service.impl;
 
 
 import org.junit.Test;
@@ -6,23 +6,18 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import xyz.geekweb.stock.DataProperties;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class FXImplTest {
+public class FjFundImplTest {
 
     @Autowired
-    private DataProperties dataProperties;
-
-    @Autowired
-    private  FXImpl fx;
+    private  FjFundImpl fjFund;
 
     @Test
-    public void testPrint() throws Exception {
+    public void test1() throws Exception {
+        fjFund.printInfo();
 
-        fx.fetchData(dataProperties.getFx().toArray(new String[0]));
-        fx.printInfo();
     }
 
 }

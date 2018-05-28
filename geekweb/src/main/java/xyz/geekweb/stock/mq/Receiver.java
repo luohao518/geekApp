@@ -8,12 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 import xyz.geekweb.stock.enums.FinanceTypeEnum;
-import xyz.geekweb.stock.savesinastockdata.RealTimeDataPOJO;
+import xyz.geekweb.stock.pojo.savesinastockdata.RealTimeDataPOJO;
 import xyz.geekweb.util.MailService;
 
 import java.util.List;
 
-import static java.util.Comparator.comparing;
 import static xyz.geekweb.stock.mq.RabbitConfig.QUEUE_MAIL;
 import static xyz.geekweb.stock.mq.RabbitConfig.QUEUE_NOTIFY;
 

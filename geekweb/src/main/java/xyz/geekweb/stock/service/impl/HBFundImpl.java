@@ -1,13 +1,12 @@
-package xyz.geekweb.stock.impl;
+package xyz.geekweb.stock.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import xyz.geekweb.stock.DataProperties;
-import xyz.geekweb.stock.FinanceData;
+import xyz.geekweb.config.DataProperties;
 import xyz.geekweb.stock.mq.Sender;
-import xyz.geekweb.stock.savesinastockdata.RealTimeDataPOJO;
+import xyz.geekweb.stock.pojo.savesinastockdata.RealTimeDataPOJO;
 
 import java.util.List;
 
@@ -23,16 +22,19 @@ public class HBFundImpl implements FinanceData {
 
 
     private List<RealTimeDataPOJO> data;
-    private List<RealTimeDataPOJO> watchData;
+    private  List<RealTimeDataPOJO> watchData;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private  Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private DataProperties dataProperties;
+    private  DataProperties dataProperties;
 
     @Autowired
     public HBFundImpl(DataProperties dataProperties) {
         this.dataProperties = dataProperties;
 
+    }
+
+    public HBFundImpl() {
     }
 
     @Override
