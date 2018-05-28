@@ -1,5 +1,6 @@
 package xyz.geekweb.stock.control;
 
+import com.sun.xml.internal.bind.v2.TODO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,9 +57,9 @@ public class StockController {
                 case FJ_FUND:
                     model.addAttribute(FinanceTypeEnum.FJ_FUND.toString(),v);
                     break;
-                /*case FX: TODO
+                case FX:
                     model.addAttribute(FinanceTypeEnum.FX.toString(),v);
-                    break;*/
+                    break;
             }
         });
 
