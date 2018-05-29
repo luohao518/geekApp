@@ -24,13 +24,13 @@ import org.springframework.stereotype.Service;
 public class AlibabaService {
 
 
-    /*public static final String APP_KEY = "1406054";
+    public static final String APP_KEY = "1406054";
     public static final String SEC_KEY = "UVltVpGarKR";
-    public static final String ACCESS_TOKEN = "a8e5d00b-5e78-4518-ba25-b4d871928111";*/
+    public static final String ACCESS_TOKEN = "a8e5d00b-5e78-4518-ba25-b4d871928111";
 
-    public static final String APP_KEY = "7031967";
+/*    public static final String APP_KEY = "7031967";
     public static final String SEC_KEY = "z2tB0cavGIL";
-    public static final String ACCESS_TOKEN = "80a28982-ceb7-4014-ab56-651acdd013bc";
+    public static final String ACCESS_TOKEN = "80a28982-ceb7-4014-ab56-651acdd013bc";*/
 
     //6366071 hksq0mhABL 27c77863-bc0c-41d3-b066-71f62ce11799
     //5756323 eCq5mnbymF cdb59e10-c23b-4d96-b33e-55a457ae43e3
