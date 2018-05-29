@@ -28,10 +28,6 @@ public class GZNHGImpl implements FinanceData {
 
     private  Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public GZNHGImpl() {
-
-    }
-
     @Autowired
     public GZNHGImpl(DataProperties dataProperties) {
         this.dataProperties = dataProperties;

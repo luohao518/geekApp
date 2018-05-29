@@ -61,10 +61,10 @@
                         当前价
                     </th>
                     <th>
-                        卖出价
+                        卖量(手)
                     </th>
                     <th>
-                        卖量(手)
+                        最后更新日期
                     </th>
                 </tr>
                 </thead>
@@ -75,10 +75,9 @@
                     <td th:text="${#numbers.formatDecimal(item.now,1,2)}" />
 
                     <td th:if="${item.type==1}" th:text="'-'" />
-                    <td th:if="${item.type==2}" th:text="${item.sell1Price}"  />
-
-                    <td th:if="${item.type==1}" th:text="'-'" />
                     <td th:if="${item.type==2}" th:text="${#numbers.formatDecimal(item.sell1Num,1,0)}/100"  />
+
+                    <td th:text="${#dates.format(item.time, 'HH:mm:ss')}" />
                 </tr>
                 </tbody>
             </table>

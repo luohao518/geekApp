@@ -40,10 +40,6 @@ public class FXImpl implements FinanceData {
 
     private   List<RealTimeDataPOJO> watchData =new ArrayList<>();
 
-    public FXImpl() {
-
-    }
-
     public void fetchData(String[] fxs) {
         if (isRemaining()) {
             this.data=fetchData(StringUtils.join(fxs, ","));

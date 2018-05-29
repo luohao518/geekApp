@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import xyz.geekweb.config.DataProperties;
 import xyz.geekweb.stock.enums.FinanceTypeEnum;
-import xyz.geekweb.stock.mq.Sender;
 import xyz.geekweb.stock.pojo.savesinastockdata.RealTimeData;
 import xyz.geekweb.stock.pojo.savesinastockdata.RealTimeDataPOJO;
 import xyz.geekweb.util.HolidayUtil;
@@ -48,10 +47,10 @@ public class SearchFinanceData {
 
     private Logger logger = LoggerFactory.getLogger(SearchFinanceData.class);
 
-    private static Map<FinanceTypeEnum, List<RealTimeDataPOJO>> lstFinanceData;
+    private static Map<String, List<RealTimeDataPOJO>> lstFinanceData;
 
 
-    public Map<FinanceTypeEnum, List<RealTimeDataPOJO>> getAllData(){
+    public Map<String, List<RealTimeDataPOJO>> getAllData(){
 
         if (HolidayUtil.isStockTime()) {
             fillALLData();
@@ -69,7 +68,8 @@ public class SearchFinanceData {
         logger.debug("put data into redis");
         fillALLData();
         try {
-            boolean result = redisUtil.lSet("lstFinanceData", this.lstFinanceData);
+            //24小时后失效
+            boolean result = redisUtil.lLeftPush("lstFinanceData", this.lstFinanceData,60*60*24);
             Assert.isTrue(result,"lset");
         }catch (Exception exp){
             logger.error("redis put:",exp);
@@ -77,9 +77,9 @@ public class SearchFinanceData {
         }
     }
 
-    public Map<FinanceTypeEnum, List<RealTimeDataPOJO>> getAllDataFromRedis(){
+    public Map<String, List<RealTimeDataPOJO>> getAllDataFromRedis(){
 
-        Map<FinanceTypeEnum, List<RealTimeDataPOJO>> lstFinanceData = (Map<FinanceTypeEnum, List<RealTimeDataPOJO>>)redisUtil.lGetIndex("lstFinanceData",0);
+        Map<String, List<RealTimeDataPOJO>> lstFinanceData = (Map<String, List<RealTimeDataPOJO>>)redisUtil.lGetIndex("lstFinanceData",0);
         if (lstFinanceData != null){
             return lstFinanceData;
         }else{
@@ -99,19 +99,19 @@ public class SearchFinanceData {
 
         this.lstFinanceData = new HashMap<>(10);
         this.gznhg.fetchData(realTimeDataPOJOS);
-        this.lstFinanceData.put(FinanceTypeEnum.GZNHG, gznhg.getData());
+        this.lstFinanceData.put(FinanceTypeEnum.GZNHG.toString(), gznhg.getData());
 
         this.hbFund.fetchData(realTimeDataPOJOS);
-        this.lstFinanceData.put(FinanceTypeEnum.HB_FUND, hbFund.getData());
+        this.lstFinanceData.put(FinanceTypeEnum.HB_FUND.toString(), hbFund.getData());
 
         this.stock.fetchData(realTimeDataPOJOS);
-        this.lstFinanceData.put(FinanceTypeEnum.STOCK, stock.getData());
+        this.lstFinanceData.put(FinanceTypeEnum.STOCK.toString(), stock.getData());
 
         this.fjFund.fetchData();
-        this.lstFinanceData.put(FinanceTypeEnum.FJ_FUND, fjFund.getData());
+        this.lstFinanceData.put(FinanceTypeEnum.FJ_FUND.toString(), fjFund.getData());
 
         fx.fetchData(this.dataProperties.getFx().toArray(new String[0]));
-        this.lstFinanceData.put(FinanceTypeEnum.FX, fx.getData());
+        this.lstFinanceData.put(FinanceTypeEnum.FX.toString(), fx.getData());
     }
 
     private List<RealTimeDataPOJO> fetchSinaData() {

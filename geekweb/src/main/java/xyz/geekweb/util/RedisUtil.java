@@ -441,12 +441,12 @@ public class RedisUtil {
      * @param value 值
      * @return
      */
-    public boolean lSet(String key, Object value) {
+    public boolean lLeftPush(String key, Object value) {
         try {
-            redisTemplate.opsForList().rightPush(key, value);
+            redisTemplate.opsForList().leftPush(key, value);
             return true;
         } catch (Exception e) {
-            logger.error("lSet",e);
+            logger.error("lLeftPush",e);
             return false;
         }
     }
@@ -458,13 +458,13 @@ public class RedisUtil {
      * @param time 时间(秒)
      * @return
      */
-    public boolean lSet(String key, Object value, long time) {
+    public boolean lLeftPush(String key, Object value, long time) {
         try {
-            redisTemplate.opsForList().rightPush(key, value);
+            redisTemplate.opsForList().leftPush(key, value);
             if (time > 0) expire(key, time);
             return true;
         } catch (Exception e) {
-            logger.error("lSet",e);
+            logger.error("lLeftPush",e);
             return false;
         }
     }
@@ -475,12 +475,12 @@ public class RedisUtil {
      * @param value 值
      * @return
      */
-    public boolean lSet(String key, List<Object> value) {
+    public boolean lLeftPush(String key, List<Object> value) {
         try {
             redisTemplate.opsForList().rightPushAll(key, value);
             return true;
         } catch (Exception e) {
-            logger.error("lSet",e);
+            logger.error("lLeftPush",e);
             return false;
         }
     }
@@ -492,13 +492,13 @@ public class RedisUtil {
      * @param time 时间(秒)
      * @return
      */
-    public boolean lSet(String key, List<Object> value, long time) {
+    public boolean lLeftPush(String key, List<Object> value, long time) {
         try {
             redisTemplate.opsForList().rightPushAll(key, value);
             if (time > 0) expire(key, time);
             return true;
         } catch (Exception e) {
-            logger.error("lSet",e);
+            logger.error("lLeftPush",e);
             return false;
         }
     }

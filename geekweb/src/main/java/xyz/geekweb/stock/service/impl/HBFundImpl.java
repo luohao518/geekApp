@@ -34,9 +34,6 @@ public class HBFundImpl implements FinanceData {
 
     }
 
-    public HBFundImpl() {
-    }
-
     @Override
     public List<RealTimeDataPOJO>  getData(){
         return this.data;

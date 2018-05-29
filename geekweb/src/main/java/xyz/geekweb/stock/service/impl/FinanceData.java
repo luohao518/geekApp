@@ -9,7 +9,6 @@ import java.util.List;
  */
 public interface FinanceData<T> {
 
-
     /**
      * 输出内容
      *

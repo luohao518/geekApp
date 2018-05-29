@@ -27,10 +27,6 @@ public class KZZImpl implements FinanceData {
 
     private  Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public KZZImpl() {
-
-    }
-
     @Autowired
     public KZZImpl(DataProperties dataProperties) {
         this.dataProperties = dataProperties;

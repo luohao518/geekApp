@@ -42,23 +42,26 @@ public class StockController {
         model.addAttribute("refresh",refresh);
         model.addAttribute("datetime", LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
 
-        Map<FinanceTypeEnum, List<RealTimeDataPOJO>> allData = searchFinanceData.getAllDataFromRedis();
+        Map<String, List<RealTimeDataPOJO>> allData = searchFinanceData.getAllDataFromRedis();
         allData.forEach((k, v) -> {
             switch (k){
-                case STOCK:
+                case "STOCK":
                     model.addAttribute(FinanceTypeEnum.STOCK.toString(),v);
                     break;
-                case GZNHG:
+                case "GZNHG":
                     model.addAttribute(FinanceTypeEnum.GZNHG.toString(),v);
                     break;
-                case HB_FUND:
+                case "HB_FUND":
                     model.addAttribute(FinanceTypeEnum.HB_FUND.toString(),v);
                     break;
-                case FJ_FUND:
+                case "FJ_FUND":
                     model.addAttribute(FinanceTypeEnum.FJ_FUND.toString(),v);
                     break;
-                case FX:
+                case "FX":
                     model.addAttribute(FinanceTypeEnum.FX.toString(),v);
+                    break;
+                default:
+                    logger.warn("参数错误！");
                     break;
             }
         });

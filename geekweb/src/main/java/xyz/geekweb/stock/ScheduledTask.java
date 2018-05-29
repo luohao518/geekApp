@@ -4,6 +4,7 @@ import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import xyz.geekweb.stock.service.impl.SearchFinanceData;
@@ -19,6 +20,7 @@ import java.util.concurrent.TimeUnit;
  * @author lhao
  */
 @Service
+@EnableScheduling
 public class ScheduledTask {
 
     private SearchFinanceData searchFinanceData;
@@ -72,7 +74,7 @@ public class ScheduledTask {
 
         }, 0, 60, TimeUnit.SECONDS);*/
 
-        scheduledThreadPool.scheduleAtFixedRate(() -> {
+/*        scheduledThreadPool.scheduleAtFixedRate(() -> {
             if (HolidayUtil.isStockTimeEnd()) {
                 logger.info("已收盘，今天执行程序退出！");
                 scheduledThreadPool.shutdown();
@@ -83,17 +85,15 @@ public class ScheduledTask {
             }else{
                 logger.info("休市时间！");
             }
-        }, 0, 1800, TimeUnit.SECONDS);
+        }, 0, 1800, TimeUnit.SECONDS);*/
 
         scheduledThreadPool.scheduleAtFixedRate(() -> {
-            if (HolidayUtil.isStockTimeEnd()) {
-                logger.info("已收盘，今天执行程序退出！");
-                scheduledThreadPool.shutdown();
-            }
+
             if (HolidayUtil.isStockTime()) {
                 logger.info("执行任务");
                 searchFinanceData.saveAllToRedis();
             }
-        }, 0, 10, TimeUnit.SECONDS);
+            searchFinanceData.saveAllToRedis();
+        }, 0, 5, TimeUnit.SECONDS);
     }
 }

@@ -31,9 +31,6 @@ public class StockImpl implements FinanceData{
     private  DataProperties dataProperties;
     private  Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public StockImpl() {
-    }
-
     @Autowired
     public StockImpl(DataProperties dataProperties) {
 

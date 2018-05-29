@@ -51,10 +51,6 @@ public class FjFundImpl implements FinanceData{
 
     private  DataProperties dataProperties;
 
-    public FjFundImpl() {
-
-    }
-
     @Autowired
     public FjFundImpl(DataProperties dataProperties) {
         this.dataProperties = dataProperties;
