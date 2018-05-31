@@ -43,7 +43,6 @@ public final class GenericsUtil {
 		if (types != null && types.length > 0) {
 			for (int i = 0; i < types.length; i++) {
 				if (name.equals(types[i].getName())) {
-					System.out.println(types[i].getGenericDeclaration());
 					final Type[] bounds;
 					if (types[i] instanceof WildcardType) {
 						bounds = ((WildcardType) types[i]).getLowerBounds();

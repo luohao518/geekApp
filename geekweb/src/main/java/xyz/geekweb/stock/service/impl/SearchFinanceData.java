@@ -23,6 +23,8 @@ import java.util.Map;
 @Service
 public class SearchFinanceData {
 
+    public static final String LST_SINA_JSL_KEY = "LST_SINA_JSL_KEY";
+    public static final String LST_FX_KEY = "LST_FX_KEY";
     @Autowired
     private DataProperties dataProperties;
 
@@ -47,16 +49,16 @@ public class SearchFinanceData {
 
     private Logger logger = LoggerFactory.getLogger(SearchFinanceData.class);
 
-    private static Map<String, List<RealTimeDataPOJO>> lstFinanceData;
+    private Map<String, List<RealTimeDataPOJO>> lstFinanceData;
 
 
     public Map<String, List<RealTimeDataPOJO>> getAllData(){
 
         if (HolidayUtil.isStockTime()) {
-            fillALLData();
+            fillSinaJslData();
         }else{
             if(this.lstFinanceData==null){
-                fillALLData();
+                fillSinaJslData();
             }
         }
 
@@ -64,12 +66,25 @@ public class SearchFinanceData {
     }
 
 
-    public void saveAllToRedis(){
+    public void saveSinaJslToRedis(){
         logger.debug("put data into redis");
-        fillALLData();
         try {
+            fillSinaJslData();
             //24小时后失效
-            boolean result = redisUtil.lLeftPush("lstFinanceData", this.lstFinanceData,60*60*24);
+            boolean result = redisUtil.lLeftPush(LST_SINA_JSL_KEY, this.lstFinanceData,60*60*24);
+            Assert.isTrue(result,"lset");
+        }catch (Exception exp){
+            logger.error("redis put:",exp);
+            throw  exp;
+        }
+    }
+
+    public void saveFXToRedis(){
+        logger.debug("put data into redis");
+        try {
+            fillFXData();
+            //24小时后失效
+            boolean result = redisUtil.lLeftPush(LST_FX_KEY, this.lstFinanceData,60*60*24);
             Assert.isTrue(result,"lset");
         }catch (Exception exp){
             logger.error("redis put:",exp);
@@ -79,9 +94,15 @@ public class SearchFinanceData {
 
     public Map<String, List<RealTimeDataPOJO>> getAllDataFromRedis(){
 
-        Map<String, List<RealTimeDataPOJO>> lstFinanceData = (Map<String, List<RealTimeDataPOJO>>)redisUtil.lGetIndex("lstFinanceData",0);
-        if (lstFinanceData != null){
-            return lstFinanceData;
+        Map<String, List<RealTimeDataPOJO>> lstFinanceData1 =
+                (Map<String, List<RealTimeDataPOJO>>)redisUtil.lGetIndex(LST_SINA_JSL_KEY,0);
+        Map<String, List<RealTimeDataPOJO>> lstFinanceData2 =
+                (Map<String, List<RealTimeDataPOJO>>)redisUtil.lGetIndex(LST_FX_KEY,0);
+        if (lstFinanceData1 != null){
+            if(lstFinanceData2 != null){
+                lstFinanceData1.put("FX", lstFinanceData2.get("FX"));
+            }
+            return lstFinanceData1;
         }else{
             logger.warn("redis read data is null!");
             return getAllData();
@@ -91,9 +112,9 @@ public class SearchFinanceData {
     /**
      * get all data
      */
-    private void fillALLData() {
+    private void fillSinaJslData() {
 
-        logger.debug("execute fillALLData()");
+        logger.debug("execute fillSinaJslData()");
 
         final List<RealTimeDataPOJO> realTimeDataPOJOS = fetchSinaData();
 
@@ -109,8 +130,18 @@ public class SearchFinanceData {
 
         this.fjFund.fetchData();
         this.lstFinanceData.put(FinanceTypeEnum.FJ_FUND.toString(), fjFund.getData());
+    }
 
+    /**
+     * get all data
+     */
+    private void fillFXData() {
+
+        logger.debug("execute fillFXData()");
         fx.fetchData(this.dataProperties.getFx().toArray(new String[0]));
+        if(lstFinanceData==null){
+            this.lstFinanceData = new HashMap<>(10);
+        }
         this.lstFinanceData.put(FinanceTypeEnum.FX.toString(), fx.getData());
     }
 

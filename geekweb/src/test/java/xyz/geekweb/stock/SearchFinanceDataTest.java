@@ -23,7 +23,7 @@ public class SearchFinanceDataTest {
     @Test
     public void testRedis() throws Exception {
 
-       searchFinanceData.saveAllToRedis();
+       searchFinanceData.saveSinaJslToRedis();
 
        searchFinanceData.getAllDataFromRedis();
 

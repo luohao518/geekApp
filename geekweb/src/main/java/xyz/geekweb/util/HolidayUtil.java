@@ -4,6 +4,8 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -15,6 +17,8 @@ import java.time.format.DateTimeFormatter;
  */
 public class HolidayUtil {
 
+    private static Logger logger = LoggerFactory.getLogger(HolidayUtil.class);
+
     /**
      * 查询是否为节假日API接口  工作日对应结果为 0, 休息日对应结果为 1, 节假日对应的结果为 2
      */
@@ -24,7 +28,6 @@ public class HolidayUtil {
 
     public static boolean isStockTimeEnd() {
         int intHHMM = Integer.parseInt(LocalTime.now().format(DateTimeFormatter.ofPattern("HHmm")));
-        System.out.println(intHHMM);
         if (intHHMM > STOCK_TIMES[3]) {
             return true;
         }
@@ -52,13 +55,17 @@ public class HolidayUtil {
     }
 
 
-    public static boolean isHoliday() throws IOException {
-        return isHoliday(LocalDate.now());
+    public static boolean isHoliday()  {
+        try {
+            return isHoliday(LocalDate.now());
+        } catch (IOException e) {
+            logger.error("isHoliday:",e);
+            return false;
+        }
     }
 
     public static boolean isHoliday(LocalDate date) throws IOException {
 
-        System.out.println(date.toString());
         OkHttpClient client = new OkHttpClient();
 
 

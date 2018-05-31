@@ -26,6 +26,7 @@ import java.util.List;
  * @date 2018/4/27
  * <p>
  * 外汇
+ * 免费版本每天请求次数上限1000次
  */
 @Service
 public class FXImpl implements FinanceData {
@@ -50,7 +51,6 @@ public class FXImpl implements FinanceData {
 
     @Override
     public void sendNotify(Sender sender){
-
        // sender.sendNotify(this.watchData);
     }
 
