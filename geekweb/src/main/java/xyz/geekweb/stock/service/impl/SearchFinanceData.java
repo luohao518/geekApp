@@ -70,8 +70,8 @@ public class SearchFinanceData {
         logger.debug("put data into redis");
         try {
             fillSinaJslData();
-            //24小时后失效
-            boolean result = redisUtil.lLeftPush(LST_SINA_JSL_KEY, this.lstFinanceData,60*60*24);
+            //60s后失效
+            boolean result = redisUtil.lLeftPush(LST_SINA_JSL_KEY, this.lstFinanceData,60);
             Assert.isTrue(result,"lset");
         }catch (Exception exp){
             logger.error("redis put:",exp);
