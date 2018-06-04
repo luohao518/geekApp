@@ -12,6 +12,7 @@ import xyz.geekweb.stock.pojo.savesinastockdata.RealTimeDataPOJO;
 import xyz.geekweb.util.HolidayUtil;
 import xyz.geekweb.util.RedisUtil;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +26,10 @@ public class SearchFinanceData {
 
     public static final String LST_SINA_JSL_KEY = "LST_SINA_JSL_KEY";
     public static final String LST_FX_KEY = "LST_FX_KEY";
+
+    @Autowired
+    private HttpSession session;
+
     @Autowired
     private DataProperties dataProperties;
 
@@ -51,6 +56,9 @@ public class SearchFinanceData {
 
     private Map<String, List<RealTimeDataPOJO>> lstFinanceData;
 
+    private static Map<String, List<RealTimeDataPOJO>> lstFinanceDataIns;
+
+
 
     public Map<String, List<RealTimeDataPOJO>> getAllData(){
 
@@ -66,15 +74,25 @@ public class SearchFinanceData {
     }
 
 
-    public void saveSinaJslToRedis(){
+   /* public void saveSinaJslToRedis(){
         logger.debug("put data into redis");
         try {
             fillSinaJslData();
-            //24小时后失效
-            boolean result = redisUtil.lLeftPush(LST_SINA_JSL_KEY, this.lstFinanceData,60*60*24);
+            boolean result = redisUtil.lLeftPush(LST_SINA_JSL_KEY, this.lstFinanceData);
             Assert.isTrue(result,"lset");
         }catch (Exception exp){
             logger.error("redis put:",exp);
+            throw  exp;
+        }
+    }*/
+
+    public void saveSinaJslToMem(){
+        logger.debug("put data into redis");
+        try {
+            fillSinaJslData();
+            lstFinanceDataIns=this.lstFinanceData;
+        }catch (Exception exp){
+            logger.error("saveSinaJslToMem:",exp);
             throw  exp;
         }
     }
@@ -94,8 +112,9 @@ public class SearchFinanceData {
 
     public Map<String, List<RealTimeDataPOJO>> getAllDataFromRedis(){
 
-        Map<String, List<RealTimeDataPOJO>> lstFinanceData1 =
-                (Map<String, List<RealTimeDataPOJO>>)redisUtil.lGetIndex(LST_SINA_JSL_KEY,0);
+        /*Map<String, List<RealTimeDataPOJO>> lstFinanceData1 =
+                (Map<String, List<RealTimeDataPOJO>>)redisUtil.lGetIndex(LST_SINA_JSL_KEY,0);*/
+        Map<String, List<RealTimeDataPOJO>> lstFinanceData1 =this.lstFinanceDataIns;
         Map<String, List<RealTimeDataPOJO>> lstFinanceData2 =
                 (Map<String, List<RealTimeDataPOJO>>)redisUtil.lGetIndex(LST_FX_KEY,0);
         if (lstFinanceData1 != null){
