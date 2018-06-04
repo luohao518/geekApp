@@ -11,7 +11,7 @@
 
 	<artifactId>geekweb</artifactId>
     <name>geekweb</name>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
 	<properties>
 		<!-- spring版本号 -->
@@ -33,6 +33,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 			<version>${spring.version}</version>
+			<!--<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+				</exclusion>
+			</exclusions>-->
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
