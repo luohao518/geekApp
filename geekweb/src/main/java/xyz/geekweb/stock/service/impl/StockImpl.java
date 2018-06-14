@@ -88,17 +88,18 @@ public class StockImpl implements FinanceData{
         //计算年华利率
         double endPrice=100d;
         long days=endDate.toEpochDay()- LocalDate.now().toEpochDay();
-        double percent=(((endPrice-currentPrice)/currentPrice)/days)*365*100;
-        System.out.println(String.format("公告完成日[%s]   剩余天数[%d天]   年华利率[%5.2f%%]", endDate,days,percent));
+        ///double percent=(((endPrice-currentPrice)/currentPrice)/days)*365*100;
+        ///System.out.println(String.format("公告完成日[%s]   剩余天数[%d天]   年华利率[%5.2f%%]", endDate,days,percent));
 
-        //20天的资金回来（考虑一般公募基金会接盘）
-        endDate=endDate.plusDays(20);
+        //17天的资金回来（考虑一般公募基金会接盘）
+        endDate=endDate.plusDays(17);
 
         days=endDate.toEpochDay()- LocalDate.now().toEpochDay();
         //计算年华利率
-        endPrice=100d;
-        percent=(((endPrice-currentPrice)/currentPrice)/days)*365*100;
-        System.out.println(String.format("最终完成日[%s]   剩余天数[%d天]   年华利率[%5.2f%%]", endDate,days,percent));
+        endPrice=100.68d;
+        double percent=(((endPrice-currentPrice)/currentPrice)/days)*365*100;
+        double percent2=(((endPrice-0.136-currentPrice)/currentPrice)/days)*365*100;
+        System.out.println(String.format("最终完成日[%s]   剩余天数[%d天]   年华利率[%5.2f%%] 税后[%5.2f%%]", endDate,days,percent,percent2));
     }
 
     private static LocalDate getNextWorkDate(LocalDate startDate) {
@@ -125,6 +126,6 @@ public class StockImpl implements FinanceData{
 
     public   static void main(String[] args){
 
-        StockImpl.calcu132003(99.48d);
+        StockImpl.calcu132003(100.41d);
     }
 }
