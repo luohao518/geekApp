@@ -75,7 +75,7 @@ public class StockImpl implements FinanceData{
         logger.info(sb.toString());
     }
 
-    public static void calcu132003(double currentPrice){
+    public static void calcu132003(double currentPrice,LocalDate now){
 
         //4.26才可以开始计算回售条款
         LocalDate startDate = LocalDate.of(2018, 4, 26);
@@ -94,12 +94,12 @@ public class StockImpl implements FinanceData{
         //17天的资金回来（考虑一般公募基金会接盘）
         endDate=endDate.plusDays(17);
 
-        days=endDate.toEpochDay()- LocalDate.now().toEpochDay();
+        days=endDate.toEpochDay()- now.toEpochDay();
         //计算年华利率
         endPrice=100.68d;
         double percent=(((endPrice-currentPrice)/currentPrice)/days)*365*100;
         double percent2=(((endPrice-0.136-currentPrice)/currentPrice)/days)*365*100;
-        System.out.println(String.format("最终完成日[%s]   剩余天数[%d天]   年华利率[%5.2f%%] 税后[%5.2f%%]", endDate,days,percent,percent2));
+        System.out.println(String.format("开始日[%s] 最终日[%s]   剩余天数[%d天]   年华利率[%5.2f%%] 税后[%5.2f%%]", now,endDate,days,percent,percent2));
     }
 
     private static LocalDate getNextWorkDate(LocalDate startDate) {
@@ -126,6 +126,7 @@ public class StockImpl implements FinanceData{
 
     public   static void main(String[] args){
 
-        StockImpl.calcu132003(100.41d);
+        StockImpl.calcu132003(99.79d+0.6384d,LocalDate.now());
+        StockImpl.calcu132003(99.85d+0.6384d,LocalDate.of(2018,06,19));
     }
 }
