@@ -47,7 +47,7 @@ public class StockImpl implements FinanceData{
         this.data = data.stream().filter(item -> (
                 item.getType()==RealTimeDataPOJO.INDEX ||
                         (StringUtils.startsWithAny(item.getFullCode(),new String[]{"sh","sz","int"})
-                        && !StringUtils.startsWithAny(item.getFullCode(),new String[]{"sh511","sh204"})))).collect(toList());
+                                && !StringUtils.startsWithAny(item.getFullCode(),new String[]{"sh511","sh204"})))).collect(toList());
         this.watchData = this.data.stream().filter( item -> item.getType()== RealTimeDataPOJO.STOCK).filter(item -> Math.abs(item.getRiseAndFallPercent()) >= Double.parseDouble(dataProperties.getMap().get("MAX_STOCKS_PERCENT"))).collect(toList());
     }
 
@@ -60,16 +60,16 @@ public class StockImpl implements FinanceData{
     public void printInfo() {
         StringBuilder sb = new StringBuilder("\n");
         sb.append("-------------------股票-------------------\n");
-                this.data.forEach(item -> {
-                    if(item.getType()==RealTimeDataPOJO.INDEX){
-                        sb.append(String.format("%4s 当前价[%8.2f] 涨跌额[%6.2f] 涨跌百分比[%6.2f%%] 成交金额[%,10.0f万]%n",
-                                item.getName(), item.getNow(), item.getRiseAndFall(),
-                                item.getRiseAndFallPercent(),item.getVolumePrice()));
-                    }else {
-                        sb.append(String.format("%8s 当前价[%6.2f] 卖出价[%6.2f]  卖量[%7.0f] 买入价[%6.2f] 涨跌幅[%6.2f%%] %-6s %n",
-                                item.getFullCode(), item.getNow(), item.getSell1Price(), item.getSell1Num(), item.getBuy1Price(), item.getRiseAndFallPercent(), item.getName()));
-                    }
-                });
+        this.data.forEach(item -> {
+            if(item.getType()==RealTimeDataPOJO.INDEX){
+                sb.append(String.format("%4s 当前价[%8.2f] 涨跌额[%6.2f] 涨跌百分比[%6.2f%%] 成交金额[%,10.0f万]%n",
+                        item.getName(), item.getNow(), item.getRiseAndFall(),
+                        item.getRiseAndFallPercent(),item.getVolumePrice()));
+            }else {
+                sb.append(String.format("%8s 当前价[%6.2f] 卖出价[%6.2f]  卖量[%7.0f] 买入价[%6.2f] 涨跌幅[%6.2f%%] %-6s %n",
+                        item.getFullCode(), item.getNow(), item.getSell1Price(), item.getSell1Num(), item.getBuy1Price(), item.getRiseAndFallPercent(), item.getName()));
+            }
+        });
 
         sb.append("-------------------------------------------\n");
         logger.info(sb.toString());
@@ -88,17 +88,18 @@ public class StockImpl implements FinanceData{
         //计算年华利率
         double endPrice=100d;
         long days=endDate.toEpochDay()- LocalDate.now().toEpochDay();
-        double percent=(((endPrice-currentPrice)/currentPrice)/days)*365*100;
-        System.out.println(String.format("公告完成日[%s]   剩余天数[%d天]   年华利率[%5.2f%%]", endDate,days,percent));
+        ///double percent=(((endPrice-currentPrice)/currentPrice)/days)*365*100;
+        ///System.out.println(String.format("公告完成日[%s]   剩余天数[%d天]   年华利率[%5.2f%%]", endDate,days,percent));
 
-        //20天的资金回来（考虑一般公募基金会接盘）
-        endDate=endDate.plusDays(20);
+        //17天的资金回来（考虑一般公募基金会接盘）
+        endDate=endDate.plusDays(17);
 
         days=endDate.toEpochDay()- LocalDate.now().toEpochDay();
         //计算年华利率
-        endPrice=100d;
-        percent=(((endPrice-currentPrice)/currentPrice)/days)*365*100;
-        System.out.println(String.format("最终完成日[%s]   剩余天数[%d天]   年华利率[%5.2f%%]", endDate,days,percent));
+        endPrice=100.68d;
+        double percent=(((endPrice-currentPrice)/currentPrice)/days)*365*100;
+        double percent2=(((endPrice-0.136-currentPrice)/currentPrice)/days)*365*100;
+        System.out.println(String.format("最终完成日[%s]   剩余天数[%d天]   年华利率[%5.2f%%] 税后[%5.2f%%]", endDate,days,percent,percent2));
     }
 
     private static LocalDate getNextWorkDate(LocalDate startDate) {
@@ -125,6 +126,6 @@ public class StockImpl implements FinanceData{
 
     public   static void main(String[] args){
 
-        StockImpl.calcu132003(99.48d);
+        StockImpl.calcu132003(100.41d);
     }
 }

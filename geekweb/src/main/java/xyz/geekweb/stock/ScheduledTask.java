@@ -52,7 +52,7 @@ public class ScheduledTask {
 
             if (HolidayUtil.isStockTime()) {
                 logger.debug("执行SinaJsl任务");
-                searchFinanceData.saveSinaJslToRedis();
+                searchFinanceData.saveSinaJslToMem();
             }
         }, 0, 5, TimeUnit.SECONDS);
     }
