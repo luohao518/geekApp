@@ -24,7 +24,7 @@ import java.util.Map;
 public class SearchFinanceData {
 
     public static final String LST_SINA_JSL_KEY = "LST_SINA_JSL_KEY";
-    public static final String LST_FX_KEY = "LST_FX_KEY";
+        public static final String LST_FX_KEY = "LST_FX_KEY";
     @Autowired
     private DataProperties dataProperties;
 
