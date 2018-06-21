@@ -11,7 +11,7 @@
 
     <artifactId>geekweb</artifactId>
     <name>geekweb</name>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
     <properties>
         <!-- spring版本号 -->
