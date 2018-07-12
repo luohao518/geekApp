@@ -31,7 +31,7 @@ public class ScheduledTask {
         this.searchFinanceData = searchFinanceData;
     }
 
-    @Scheduled(fixedRate = 45000)
+    @Scheduled(fixedRate = 120000)
     public void reportCurrentTime() {
         if (!HolidayUtil.isHoliday()) {
             logger.debug("执行FX任务");
@@ -58,9 +58,9 @@ public class ScheduledTask {
             }
         }, 0, 5, TimeUnit.SECONDS);
 
-        //每天清理一次数据
+        //清理数据
         scheduledThreadPool.scheduleAtFixedRate(() -> {
             searchFinanceData.clearRedisData();
-        }, 0, 1, TimeUnit.DAYS);
+        }, 0, 3, TimeUnit.HOURS);
     }
 }
