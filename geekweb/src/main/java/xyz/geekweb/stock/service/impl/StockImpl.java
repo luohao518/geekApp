@@ -126,7 +126,7 @@ public class StockImpl implements FinanceData{
 
     public   static void main(String[] args){
 
-        StockImpl.calcu132003(99.79d+0.6384d,LocalDate.now());
-        StockImpl.calcu132003(99.85d+0.6384d,LocalDate.of(2018,06,19));
+        StockImpl.calcu132003(99.89d+0.6658d,LocalDate.now());
+        //StockImpl.calcu132003(99.95d+0.6658d,LocalDate.of(2018,06,25));
     }
 }

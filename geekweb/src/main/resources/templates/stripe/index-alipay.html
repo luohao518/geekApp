@@ -37,17 +37,15 @@
 <script th:inline="javascript">
     /*<![CDATA[*/
 
-    var stripe = Stripe('pk_test_AkkcbYg0HIHFwCepZCZrbZZJ');
-
     function alipay(amount) {
         //showLoading();
-        var stripe = Stripe('pk_test_AkkcbYg0HIHFwCepZCZrbZZJ');
+        var stripe = Stripe('pk_test_Be3VzXWAO8dCLi2yFfaidLEt');
         stripe.createSource({
             type: 'alipay',
-            amount: 1099,
+            amount: 1000,
             currency: 'usd',
             redirect: {
-                return_url: 'http://127.0.0.1:8000/stripe/alipay',
+                return_url: 'http://140.82.48.255:3000/strip/alipay/return',
             },
         }).then(function(result) {
             if (result.error) {

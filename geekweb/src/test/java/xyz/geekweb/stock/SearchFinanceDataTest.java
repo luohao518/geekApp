@@ -23,9 +23,13 @@ public class SearchFinanceDataTest {
     @Test
     public void testRedis() throws Exception {
 
-       searchFinanceData.saveSinaJslToMem();
+       searchFinanceData.saveSinaJslToRedis();
+        searchFinanceData.saveSinaJslToRedis();
 
        searchFinanceData.getAllDataFromRedis();
+
+        searchFinanceData.clearRedisData();
+
 
     }
 

@@ -24,6 +24,7 @@ public class GZNHGImpl implements FinanceData {
     private List<RealTimeDataPOJO> data;
     private  List<RealTimeDataPOJO> watchData;
 
+    @Autowired
     private  DataProperties dataProperties;
 
     private  Logger logger = LoggerFactory.getLogger(this.getClass());

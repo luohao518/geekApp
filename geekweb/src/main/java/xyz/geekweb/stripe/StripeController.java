@@ -1,15 +1,20 @@
 package xyz.geekweb.stripe;
 
+import com.stripe.model.Charge;
+import com.stripe.model.Event;
+import com.stripe.net.APIResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import xyz.geekweb.util.URLUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author lhao
@@ -37,17 +42,18 @@ public class StripeController {
 
     @PostMapping("pay")
     public String pay(HttpServletRequest request) {
-        String cancelUrl = URLUtils.getBaseURl(request) + "/paypal/cancel";
-        String successUrl = URLUtils.getBaseURl(request) + "/paypal/success";
+        String cancelUrl = URLUtils.getBaseURl(request) + "/stripe/cancel";
+        String successUrl = URLUtils.getBaseURl(request) + "/stripe/success";
         String token = request.getParameter("stripeToken");
         System.out.println(token);
         logger.debug("do pay() start");
-        stripeService.doPay(
-                6600,"luohao518@yeah.net",token,"ordreId:11111111");
-        logger.debug("do pay() end");
-
-
-        return "redirect:/";
+        Charge charge = stripeService.doPay(
+                6600, "11111111", "luohao518@yeah.net", token);
+        if ("succeeded".equals(charge.getStatus())) {
+            return "redirect:" + successUrl;
+        } else {
+            return "redirect:" + cancelUrl;
+        }
     }
 
     @GetMapping("cancel")
@@ -56,38 +62,23 @@ public class StripeController {
         return "paypal/cancel";
 
     }
-/*
+
     @GetMapping("success")
-    public ResponseData successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId) {
-        try {
-            logger.debug("do success");
-            Payment payment = stripeService.executePayment(paymentId, payerId);
-            logger.debug("do execute finished!!![{}]", payment.toJSON());
-            if (payment.getState().equals("approved")) {
-                return new ResponseData(ExceptionMsg.SUCCESS);
-            } else {
-                return new ResponseData(ExceptionMsg.FAILED);
-            }
-        } catch (StripeRESTException e) {
-            logger.error("successPay", e);
-            return new ResponseData(ExceptionMsg.FAILED, e.getMessage());
-        }
+    public String successPay() {
+        logger.debug("do success");
+        return "paypal/success";
+
     }
 
-    @GetMapping("refund")
-    public @ResponseBody
-    ResponseData reFund(String saleId, String amountMoney) {
-        logger.debug("do refund");
+    @GetMapping("webhook")
+    public void webhook(@RequestBody String body, HttpServletResponse response) {
+        // Retrieve the request's body and parse it as JSON:
+        logger.info("RequestBody[{}]",body);
+        Event eventJson = APIResource.GSON.fromJson(body, Event.class);
 
-        DetailedRefund detailedRefund = null;
-        try {
-            detailedRefund = stripeService.reFund(saleId, amountMoney);
-            return new ResponseData(ExceptionMsg.SUCCESS, detailedRefund.toJSON());
-        } catch (StripeRESTException e) {
-            logger.error("reFund", e);
-            return new ResponseData(ExceptionMsg.FAILED, e.getMessage());
-        }
+        logger.info("eventJson[{}]",eventJson);
+        // Do something with eventJson
 
-
-    }*/
+        response.setStatus(200);
+    }
 }

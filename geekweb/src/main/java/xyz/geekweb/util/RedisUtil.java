@@ -451,6 +451,15 @@ public class RedisUtil {
         }
     }
 
+    public Object lRightPop(String key) {
+        try {
+            return  redisTemplate.opsForList().rightPop(key);
+        } catch (Exception e) {
+            logger.error("lRightPop",e);
+            return null;
+        }
+    }
+
     /**
      * 将list放入缓存
      * @param key 键

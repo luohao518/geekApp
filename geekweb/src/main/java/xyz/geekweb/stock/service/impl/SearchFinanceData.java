@@ -1,5 +1,6 @@
 package xyz.geekweb.stock.service.impl;
 
+import com.google.common.collect.Range;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 /**
  * @author lhao
@@ -73,8 +76,24 @@ public class SearchFinanceData {
         return this.lstFinanceData;
     }
 
+    public void clearRedisData(){
+        logger.debug("clear redis data ");
+        try {
+            LongStream.range(0,redisUtil.lGetListSize(LST_SINA_JSL_KEY)).forEach( item ->{
+                redisUtil.lRightPop(LST_SINA_JSL_KEY);
+            });
 
-   /* public void saveSinaJslToRedis(){
+            LongStream.range(0,redisUtil.lGetListSize(LST_FX_KEY)).forEach( item ->{
+                redisUtil.lRightPop(LST_FX_KEY);
+            });
+
+        }catch (Exception exp){
+            logger.error("clearRedisData:",exp);
+            throw  exp;
+        }
+    }
+
+    public void saveSinaJslToRedis(){
         logger.debug("put data into redis");
         try {
             fillSinaJslData();
@@ -84,10 +103,10 @@ public class SearchFinanceData {
             logger.error("redis put:",exp);
             throw  exp;
         }
-    }*/
+    }
 
-    public void saveSinaJslToMem(){
-        logger.debug("put data into redis");
+   /* public void saveSinaJslToMem(){
+        logger.debug("put data into memory");
         try {
             fillSinaJslData();
             lstFinanceDataIns=this.lstFinanceData;
@@ -95,14 +114,13 @@ public class SearchFinanceData {
             logger.error("saveSinaJslToMem:",exp);
             throw  exp;
         }
-    }
+    }*/
 
     public void saveFXToRedis(){
         logger.debug("put data into redis");
         try {
             fillFXData();
-            //24小时后失效
-            boolean result = redisUtil.lLeftPush(LST_FX_KEY, this.lstFinanceData,60*60*24);
+            boolean result = redisUtil.lLeftPush(LST_FX_KEY, this.lstFinanceData);
             Assert.isTrue(result,"lset");
         }catch (Exception exp){
             logger.error("redis put:",exp);
@@ -112,9 +130,9 @@ public class SearchFinanceData {
 
     public Map<String, List<RealTimeDataPOJO>> getAllDataFromRedis(){
 
-        /*Map<String, List<RealTimeDataPOJO>> lstFinanceData1 =
-                (Map<String, List<RealTimeDataPOJO>>)redisUtil.lGetIndex(LST_SINA_JSL_KEY,0);*/
-        Map<String, List<RealTimeDataPOJO>> lstFinanceData1 =this.lstFinanceDataIns;
+        Map<String, List<RealTimeDataPOJO>> lstFinanceData1 =
+                (Map<String, List<RealTimeDataPOJO>>)redisUtil.lGetIndex(LST_SINA_JSL_KEY,0);
+        //Map<String, List<RealTimeDataPOJO>> lstFinanceData1 =this.lstFinanceDataIns;
         Map<String, List<RealTimeDataPOJO>> lstFinanceData2 =
                 (Map<String, List<RealTimeDataPOJO>>)redisUtil.lGetIndex(LST_FX_KEY,0);
         if (lstFinanceData1 != null){
