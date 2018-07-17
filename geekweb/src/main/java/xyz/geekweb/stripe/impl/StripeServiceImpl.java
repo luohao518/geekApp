@@ -21,6 +21,10 @@ public class StripeServiceImpl implements StripeService {
 
     private static Logger logger = LoggerFactory.getLogger(StripeServiceImpl.class);
 
+    public static void main(String[] args) {
+        new StripeServiceImpl().doPay(10000, "luohao518@yeah.net", "xxxx", "111111");
+    }
+
     /**
      * do pay
      *
@@ -66,9 +70,5 @@ public class StripeServiceImpl implements StripeService {
             logger.error("APIException:", e);
             throw new RuntimeException(e);
         }
-    }
-
-    public static void main(String[] args) {
-        new StripeServiceImpl().doPay(10000, "luohao518@yeah.net", "xxxx", "111111");
     }
 }

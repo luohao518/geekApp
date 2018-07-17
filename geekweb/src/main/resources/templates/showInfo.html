@@ -30,20 +30,22 @@
                 </h3>
             </div>
         </div>
-    <div class="row clearfix">
-        <div class="col-xs-3 column">
+        <div class="row clearfix">
+            <div class="col-xs-3 column">
                 刷新间隔：[[${refresh}]]秒
+            </div>
+            <div class="col-xs-3 column">
+                <button type="submit" name="refresh" value="5" class="btn btn-default btn-warning btn-block">5秒</button>
+            </div>
+            <div class="col-xs-3 column">
+                <button type="submit" name="refresh" value="30" class="btn btn-default btn-warning btn-block">30秒
+                </button>
+            </div>
+            <div class="col-xs-3 column">
+                <button type="submit" name="refresh" value="60" class="btn btn-default btn-warning btn-block">1分钟
+                </button>
+            </div>
         </div>
-        <div class="col-xs-3 column">
-            <button type="submit"  name="refresh" value="5" class="btn btn-default btn-warning btn-block">5秒</button>
-        </div>
-        <div class="col-xs-3 column">
-            <button type="submit"  name="refresh" value="30" class="btn btn-default btn-warning btn-block">30秒</button>
-        </div>
-        <div class="col-xs-3 column">
-            <button type="submit"  name="refresh" value="60" class="btn btn-default btn-warning btn-block">1分钟</button>
-        </div>
-    </div>
     </form>
     <br/><br/>
     <div class="row clearfix">
@@ -70,14 +72,14 @@
                 </thead>
                 <tbody>
                 <tr th:each="item,iterStat : ${STOCK}" th:class="${iterStat.odd}? 'success'">
-                    <td th:text="${item.name}" />
-                    <td th:text="${#numbers.formatDecimal(item.riseAndFallPercent,1,2)}+'%'" />
-                    <td th:text="${#numbers.formatDecimal(item.now,1,2)}" />
+                    <td th:text="${item.name}"/>
+                    <td th:text="${#numbers.formatDecimal(item.riseAndFallPercent,1,2)}+'%'"/>
+                    <td th:text="${#numbers.formatDecimal(item.now,1,2)}"/>
 
-                    <td th:if="${item.type==1}" th:text="'-'" />
-                    <td th:if="${item.type==2}" th:text="${#numbers.formatDecimal(item.sell1Num,1,0)}/100"  />
+                    <td th:if="${item.type==1}" th:text="'-'"/>
+                    <td th:if="${item.type==2}" th:text="${#numbers.formatDecimal(item.sell1Num,1,0)}/100"/>
 
-                    <td th:text="${#dates.format(item.time, 'HH:mm:ss')}" />
+                    <td th:text="${#dates.format(item.time, 'HH:mm:ss')}"/>
                 </tr>
                 </tbody>
             </table>
@@ -85,16 +87,20 @@
             <table class="table table-bordered">
                 <thead>
                 <tr>
-                    <th>分级基金</th><th>涨跌幅</th><th>当前价</th><th>净值</th><th>净价</th>
+                    <th>分级基金</th>
+                    <th>涨跌幅</th>
+                    <th>当前价</th>
+                    <th>净值</th>
+                    <th>净价</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="item,iterStat : ${FJ_FUND}" th:class="${iterStat.odd}? 'success'">
-                    <td th:text="${item.name}" />
-                    <td th:text="${#numbers.formatDecimal(item.riseAndFallPercent,1,2)}+'%'" />
-                    <td th:text="${item.now}" />
-                    <td th:text="${#numbers.formatDecimal(item.value,1,4)}" />
-                    <td th:text="${#numbers.formatDecimal(item.trueValue,1,4)}" />
+                    <td th:text="${item.name}"/>
+                    <td th:text="${#numbers.formatDecimal(item.riseAndFallPercent,1,2)}+'%'"/>
+                    <td th:text="${item.now}"/>
+                    <td th:text="${#numbers.formatDecimal(item.value,1,4)}"/>
+                    <td th:text="${#numbers.formatDecimal(item.trueValue,1,4)}"/>
                 </tr>
                 </tbody>
             </table>
@@ -103,15 +109,18 @@
             <table class="table table-bordered">
                 <thead>
                 <tr>
-                    <th>国债逆回购</th><th>当前价</th><th>买入价</th><th>代码</th>
+                    <th>国债逆回购</th>
+                    <th>当前价</th>
+                    <th>买入价</th>
+                    <th>代码</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="item,iterStat : ${GZNHG}" th:class="${iterStat.odd}? 'success'">
-                    <td th:text="${item.name}" />
-                    <td th:text="${item.now}" />
-                    <td th:text="${item.buy1Price}" />
-                    <td th:text="${item.fullCode}" />
+                    <td th:text="${item.name}"/>
+                    <td th:text="${item.now}"/>
+                    <td th:text="${item.buy1Price}"/>
+                    <td th:text="${item.fullCode}"/>
                     <!--<td th:text="${#dates.format(it&lt;!&ndash;&ndash;&gt;em.time, 'HH:mm:ss')}" />-->
                 </tr>
                 </tbody>
@@ -120,15 +129,18 @@
             <table class="table table-bordered">
                 <thead>
                 <tr>
-                    <th>货币基金</th><th>当前价</th><th>卖出价</th><th>卖量</th>
+                    <th>货币基金</th>
+                    <th>当前价</th>
+                    <th>卖出价</th>
+                    <th>卖量</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="item,iterStat : ${HB_FUND}" th:class="${iterStat.odd}? 'success'">
-                    <td th:text="${item.name}" />
-                    <td th:text="${item.now}" />
-                    <td th:text="${item.sell1Price}" />
-                    <td th:text="${item.sell1Num}" />
+                    <td th:text="${item.name}"/>
+                    <td th:text="${item.now}"/>
+                    <td th:text="${item.sell1Price}"/>
+                    <td th:text="${item.sell1Num}"/>
                 </tr>
                 </tbody>
             </table>
@@ -136,14 +148,16 @@
             <table class="table table-bordered">
                 <thead>
                 <tr>
-                    <th>外汇</th><th>当前价</th><th>最终更新时间</th>
+                    <th>外汇</th>
+                    <th>当前价</th>
+                    <th>最终更新时间</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="item,iterStat : ${FX}" th:class="${iterStat.odd}? 'success'">
-                    <td th:text="${item.name}" />
-                    <td th:text="${item.now}" />
-                    <td th:text="${#dates.format(item.time, 'YYYY/MM/dd HH:mm:ss')}" />
+                    <td th:text="${item.name}"/>
+                    <td th:text="${item.now}"/>
+                    <td th:text="${#dates.format(item.time, 'YYYY/MM/dd HH:mm:ss')}"/>
                 </tr>
                 </tbody>
             </table>

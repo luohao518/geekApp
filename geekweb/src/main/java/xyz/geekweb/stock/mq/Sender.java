@@ -31,7 +31,7 @@ public class Sender {
 
     public void sendNotify(List<RealTimeDataPOJO> lstDataPO) {
 
-        if(lstDataPO!=null && lstDataPO.size()>0) {
+        if (lstDataPO != null && lstDataPO.size() > 0) {
 
             logger.info("call sendNotify()");
             this.rabbitTemplate.convertAndSend(QUEUE_NOTIFY, lstDataPO);

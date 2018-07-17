@@ -22,12 +22,12 @@ public class GZNHGImpl implements FinanceData {
 
 
     private List<RealTimeDataPOJO> data;
-    private  List<RealTimeDataPOJO> watchData;
+    private List<RealTimeDataPOJO> watchData;
 
     @Autowired
-    private  DataProperties dataProperties;
+    private DataProperties dataProperties;
 
-    private  Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public GZNHGImpl(DataProperties dataProperties) {
@@ -44,16 +44,6 @@ public class GZNHGImpl implements FinanceData {
     }
 
     @Override
-    public List<RealTimeDataPOJO>  getData(){
-        return this.data;
-    }
-
-    @Override
-    public void sendNotify(Sender sender){
-       // sender.sendNotify(this.watchData);
-    }
-
-    @Override
     public void printInfo() {
         StringBuilder sb = new StringBuilder("\n");
         sb.append("-----------国债逆回购-------------\n");
@@ -61,5 +51,15 @@ public class GZNHGImpl implements FinanceData {
         sb.append("---------------------------------\n");
 
         logger.info(sb.toString());
+    }
+
+    @Override
+    public void sendNotify(Sender sender) {
+        // sender.sendNotify(this.watchData);
+    }
+
+    @Override
+    public List<RealTimeDataPOJO> getData() {
+        return this.data;
     }
 }

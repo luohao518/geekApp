@@ -11,7 +11,6 @@ import xyz.geekweb.stock.service.impl.SearchFinanceData;
 import xyz.geekweb.util.HolidayUtil;
 import xyz.geekweb.util.MailService;
 
-import java.io.IOException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;

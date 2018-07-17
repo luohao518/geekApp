@@ -73,10 +73,10 @@ public class StripeController {
     @GetMapping("webhook")
     public void webhook(@RequestBody String body, HttpServletResponse response) {
         // Retrieve the request's body and parse it as JSON:
-        logger.info("RequestBody[{}]",body);
+        logger.info("RequestBody[{}]", body);
         Event eventJson = APIResource.GSON.fromJson(body, Event.class);
 
-        logger.info("eventJson[{}]",eventJson);
+        logger.info("eventJson[{}]", eventJson);
         // Do something with eventJson
 
         response.setStatus(200);

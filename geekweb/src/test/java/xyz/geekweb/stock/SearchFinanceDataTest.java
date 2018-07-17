@@ -23,10 +23,10 @@ public class SearchFinanceDataTest {
     @Test
     public void testRedis() throws Exception {
 
-       searchFinanceData.saveSinaJslToRedis();
+        searchFinanceData.saveSinaJslToRedis();
         searchFinanceData.saveSinaJslToRedis();
 
-       searchFinanceData.getAllDataFromRedis();
+        searchFinanceData.getAllDataFromRedis();
 
         searchFinanceData.clearRedisData();
 
@@ -36,10 +36,10 @@ public class SearchFinanceDataTest {
     @Test
     public void testPushAndIndex() throws Exception {
 
-        redisUtil.lLeftPush("test1","a");
-        redisUtil.lLeftPush("test1","b");
-        redisUtil.lLeftPush("test1","c");
-        Assert.assertEquals("c",redisUtil.lGetIndex("test1",0));
+        redisUtil.lLeftPush("test1", "a");
+        redisUtil.lLeftPush("test1", "b");
+        redisUtil.lLeftPush("test1", "c");
+        Assert.assertEquals("c", redisUtil.lGetIndex("test1", 0));
 
 
     }

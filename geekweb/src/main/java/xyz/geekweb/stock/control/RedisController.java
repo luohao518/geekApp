@@ -24,13 +24,12 @@ public class RedisController {
     private RedisTemplate redisTemplate;
 
     @RequestMapping(method = RequestMethod.GET)
-    public String testRedis(){
+    public String testRedis() {
         logger.debug("test Redis");
-        stringRedisTemplate.opsForValue().set("testString","value1");
+        stringRedisTemplate.opsForValue().set("testString", "value1");
         redisTemplate.opsForValue().set("testobj", LocalDateTime.now());
         return "ok";
     }
-
 
 
 }

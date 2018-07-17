@@ -16,7 +16,7 @@ public class FXImplTest {
     private DataProperties dataProperties;
 
     @Autowired
-    private  FXImpl fx;
+    private FXImpl fx;
 
     @Test
     public void testPrint() throws Exception {

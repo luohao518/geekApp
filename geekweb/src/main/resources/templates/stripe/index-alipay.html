@@ -47,7 +47,7 @@
             redirect: {
                 return_url: 'http://140.82.48.255:3000/strip/alipay/return',
             },
-        }).then(function(result) {
+        }).then(function (result) {
             if (result.error) {
                 alert(result.error.message);
             }
@@ -57,55 +57,55 @@
             }
         });
 
-/*        stripe.createSource({
-            type: 'alipay',
-            amount: 6600,
-            currency: 'usd', // usd, eur,
-            redirect: {
-                return_url: 'alipay'
-            },
-        }).then(function (response) {
-            //hideLoading();
-            if (response.error) {
-                alert(response.error.message);
-            }
-            else {
-                processStripeResponse(response.source);
-            }
-        });*/
+        /*        stripe.createSource({
+                    type: 'alipay',
+                    amount: 6600,
+                    currency: 'usd', // usd, eur,
+                    redirect: {
+                        return_url: 'alipay'
+                    },
+                }).then(function (response) {
+                    //hideLoading();
+                    if (response.error) {
+                        alert(response.error.message);
+                    }
+                    else {
+                        processStripeResponse(response.source);
+                    }
+                });*/
     }
 
     function processStripeResponse(source) {
         window.location.href = source.redirect.url;
     }
 
-    $('#pay').click(function(){
+    $('#pay').click(function () {
         alipay();
     });
 
 
-   /* $(function(){
-        var stripeHandler = StripeCheckout.configure({
-            key: 'pk_test_AkkcbYg0HIHFwCepZCZrbZZJ',
-            image: 'https://placehold.it/200x200',    // 显示在支付对话框的图片，可自己指定
-            alipay: true,                             // 启用支付宝支付
-            token: function(token){                   // 用户填写完资料并且 Stripe 校验成功后的回调函数
-                // 此时应该提交 token.id 到后台，比如 http://example.com/orders/1?stripeToken={token.id}
-                location.href="stripe/alipay";
-            }
-        })
+    /* $(function(){
+         var stripeHandler = StripeCheckout.configure({
+             key: 'pk_test_AkkcbYg0HIHFwCepZCZrbZZJ',
+             image: 'https://placehold.it/200x200',    // 显示在支付对话框的图片，可自己指定
+             alipay: true,                             // 启用支付宝支付
+             token: function(token){                   // 用户填写完资料并且 Stripe 校验成功后的回调函数
+                 // 此时应该提交 token.id 到后台，比如 http://example.com/orders/1?stripeToken={token.id}
+                 location.href="stripe/alipay";
+             }
+         })
 
-        $('#pay').click(function(){
-            stripeHandler.open({
-                name: 'importExpress',                  // 收款方或商家名称，比如 Beansmile
-                description: "orderID:1111111111",              // 待支付商品的描述
-                amount: 50 * 100,                       // 支付金额，单位是“分”
-                opened: function(){                     // 支付对话框打开后的回调函数
-                    // Do something
-                }
-            });
-        });
-    });*/
+         $('#pay').click(function(){
+             stripeHandler.open({
+                 name: 'importExpress',                  // 收款方或商家名称，比如 Beansmile
+                 description: "orderID:1111111111",              // 待支付商品的描述
+                 amount: 50 * 100,                       // 支付金额，单位是“分”
+                 opened: function(){                     // 支付对话框打开后的回调函数
+                     // Do something
+                 }
+             });
+         });
+     });*/
     /*]]>*/
 
 </script>

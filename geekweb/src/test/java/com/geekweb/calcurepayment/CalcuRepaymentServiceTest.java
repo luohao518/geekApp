@@ -23,7 +23,7 @@ public class CalcuRepaymentServiceTest {
         CalcuRepaymentService instance = new CalcuRepaymentService();
         RepaymentScheduleData<List<Detail>> result = instance.of("saxon", "2017-07-03", 400_000, 0.13, 11_000);
         assertNotNull(result);
-        assertEquals(result.data.size(), 47);
+        assertEquals(result.getData().size(), 47);
     }
 
     @Test
@@ -32,7 +32,7 @@ public class CalcuRepaymentServiceTest {
         CalcuRepaymentService instance = new CalcuRepaymentService();
         RepaymentScheduleData<List<Detail>> result = instance.of("jackluo", "2016-07-03", 10000, 0.12, 1000);
         assertNotNull(result);
-        assertEquals(result.data.size(), 11);
+        assertEquals(result.getData().size(), 11);
     }
 
     @Test(expected = IllegalArgumentException.class)

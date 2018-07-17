@@ -11,13 +11,13 @@ import xyz.geekweb.config.DataProperties;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class DataPropertiesTest  {
+public class DataPropertiesTest {
 
     @Autowired
     private DataProperties dataProperties;
 
     @Test
-    public void testMap(){
+    public void testMap() {
         Assert.assertNotNull(dataProperties);
         Assert.assertNotNull(dataProperties.getMap());
     }

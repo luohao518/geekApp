@@ -23,13 +23,13 @@ import static java.util.stream.Collectors.toList;
  * 股票
  */
 @Service
-public class StockImpl implements FinanceData{
+public class StockImpl implements FinanceData {
 
     private List<RealTimeDataPOJO> data;
-    private  List<RealTimeDataPOJO> watchData;
+    private List<RealTimeDataPOJO> watchData;
 
-    private  DataProperties dataProperties;
-    private  Logger logger = LoggerFactory.getLogger(this.getClass());
+    private DataProperties dataProperties;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public StockImpl(DataProperties dataProperties) {
@@ -37,73 +37,41 @@ public class StockImpl implements FinanceData{
         this.dataProperties = dataProperties;
     }
 
-    @Override
-    public List<RealTimeDataPOJO>  getData(){
-        return this.data;
+    public static void main(String[] args) {
+
+        StockImpl.calcu132003(99.89d + 0.6658d, LocalDate.now());
+        //StockImpl.calcu132003(99.95d+0.6658d,LocalDate.of(2018,06,25));
     }
 
-    public void fetchData(List<RealTimeDataPOJO> data) {
-
-        this.data = data.stream().filter(item -> (
-                item.getType()==RealTimeDataPOJO.INDEX ||
-                        (StringUtils.startsWithAny(item.getFullCode(),new String[]{"sh","sz","int"})
-                                && !StringUtils.startsWithAny(item.getFullCode(),new String[]{"sh511","sh204"})))).collect(toList());
-        this.watchData = this.data.stream().filter( item -> item.getType()== RealTimeDataPOJO.STOCK).filter(item -> Math.abs(item.getRiseAndFallPercent()) >= Double.parseDouble(dataProperties.getMap().get("MAX_STOCKS_PERCENT"))).collect(toList());
-    }
-
-    @Override
-    public void sendNotify(Sender sender){
-        sender.sendNotify(this.watchData);
-    }
-
-    @Override
-    public void printInfo() {
-        StringBuilder sb = new StringBuilder("\n");
-        sb.append("-------------------股票-------------------\n");
-        this.data.forEach(item -> {
-            if(item.getType()==RealTimeDataPOJO.INDEX){
-                sb.append(String.format("%4s 当前价[%8.2f] 涨跌额[%6.2f] 涨跌百分比[%6.2f%%] 成交金额[%,10.0f万]%n",
-                        item.getName(), item.getNow(), item.getRiseAndFall(),
-                        item.getRiseAndFallPercent(),item.getVolumePrice()));
-            }else {
-                sb.append(String.format("%8s 当前价[%6.2f] 卖出价[%6.2f]  卖量[%7.0f] 买入价[%6.2f] 涨跌幅[%6.2f%%] %-6s %n",
-                        item.getFullCode(), item.getNow(), item.getSell1Price(), item.getSell1Num(), item.getBuy1Price(), item.getRiseAndFallPercent(), item.getName()));
-            }
-        });
-
-        sb.append("-------------------------------------------\n");
-        logger.info(sb.toString());
-    }
-
-    public static void calcu132003(double currentPrice,LocalDate now){
+    public static void calcu132003(double currentPrice, LocalDate now) {
 
         //4.26才可以开始计算回售条款
         LocalDate startDate = LocalDate.of(2018, 4, 26);
-        LocalDate endDate=startDate;
+        LocalDate endDate = startDate;
         //30工作日观察（5.1假期)+2工作日公告
-        for(int i=0;i<30+1+2;i++) {
+        for (int i = 0; i < 30 + 1 + 2; i++) {
             endDate = getNextWorkDate(endDate);
         }
 
         //计算年华利率
-        double endPrice=100d;
-        long days=endDate.toEpochDay()- LocalDate.now().toEpochDay();
+        double endPrice = 100d;
+        long days = endDate.toEpochDay() - LocalDate.now().toEpochDay();
         ///double percent=(((endPrice-currentPrice)/currentPrice)/days)*365*100;
         ///System.out.println(String.format("公告完成日[%s]   剩余天数[%d天]   年华利率[%5.2f%%]", endDate,days,percent));
 
         //17天的资金回来（考虑一般公募基金会接盘）
-        endDate=endDate.plusDays(17);
+        endDate = endDate.plusDays(17);
 
-        days=endDate.toEpochDay()- now.toEpochDay();
+        days = endDate.toEpochDay() - now.toEpochDay();
         //计算年华利率
-        endPrice=100.68d;
-        double percent=(((endPrice-currentPrice)/currentPrice)/days)*365*100;
-        double percent2=(((endPrice-0.136-currentPrice)/currentPrice)/days)*365*100;
-        System.out.println(String.format("开始日[%s] 最终日[%s]   剩余天数[%d天]   年华利率[%5.2f%%] 税后[%5.2f%%]", now,endDate,days,percent,percent2));
+        endPrice = 100.68d;
+        double percent = (((endPrice - currentPrice) / currentPrice) / days) * 365 * 100;
+        double percent2 = (((endPrice - 0.136 - currentPrice) / currentPrice) / days) * 365 * 100;
+        System.out.println(String.format("开始日[%s] 最终日[%s]   剩余天数[%d天]   年华利率[%5.2f%%] 税后[%5.2f%%]", now, endDate, days, percent, percent2));
     }
 
     private static LocalDate getNextWorkDate(LocalDate startDate) {
-        return startDate.with( temporal -> {
+        return startDate.with(temporal -> {
             // 当前日期
             DayOfWeek dayOfWeek = DayOfWeek.of(temporal.get(ChronoField.DAY_OF_WEEK));
 
@@ -124,9 +92,41 @@ public class StockImpl implements FinanceData{
         });
     }
 
-    public   static void main(String[] args){
+    public void fetchData(List<RealTimeDataPOJO> data) {
 
-        StockImpl.calcu132003(99.89d+0.6658d,LocalDate.now());
-        //StockImpl.calcu132003(99.95d+0.6658d,LocalDate.of(2018,06,25));
+        this.data = data.stream().filter(item -> (
+                item.getType() == RealTimeDataPOJO.INDEX ||
+                        (StringUtils.startsWithAny(item.getFullCode(), new String[]{"sh", "sz", "int"})
+                                && !StringUtils.startsWithAny(item.getFullCode(), new String[]{"sh511", "sh204"})))).collect(toList());
+        this.watchData = this.data.stream().filter(item -> item.getType() == RealTimeDataPOJO.STOCK).filter(item -> Math.abs(item.getRiseAndFallPercent()) >= Double.parseDouble(dataProperties.getMap().get("MAX_STOCKS_PERCENT"))).collect(toList());
+    }
+
+    @Override
+    public void printInfo() {
+        StringBuilder sb = new StringBuilder("\n");
+        sb.append("-------------------股票-------------------\n");
+        this.data.forEach(item -> {
+            if (item.getType() == RealTimeDataPOJO.INDEX) {
+                sb.append(String.format("%4s 当前价[%8.2f] 涨跌额[%6.2f] 涨跌百分比[%6.2f%%] 成交金额[%,10.0f万]%n",
+                        item.getName(), item.getNow(), item.getRiseAndFall(),
+                        item.getRiseAndFallPercent(), item.getVolumePrice()));
+            } else {
+                sb.append(String.format("%8s 当前价[%6.2f] 卖出价[%6.2f]  卖量[%7.0f] 买入价[%6.2f] 涨跌幅[%6.2f%%] %-6s %n",
+                        item.getFullCode(), item.getNow(), item.getSell1Price(), item.getSell1Num(), item.getBuy1Price(), item.getRiseAndFallPercent(), item.getName()));
+            }
+        });
+
+        sb.append("-------------------------------------------\n");
+        logger.info(sb.toString());
+    }
+
+    @Override
+    public void sendNotify(Sender sender) {
+        sender.sendNotify(this.watchData);
+    }
+
+    @Override
+    public List<RealTimeDataPOJO> getData() {
+        return this.data;
     }
 }

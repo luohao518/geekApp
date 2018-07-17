@@ -12,7 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class FjFundImplTest {
 
     @Autowired
-    private  FjFundImpl fjFund;
+    private FjFundImpl fjFund;
 
     @Test
     public void test1() throws Exception {
