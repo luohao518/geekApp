@@ -10,7 +10,7 @@ import java.util.Date;
  * @date 2018/4/27
  */
 @Data
-public class FXBean implements Serializable{
+public class FXBean implements Serializable {
 
     private String symbol;
     private double bid;

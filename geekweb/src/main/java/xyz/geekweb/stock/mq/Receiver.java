@@ -27,33 +27,33 @@ public class Receiver {
     private MailService mailService;
 
     @Autowired
-    public Receiver(MailService mailService){
-        this.mailService=mailService;
+    public Receiver(MailService mailService) {
+        this.mailService = mailService;
     }
 
-    @RabbitListener(queues = QUEUE_MAIL,containerFactory="rabbitListenerContainerFactory")
+    @RabbitListener(queues = QUEUE_MAIL, containerFactory = "rabbitListenerContainerFactory")
     public void receiveMail(@Payload String msg) {
         logger.info("call receiveMail()");
 
         mailService.sendSimpleMail(msg);
     }
 
-    @RabbitListener(queues = QUEUE_NOTIFY,containerFactory="rabbitListenerContainerFactory")
+    @RabbitListener(queues = QUEUE_NOTIFY, containerFactory = "rabbitListenerContainerFactory")
     public void receiveNotify(@Payload List<RealTimeDataPOJO> lstDataPO) {
         logger.info("call receiveNotify()");
 
-        StringBuilder sb=new StringBuilder();
+        StringBuilder sb = new StringBuilder();
 
-        lstDataPO.stream().forEach( i ->
+        lstDataPO.stream().forEach(i ->
         {
             //分级
-            if(i.getSearchType()== FinanceTypeEnum.FJ_FUND){
+            if (i.getSearchType() == FinanceTypeEnum.FJ_FUND) {
                 sb.append(String.format("%n分级A可以做轮动---%4s: 当前价[%5.3f] 净值[%5.3f] 净价[%5.3f] [%6s %6s]",
-                        i.getBuyOrSaleEnum(), i.getNow(),i.getValue(),i.getTrueValue(), i.getFullCode(),i.getName()));
+                        i.getBuyOrSaleEnum(), i.getNow(), i.getValue(), i.getTrueValue(), i.getFullCode(), i.getName()));
             }
         });
         logger.info(sb.toString());
-        if(StringUtils.isNotEmpty(sb.toString())) {
+        if (StringUtils.isNotEmpty(sb.toString())) {
             mailService.sendSimpleMail(sb.toString());
         }
     }

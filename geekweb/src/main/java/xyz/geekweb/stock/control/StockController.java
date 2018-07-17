@@ -35,29 +35,29 @@ public class StockController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public String showList(String refresh,Model model) throws IOException {
+    public String showList(String refresh, Model model) throws IOException {
         logger.info("do getAllData()");
 
-        model.addAttribute("refresh",refresh);
+        model.addAttribute("refresh", refresh);
         model.addAttribute("datetime", LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
 
         Map<String, List<RealTimeDataPOJO>> allData = searchFinanceData.getAllDataFromRedis();
         allData.forEach((k, v) -> {
-            switch (k){
+            switch (k) {
                 case "STOCK":
-                    model.addAttribute(FinanceTypeEnum.STOCK.toString(),v);
+                    model.addAttribute(FinanceTypeEnum.STOCK.toString(), v);
                     break;
                 case "GZNHG":
-                    model.addAttribute(FinanceTypeEnum.GZNHG.toString(),v);
+                    model.addAttribute(FinanceTypeEnum.GZNHG.toString(), v);
                     break;
                 case "HB_FUND":
-                    model.addAttribute(FinanceTypeEnum.HB_FUND.toString(),v);
+                    model.addAttribute(FinanceTypeEnum.HB_FUND.toString(), v);
                     break;
                 case "FJ_FUND":
-                    model.addAttribute(FinanceTypeEnum.FJ_FUND.toString(),v);
+                    model.addAttribute(FinanceTypeEnum.FJ_FUND.toString(), v);
                     break;
                 case "FX":
-                    model.addAttribute(FinanceTypeEnum.FX.toString(),v);
+                    model.addAttribute(FinanceTypeEnum.FX.toString(), v);
                     break;
                 default:
                     logger.warn("参数错误！");

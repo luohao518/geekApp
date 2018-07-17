@@ -34,7 +34,7 @@ public class CalcuRepaymentService {
         LocalDate baseDate = LocalDate.parse(date);
 
         RepaymentScheduleData<List<Detail>> repaymentScheduleData = new RepaymentScheduleData<List<Detail>>();
-        repaymentScheduleData.name = name;
+        repaymentScheduleData.setName(name);
         ArrayList<Detail> detailList = new ArrayList<Detail>();
         Detail detail = null;
 
@@ -54,16 +54,16 @@ public class CalcuRepaymentService {
                 throw new IllegalArgumentException("Too much number!");
             }
             detail = new Detail();
-            detail.index = i;
-            detail.date = baseDate.plusMonths(i).toString();
-            detail.totalAmount = Double.valueOf(df.format(totalAmountForPrint));
-            detail.interest = Double.valueOf(df.format(interest));
-            detail.balance = Double.valueOf(df.format(balance));
+            detail.setIndex(i);
+            detail.setDate(baseDate.plusMonths(i).toString());
+            detail.setTotalAmount(Double.valueOf(df.format(totalAmountForPrint)));
+            detail.setInterest(Double.valueOf(df.format(interest)));
+            detail.setBalance(Double.valueOf(df.format(balance)));
             detailList.add(detail);
 
         }
 
-        repaymentScheduleData.data = detailList;
+        repaymentScheduleData.setData(detailList);
         return repaymentScheduleData;
     }
 
@@ -73,7 +73,7 @@ public class CalcuRepaymentService {
                 new TypeToken<RepaymentScheduleData<List<Detail>>>() {
                 }.getType());
         printHead();
-        for (Detail item : repaymentScheduleData.data) {
+        for (Detail item : repaymentScheduleData.getData()) {
             printData(item);
         }
     }
@@ -84,8 +84,8 @@ public class CalcuRepaymentService {
     }
 
     private void printData(Detail detail) {
-        f.format("%-5d %10s %,10.2f  %,10.2f   %,10.2f \n", detail.index, detail.date, detail.totalAmount,
-                detail.interest, detail.balance);
+        f.format("%-5d %10s %,10.2f  %,10.2f   %,10.2f \n", detail.getIndex(), detail.getDate(), detail.getTotalAmount(),
+                detail.getInterest(), detail.getBalance());
     }
 
 }

@@ -33,32 +33,27 @@ import static java.util.stream.Collectors.toList;
  * 分级基金
  */
 @Service
-public class FjFundImpl implements FinanceData{
+public class FjFundImpl implements FinanceData {
 
 
     //腾讯数据（查询量）
-    
-    private  static final String QT_URL = "http://qt.gtimg.cn/q=%s";
+
+    private static final String QT_URL = "http://qt.gtimg.cn/q=%s";
 
     //集思录数据
-    private  static final String URL = "https://www.jisilu.cn/data/sfnew/funda_list/?___t=%d";
+    private static final String URL = "https://www.jisilu.cn/data/sfnew/funda_list/?___t=%d";
 
-    private  Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private List<RealTimeDataPOJO> data;
 
-    private  List<RealTimeDataPOJO> watchData = new ArrayList<>();
+    private List<RealTimeDataPOJO> watchData = new ArrayList<>();
 
-    private  DataProperties dataProperties;
+    private DataProperties dataProperties;
 
     @Autowired
     public FjFundImpl(DataProperties dataProperties) {
         this.dataProperties = dataProperties;
-    }
-
-    @Override
-    public List<RealTimeDataPOJO>  getData(){
-        return this.data;
     }
 
     /**
@@ -87,7 +82,7 @@ public class FjFundImpl implements FinanceData{
                 item.setValue(fundaValue);
                 item.setTrueValue(trueValue);
                 item.setBuyOrSaleEnum(BuyOrSaleEnum.BUY);
-                item.setRiseAndFallPercent(Double.parseDouble(StringUtils.remove(row.getCell().getFunda_increase_rt(),'%')));
+                item.setRiseAndFallPercent(Double.parseDouble(StringUtils.remove(row.getCell().getFunda_increase_rt(), '%')));
                 String last_time = row.getCell().getLast_time();
                 LocalTime dt = LocalTime.parse(last_time, DateTimeFormatter.ISO_LOCAL_TIME);
                 item.setTime(DateUtils.asDate(dt));
@@ -110,33 +105,58 @@ public class FjFundImpl implements FinanceData{
 
             //最低价的项目
             RealTimeDataPOJO lowestItem = lstDataPO.get(0);
-            if("150022".equalsIgnoreCase(lowestItem.getFullCode())){
+            if ("150022".equalsIgnoreCase(lowestItem.getFullCode())) {
                 lowestItem = lstDataPO.get(1);
             }
             //阈值
             final double fj_min_diff = Double.parseDouble(dataProperties.getMap().get("FJ_MIN_DIFF"));
 
-            if( (haveItem.getTrueValue()- lowestItem.getTrueValue()) >= fj_min_diff){
-            //持有的分级净价比最低的分级净价大
+            if ((haveItem.getTrueValue() - lowestItem.getTrueValue()) >= fj_min_diff) {
+                //持有的分级净价比最低的分级净价大
 
-                if ("150181".equals(i) ){
-                    if((haveItem.getTrueValue() - 0.12d- lowestItem.getTrueValue()) >= fj_min_diff){
+                if ("150181".equals(i)) {
+                    if ((haveItem.getTrueValue() - 0.12d - lowestItem.getTrueValue()) >= fj_min_diff) {
                         //军工A的场合，净价计算减1.2分钱
                         this.watchData.add(haveItem);
                     }
-                }else {
+                } else {
                     this.watchData.add(haveItem);
                 }
             }
         }
-        if(this.watchData.size()>0){
-            if("150022".equalsIgnoreCase(lstDataPO.get(0).getFullCode())){
+        if (this.watchData.size() > 0) {
+            if ("150022".equalsIgnoreCase(lstDataPO.get(0).getFullCode())) {
                 this.watchData.add(lstDataPO.get(1));
-            }else{
+            } else {
                 this.watchData.add(lstDataPO.get(0));
             }
         }
-        this.data= lstDataPO;
+        this.data = lstDataPO;
+    }
+
+    private List<Rows> fetchJSLData() {
+        OkHttpClient client = new OkHttpClient();
+        String url = String.format(URL, System.currentTimeMillis());
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+        logger.debug(url);
+        Response response;
+        try {
+            response = client.newCall(request).execute();
+        } catch (IOException e) {
+            throw new RuntimeException("服务器端错误: ", e);
+        }
+        if (!response.isSuccessful()) {
+            throw new RuntimeException("服务器端错误: " + response.message());
+        }
+        JsonRootBean jsonData;
+        try {
+            jsonData = new Gson().fromJson(response.body().string(), JsonRootBean.class);
+        } catch (IOException e) {
+            throw new RuntimeException("服务器端错误: ", e);
+        }
+        return jsonData.getRows();
     }
 
     private void getQTData(final String[] fJFunds) {
@@ -186,36 +206,6 @@ public class FjFundImpl implements FinanceData{
         }
     }
 
-    private List<Rows> fetchJSLData() {
-        OkHttpClient client = new OkHttpClient();
-        String url = String.format(URL, System.currentTimeMillis());
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-        logger.debug(url);
-        Response response;
-        try {
-            response = client.newCall(request).execute();
-        } catch (IOException e) {
-            throw new RuntimeException("服务器端错误: ", e);
-        }
-        if (!response.isSuccessful()) {
-            throw new RuntimeException("服务器端错误: " + response.message());
-        }
-        JsonRootBean jsonData;
-        try {
-            jsonData = new Gson().fromJson(response.body().string(), JsonRootBean.class);
-        } catch (IOException e) {
-            throw new RuntimeException("服务器端错误: ", e);
-        }
-        return jsonData.getRows();
-    }
-
-    @Override
-    public void sendNotify(Sender sender){
-            sender.sendNotify(this.watchData);
-    }
-
     @Override
     public void printInfo() {
 
@@ -227,5 +217,15 @@ public class FjFundImpl implements FinanceData{
 
         sb.append("-----------------------------------------\n");
         logger.info(sb.toString());
+    }
+
+    @Override
+    public void sendNotify(Sender sender) {
+        sender.sendNotify(this.watchData);
+    }
+
+    @Override
+    public List<RealTimeDataPOJO> getData() {
+        return this.data;
     }
 }

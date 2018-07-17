@@ -11,7 +11,6 @@ import xyz.geekweb.stock.service.impl.SearchFinanceData;
 import xyz.geekweb.util.HolidayUtil;
 import xyz.geekweb.util.MailService;
 
-import java.io.IOException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -31,7 +30,7 @@ public class ScheduledTask {
         this.searchFinanceData = searchFinanceData;
     }
 
-    @Scheduled(fixedRate = 45000)
+    @Scheduled(fixedRate = 120000)
     public void reportCurrentTime() {
         if (!HolidayUtil.isHoliday()) {
             logger.debug("执行FX任务");
@@ -40,7 +39,7 @@ public class ScheduledTask {
     }
 
     @Scheduled(cron = "${geekweb.cron.exp}") //表示周一到周五每天上午9：15执行作业
-    public void reportCurrentTimeCron() throws InterruptedException, IOException {
+    public void reportCurrentTimeCron() {
 
         logger.debug("reportCurrentTimeCron() start");
 
@@ -48,12 +47,19 @@ public class ScheduledTask {
                 5,
                 new BasicThreadFactory.Builder().namingPattern("scheduled-pool-%d").daemon(true).build());
 
+        //每5秒查询数据
         scheduledThreadPool.scheduleAtFixedRate(() -> {
 
             if (HolidayUtil.isStockTime()) {
                 logger.debug("执行SinaJsl任务");
                 searchFinanceData.saveSinaJslToRedis();
+                //searchFinanceData.saveSinaJslToMem();
             }
         }, 0, 5, TimeUnit.SECONDS);
+
+        //清理数据
+        scheduledThreadPool.scheduleAtFixedRate(() -> {
+            searchFinanceData.clearRedisData();
+        }, 0, 3, TimeUnit.HOURS);
     }
 }

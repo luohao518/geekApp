@@ -1,7 +1,6 @@
 package xyz.geekweb.stock;
 
 
-
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

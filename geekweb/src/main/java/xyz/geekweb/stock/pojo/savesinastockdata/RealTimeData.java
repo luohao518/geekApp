@@ -117,16 +117,16 @@ public class RealTimeData {
                 Matcher indexMatcher = indexPatter.matcher(reresponseString);
                 Matcher indexOtherMatcher = indexOtherPatter.matcher(reresponseString);
                 if (indexMatcher.find()) {
-                    addData(result, indexMatcher,1);
-                }else if(indexOtherMatcher.find()){
-                    addData(result, indexOtherMatcher,2);
+                    addData(result, indexMatcher, 1);
+                } else if (indexOtherMatcher.find()) {
+                    addData(result, indexOtherMatcher, 2);
                 }
             }
         }
         return result;
     }
 
-    private static void addData(List<RealTimeDataPOJO> result, Matcher indexMatcher,int type) {
+    private static void addData(List<RealTimeDataPOJO> result, Matcher indexMatcher, int type) {
         RealTimeDataPOJO obj = new RealTimeDataPOJO();
         obj.setType(RealTimeDataPOJO.INDEX);
         obj.setFullCode(indexMatcher.group(1));
@@ -134,9 +134,9 @@ public class RealTimeData {
         obj.setName(array[0]);
         obj.setNow(Double.parseDouble(array[1]));
         obj.setRiseAndFall(Double.parseDouble(array[2]));
-        obj.setRiseAndFallPercent(Double.parseDouble(StringUtils.remove(array[3],"%")));
+        obj.setRiseAndFallPercent(Double.parseDouble(StringUtils.remove(array[3], "%")));
         //System.out.println(ArrayUtils.toString(array));
-        if(type==1) {
+        if (type == 1) {
             obj.setVolume(Double.parseDouble(array[4]));
             obj.setVolumePrice(Double.parseDouble(array[5]));
         }

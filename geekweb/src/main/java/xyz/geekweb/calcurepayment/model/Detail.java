@@ -1,14 +1,21 @@
 package xyz.geekweb.calcurepayment.model;
 
-public class Detail {
+import lombok.Getter;
+import lombok.Setter;
 
-    public int index;
+import java.io.Serializable;
 
-    public String date;
+@Setter
+@Getter
+public class Detail implements Serializable {
 
-    public double totalAmount;
+    private int index;
 
-    public double interest;
+    private String date;
 
-    public double balance;
+    private double totalAmount;
+
+    private double interest;
+
+    private double balance;
 }

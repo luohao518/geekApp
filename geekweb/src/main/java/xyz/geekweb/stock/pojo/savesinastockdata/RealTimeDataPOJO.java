@@ -25,14 +25,22 @@ public class RealTimeDataPOJO implements Serializable {
      */
     public static final int STOCK = 2;
 
-    /**买入:0 卖出:1*/
+    /**
+     * 买入:0 卖出:1
+     */
     BuyOrSaleEnum buyOrSaleEnum;
-    /**查询类型*/
+    /**
+     * 查询类型
+     */
     FinanceTypeEnum searchType;
 
-    /**基金的净值*/
+    /**
+     * 基金的净值
+     */
     double value;
-    /**分级基金的净价*/
+    /**
+     * 分级基金的净价
+     */
     double trueValue;
     private int type;
     private String fullCode;
@@ -106,40 +114,40 @@ public class RealTimeDataPOJO implements Serializable {
     /**
      * 股票的构造方法
      *
-     * @param type        应为STOCK
-     * @param fullCode    股票代码 如sz000001
-     * @param name        股票名称
-     * @param open        今日开盘价
-     * @param close       昨日收盘价
-     * @param now         当前价
-     * @param high        最高价
-     * @param low         最低价
-     * @param buyPrice    竞买价
-     * @param sellPrice   竞卖价
-     * @param volume      成交量
-     * @param volumePrice 成交总金额
-     * @param buy1Num     买一申请数
-     * @param buy1Price  买一报价
-     * @param buy2Num     买二申请数
-     * @param buy2Price  买二报价
-     * @param buy3Num     买三申请数
-     * @param buy3Price  买三报价
-     * @param buy4Num     买四申请数
-     * @param buy4Price  买四报价
-     * @param buy5Num     买五申请数
-     * @param buy5Price  买五报价
-     * @param sell1Num    卖一申请数
-     * @param sell1Price 卖一报价
-     * @param sell2Num    卖二申请数
-     * @param sell2Price 卖二报价
-     * @param sell3Num    卖三申请数
-     * @param sell3Price 卖三报价
-     * @param sell4Num    卖四申请数
-     * @param sell4Price 卖四报价
-     * @param sell5Num    卖五申请数
-     * @param sell5Price 卖五报价
-     * @param date        日期
-     * @param time        时间
+     * @param type               应为STOCK
+     * @param fullCode           股票代码 如sz000001
+     * @param name               股票名称
+     * @param open               今日开盘价
+     * @param close              昨日收盘价
+     * @param now                当前价
+     * @param high               最高价
+     * @param low                最低价
+     * @param buyPrice           竞买价
+     * @param sellPrice          竞卖价
+     * @param volume             成交量
+     * @param volumePrice        成交总金额
+     * @param buy1Num            买一申请数
+     * @param buy1Price          买一报价
+     * @param buy2Num            买二申请数
+     * @param buy2Price          买二报价
+     * @param buy3Num            买三申请数
+     * @param buy3Price          买三报价
+     * @param buy4Num            买四申请数
+     * @param buy4Price          买四报价
+     * @param buy5Num            买五申请数
+     * @param buy5Price          买五报价
+     * @param sell1Num           卖一申请数
+     * @param sell1Price         卖一报价
+     * @param sell2Num           卖二申请数
+     * @param sell2Price         卖二报价
+     * @param sell3Num           卖三申请数
+     * @param sell3Price         卖三报价
+     * @param sell4Num           卖四申请数
+     * @param sell4Price         卖四报价
+     * @param sell5Num           卖五申请数
+     * @param sell5Price         卖五报价
+     * @param date               日期
+     * @param time               时间
      * @param riseAndFallPercent 涨跌百分比
      */
     public RealTimeDataPOJO(int type, String fullCode, String name, double open, double close, double now, double high,
@@ -183,7 +191,7 @@ public class RealTimeDataPOJO implements Serializable {
         this.sell5Price = sell5Price;
         this.date = date;
         this.time = time;
-        this.value=0.0d;
-        this.trueValue=0.0d;
+        this.value = 0.0d;
+        this.trueValue = 0.0d;
     }
 }

@@ -11,6 +11,9 @@ import org.apache.poi.ss.usermodel.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import xyz.geekweb.stock.ScheduledTask;
 
 import java.io.*;
 import java.time.Instant;
@@ -27,6 +30,8 @@ import java.util.List;
  * @version 1.0.0
  */
 public class Tools {
+
+    private static Logger logger = LoggerFactory.getLogger(Tools.class);
     /**
      * 发送get请求，返回内容字符串
      *
@@ -46,7 +51,7 @@ public class Tools {
                 result = InputStreamToString(entity.getContent(), charsetName);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("sendHTTPGET",e);
         }
         return result;
     }
@@ -133,11 +138,12 @@ public class Tools {
      * @param outFileName 输出文件路径
      */
     public static void readExcel2JSON(String inFileName, String outFileName) {
+        Workbook wb = null;
         try
                 (
                         InputStream inp = new FileInputStream(inFileName);
                         PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(outFileName)));) {
-            Workbook wb = WorkbookFactory.create(inp);
+            wb = WorkbookFactory.create(inp);
             Sheet sheet = wb.getSheetAt(0);
             Boolean flag = true;
             int startRow = 1;
@@ -176,15 +182,15 @@ public class Tools {
                 }
             }
             json.endArray();
-        } catch (FileNotFoundException e) {
-            System.out.print("Don't find " + inFileName);
-            e.printStackTrace();
-        } catch (EncryptedDocumentException e) {
-            e.printStackTrace();
-        } catch (InvalidFormatException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.error("readExcel2JSON",e);
+
+        } finally {
+            try {
+                if (wb != null) wb.close();
+            } catch (IOException e) {
+                logger.error("readExcel2JSON",e);
+            }
         }
     }
 }

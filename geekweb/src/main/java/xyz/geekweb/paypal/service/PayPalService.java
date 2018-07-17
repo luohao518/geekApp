@@ -25,7 +25,7 @@ public interface PayPalService {
     Payment createPayment(Double total,
                           String cancelUrl,
                           String successUrl,
-                          String orderNO,String customMsg) throws PayPalRESTException;
+                          String orderNO, String customMsg) throws PayPalRESTException;
 
     /**
      * 创建交易
@@ -50,7 +50,7 @@ public interface PayPalService {
             String description,
             String cancelUrl,
             String successUrl,
-            String orderNO,String customMsg) throws PayPalRESTException;
+            String orderNO, String customMsg) throws PayPalRESTException;
 
     /**
      * 退款

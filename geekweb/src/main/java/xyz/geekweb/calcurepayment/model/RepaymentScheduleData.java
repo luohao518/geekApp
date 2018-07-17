@@ -1,9 +1,16 @@
 package xyz.geekweb.calcurepayment.model;
 
-public class RepaymentScheduleData<T> {
+import lombok.Getter;
+import lombok.Setter;
 
-    public String name;
+import java.io.Serializable;
 
-    public T data;
+@Setter
+@Getter
+public class RepaymentScheduleData<T> implements Serializable {
+
+    private String name;
+
+    private T data;
 
 }

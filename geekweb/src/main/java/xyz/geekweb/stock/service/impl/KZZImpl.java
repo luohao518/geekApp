@@ -21,20 +21,15 @@ import static java.util.stream.Collectors.toList;
 public class KZZImpl implements FinanceData {
 
     private List<RealTimeDataPOJO> data;
-    private  List<RealTimeDataPOJO> watchData;
+    private List<RealTimeDataPOJO> watchData;
 
-    private  DataProperties dataProperties;
+    private DataProperties dataProperties;
 
-    private  Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public KZZImpl(DataProperties dataProperties) {
         this.dataProperties = dataProperties;
-    }
-
-    @Override
-    public List<RealTimeDataPOJO>  getData(){
-        return this.data;
     }
 
     public void fetchData(List<RealTimeDataPOJO> realTimeDataPOJO) {
@@ -45,18 +40,12 @@ public class KZZImpl implements FinanceData {
         final double low_505888_value = Double.parseDouble(this.dataProperties.getMap().get("505888_VALUE").split(",")[0]);
         final double up_505888_value = Double.parseDouble(this.dataProperties.getMap().get("505888_VALUE").split(",")[1]);
 
-        this.data = realTimeDataPOJO.stream().filter(item ->( item.getFullCode().startsWith("sh505888")  || item.getFullCode().startsWith("sh132003"))).collect(toList());
+        this.data = realTimeDataPOJO.stream().filter(item -> (item.getFullCode().startsWith("sh505888") || item.getFullCode().startsWith("sh132003"))).collect(toList());
 
         this.watchData = realTimeDataPOJO.stream().filter(item ->
                 ((item.getFullCode().startsWith("sh505888") && item.getNow() <= low_505888_value) || (item.getFullCode().startsWith("sh132003") && item.getNow() <= low_132003_value))).collect(toList());
 
     }
-
-    @Override
-    public void sendNotify(Sender sender){
-       // sender.sendNotify(this.watchData);
-    }
-
 
     @Override
     public void printInfo() {
@@ -65,6 +54,16 @@ public class KZZImpl implements FinanceData {
         this.data.forEach(item -> sb.append(String.format("%-6s 当前价[%7.3f] 卖出价[%7.3f] 卖量[%5.0f] %-6s %n", item.getFullCode(), item.getNow(), item.getSell1Price(), item.getSell1Num(), item.getName())));
         sb.append("--------------------------------------\n");
         logger.info(sb.toString());
+    }
+
+    @Override
+    public void sendNotify(Sender sender) {
+        // sender.sendNotify(this.watchData);
+    }
+
+    @Override
+    public List<RealTimeDataPOJO> getData() {
+        return this.data;
     }
 
 

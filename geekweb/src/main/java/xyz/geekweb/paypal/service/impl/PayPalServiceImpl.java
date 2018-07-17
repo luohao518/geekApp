@@ -33,7 +33,7 @@ public class PayPalServiceImpl implements PayPalService {
             Double total,
             String cancelUrl,
             String successUrl,
-            String orderNO,String customMsg
+            String orderNO, String customMsg
     ) throws PayPalRESTException {
 
         return createPayment(total, "USD", PayPalPaymentMethodEnum.paypal,
@@ -41,7 +41,7 @@ public class PayPalServiceImpl implements PayPalService {
                 "",
                 cancelUrl,
                 successUrl,
-                orderNO,customMsg);
+                orderNO, customMsg);
 
     }
 
@@ -90,10 +90,35 @@ public class PayPalServiceImpl implements PayPalService {
         List<Item> items = new ArrayList<>();
         items.add(item);
         itemList.setItems(items);
+
+        ShippingAddress shippingAddress = new ShippingAddress();
+        shippingAddress.setLine1("P.O. Box 7004");
+        shippingAddress.setLine2("123 Nowhere Anywhere St., Apt. 542");
+        shippingAddress.setCity("Omaha");
+        shippingAddress.setState("NE");
+        shippingAddress.setPostalCode("68114");
+        shippingAddress.setCountryCode("US");
+
+        itemList.setShippingAddress(shippingAddress);
         transaction.setItemList(itemList);
 
         // ###Payer
         Payer payer = new Payer();
+        PayerInfo payerInfo = new PayerInfo();
+        payerInfo.setEmail("janet.doe@nowhere.com");
+        payerInfo.setFirstName("Janet M.");
+        payerInfo.setLastName("Doe");
+
+        /*Address billingAddress = new Address();
+        billingAddress.setLine1("P.O. Box 7004");
+        billingAddress.setLine2("123 Nowhere Anywhere St., Apt. 542");
+        billingAddress.setCity("Omaha");
+        billingAddress.setState("NE");
+        billingAddress.setPostalCode("68114");
+        billingAddress.setCountryCode("US");*/
+
+
+        payer.setPayerInfo(payerInfo);
         payer.setPaymentMethod(method.toString());
 
         // ###Payment

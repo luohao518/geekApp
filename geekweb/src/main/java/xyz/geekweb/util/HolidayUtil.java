@@ -1,5 +1,6 @@
 package xyz.geekweb.util;
 
+import com.alibaba.fastjson.JSON;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -20,9 +21,9 @@ public class HolidayUtil {
     private static Logger logger = LoggerFactory.getLogger(HolidayUtil.class);
 
     /**
-     * 查询是否为节假日API接口  工作日对应结果为 0, 休息日对应结果为 1, 节假日对应的结果为 2
+     * 查询是否为节假日API接口  工作日对应结果为 0, 休息日对应结果为 1
      */
-    private static String URL = "http://tool.bitefu.net/jiari?d=%s";
+    private static String URL = "http://27.115.38.42:3000/hd?d=%s";
 
     private static int[] STOCK_TIMES = new int[]{915, 1130, 1300, 1500};
 
@@ -55,11 +56,11 @@ public class HolidayUtil {
     }
 
 
-    public static boolean isHoliday()  {
+    public static boolean isHoliday() {
         try {
             return isHoliday(LocalDate.now());
         } catch (IOException e) {
-            logger.error("isHoliday:",e);
+            logger.error("isHoliday:", e);
             return false;
         }
     }
@@ -70,17 +71,20 @@ public class HolidayUtil {
 
 
         Request request = new Request.Builder()
-                .url(String.format(URL, date.format(DateTimeFormatter.ofPattern("yyyyMMdd"))))
+                .url(String.format(URL, date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
                 .build();
 
         Response response = client.newCall(request).execute();
         if (!response.isSuccessful()) {
-            throw new IOException("服务器端错误: " + response);
+            logger.error("服务器端错误: " + response);
+            return true;
         }
 
         String result = response.body().string();
+        String s = JSON.parseObject(result).get("result").toString();
+        logger.debug("result:" + s);
 
-        return result.equals("0") ? false : true;
+        return s.equals("0") ? false : true;
     }
 
     public static boolean isHoliday(String str) throws IOException {

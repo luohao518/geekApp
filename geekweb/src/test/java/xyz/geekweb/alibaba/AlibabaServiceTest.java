@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -41,7 +41,7 @@ public class AlibabaServiceTest {
     public void getBuyerOrderList() throws Exception {
         SDKResult<AlibabaTradeGetBuyerOrderListResult> result = service.getBuyerOrderList();
         assertNotNull(result.getResult());
-        List<String> lstId=new ArrayList<>(200);
+        List<String> lstId = new ArrayList<>(200);
         for (int i = 0; i < result.getResult().getResult().length; i++) {
             lstId.add(result.getResult().getResult()[i].getBaseInfo().getIdOfStr());
         }
