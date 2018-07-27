@@ -33,18 +33,19 @@ public class GoogleController {
         return "google/login";
     }
 
-    @RequestMapping(value = "/googleVerify", method = RequestMethod.POST)
+    @RequestMapping(value = "googleVerify", method = RequestMethod.POST)
     public String verifyToken(String idtokenstr) {
         System.out.println(idtokenstr);
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
                 new NetHttpTransport(), JacksonFactory.getDefaultInstance())
-                .setAudience(Collections.singletonList("620348788467-kc625s0dfie157c8e0gjnju53njalonj.apps.googleusercontent.com")).build();
+                .setAudience(Collections.singletonList("320502522179-ghvamimn46lr0ode7ocpus9oke104k2f.apps.googleusercontent.com")).build();
         GoogleIdToken idToken = null;
         try {
             idToken = verifier.verify(idtokenstr);
         } catch (GeneralSecurityException e) {
             System.out.println("验证时出现GeneralSecurityException异常");
         } catch (IOException e) {
+            System.err.println(e);
             System.out.println("验证时出现IOException异常");
         }
         if (idToken != null) {

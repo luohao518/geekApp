@@ -26,10 +26,10 @@
         // 传回后台验证，并获取userid
         var id_token = googleUser.getAuthResponse().id_token;
         var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'google/googleVerify');
+        xhr.open('POST', 'googleVerify');
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.onload = function() {
-            console.log('Signed in as: ' + xhr.responseText);
+            //console.log('Signed in as: ' + xhr.responseText);
         };
         xhr.send('idtokenstr=' + id_token);
     };
