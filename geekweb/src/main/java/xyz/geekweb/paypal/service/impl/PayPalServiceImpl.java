@@ -12,10 +12,7 @@ import xyz.geekweb.paypal.config.PayPalPaymentIntentEnum;
 import xyz.geekweb.paypal.config.PayPalPaymentMethodEnum;
 import xyz.geekweb.paypal.service.PayPalService;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author lhao
@@ -24,6 +21,8 @@ import java.util.Map;
 public class PayPalServiceImpl implements PayPalService {
 
     private static Logger logger = LoggerFactory.getLogger(PayPalServiceImpl.class);
+
+    private static String strId =null;
 
     @Autowired
     private PayPalConfig payPalConfig;
@@ -99,7 +98,7 @@ public class PayPalServiceImpl implements PayPalService {
         shippingAddress.setPostalCode("68114");
         shippingAddress.setCountryCode("US");
 
-        itemList.setShippingAddress(shippingAddress);
+        //itemList.setShippingAddress(shippingAddress);
         transaction.setItemList(itemList);
 
         // ###Payer
@@ -133,6 +132,7 @@ public class PayPalServiceImpl implements PayPalService {
         redirectUrls.setReturnUrl(successUrl);
         payment.setRedirectUrls(redirectUrls);
 
+        payment.setExperienceProfileId(getWebProfile(apiContext));
         return payment.create(apiContext);
     }
 
@@ -173,5 +173,22 @@ public class PayPalServiceImpl implements PayPalService {
         Map<String, String> sdkConfig = new HashMap<>(1);
         sdkConfig.put("mode", payPalConfig.mode);
         return new APIContext(payPalConfig.clientId, payPalConfig.clientSecret, payPalConfig.mode, sdkConfig);
+    }
+
+    private synchronized static String getWebProfile(APIContext apiContext) throws PayPalRESTException {
+
+        if(strId==null) {
+            WebProfile webProfile = new WebProfile();
+            InputFields inputField = new InputFields();
+            inputField.setNoShipping(1);
+            webProfile.setInputFields(inputField);
+            String name="WebProfile"+ UUID.randomUUID();
+            logger.info("getWebProfile name="+name);
+            webProfile.setName(name);
+            strId= webProfile.create(apiContext).getId();
+        }
+
+        logger.info("webProfile ID:"+strId);
+        return strId;
     }
 }
