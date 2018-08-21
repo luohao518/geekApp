@@ -1,6 +1,9 @@
 package xyz.geekweb.stock;
 
-import com.squareup.okhttp.*;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.geekweb.stock.pojo.savesinastockdata.Tools;
@@ -17,10 +20,10 @@ public class DoNet {
         //curl -d "email=1231@qq.com&pass=123456" https://www.import-express.com/reg/reg
 
         String email = name + "abc@qq.com";
-        RequestBody formBody = new FormEncodingBuilder()
+        RequestBody formBody =null; /*new FormEncodingBuilder()
                 .add("email", email)
                 .add("pass", "123456")
-                .build();
+                .build();*/
 
         Request request = new Request.Builder()
                 .url("https://www.import-express.com/reg/reg")
