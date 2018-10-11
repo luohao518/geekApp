@@ -74,7 +74,7 @@
                 <tr th:each="item,iterStat : ${STOCK}" th:class="${iterStat.odd}? 'success'">
                     <td th:text="${item.name}"/>
                     <td th:text="${#numbers.formatDecimal(item.riseAndFallPercent,1,2)}+'%'"/>
-                    <td th:text="${#numbers.formatDecimal(item.now,1,2)}"/>
+                    <td th:text="${#numbers.formatDecimal(item.now,1,3)}"/>
 
                     <td th:if="${item.type==1}" th:text="'-'"/>
                     <td th:if="${item.type==2}" th:text="${#numbers.formatDecimal(item.sell1Num,1,0)}/100"/>
