@@ -6,6 +6,9 @@ import com.paypal.base.rest.PayPalRESTException;
 import xyz.geekweb.paypal.config.PayPalPaymentIntentEnum;
 import xyz.geekweb.paypal.config.PayPalPaymentMethodEnum;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * @author lhao
  */
@@ -71,4 +74,6 @@ public interface PayPalService {
      * @throws PayPalRESTException
      */
     Payment executePayment(String paymentId, String payerId) throws PayPalRESTException;
+
+    void doWebhook(HttpServletRequest req, HttpServletResponse resp);
 }

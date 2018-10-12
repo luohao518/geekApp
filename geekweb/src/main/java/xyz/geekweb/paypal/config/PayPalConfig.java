@@ -12,6 +12,9 @@ public class PayPalConfig {
     @Value("${paypal.client.secret}")
     public String clientSecret;
 
+    @Value("${paypal.webhookId}")
+    public String webhookId;
+
     @Value("${paypal.mode}")
     public String mode;
 

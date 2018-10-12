@@ -4,6 +4,8 @@ import com.paypal.api.payments.DetailedRefund;
 import com.paypal.api.payments.Links;
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
+import com.stripe.model.Event;
+import com.stripe.net.APIResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import xyz.geekweb.paypal.service.PayPalService;
 import xyz.geekweb.util.URLUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author lhao
@@ -93,7 +96,14 @@ public class PaymentController {
             logger.error("reFund", e);
             return new ResponseData(ExceptionMsg.FAILED, e.getMessage());
         }
+    }
 
+    @PostMapping("webhook")
+    public void webhook(HttpServletRequest request, HttpServletResponse response) {
+        logger.info("do webhook post()");
+        payPalService.doWebhook(request,response);
 
     }
+
+
 }
