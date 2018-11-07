@@ -3,6 +3,7 @@ package xyz.geekweb.stripe.impl;
 import com.stripe.Stripe;
 import com.stripe.exception.*;
 import com.stripe.model.Charge;
+import com.stripe.model.Refund;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -21,8 +22,9 @@ public class StripeServiceImpl implements StripeService {
 
     private static Logger logger = LoggerFactory.getLogger(StripeServiceImpl.class);
 
-    public static void main(String[] args) {
-        new StripeServiceImpl().doPay(10000, "luohao518@yeah.net", "xxxx", "111111");
+    public static void main(String[] args) throws Exception {
+//        new StripeServiceImpl().doPay(10000, "luohao518@yeah.net", "xxxx", "111111");
+        new StripeServiceImpl().refund("ch_1DTgnGLiluVmKKa3ZZL84nXS",14);
     }
 
     /**
@@ -69,6 +71,24 @@ public class StripeServiceImpl implements StripeService {
         } catch (APIException e) {
             logger.error("APIException:", e);
             throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Refund refund(String chargeId, long amount) throws CardException, APIException, AuthenticationException, InvalidRequestException, APIConnectionException {
+
+        Stripe.apiKey = API_KEY;
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("charge", chargeId);
+        params.put("amount", amount);
+        Refund refund = Refund.create(params);
+        logger.info(refund.toJson());
+        if("succeeded".equals(refund.getStatus())){
+            logger.info("refund succeeded.");
+            return refund;
+        }else{
+            throw new IllegalStateException("refund faild");
         }
     }
 }

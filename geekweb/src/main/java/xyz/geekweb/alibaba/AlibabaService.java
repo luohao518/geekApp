@@ -17,6 +17,12 @@ import com.alibaba.trade.param.AlibabaTradeGetBuyerViewParam;
 import com.alibaba.trade.param.AlibabaTradeGetBuyerViewResult;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.assertNotNull;
+
 /**
  * @author lhao
  */
@@ -24,9 +30,9 @@ import org.springframework.stereotype.Service;
 public class AlibabaService {
 
 
-    public static final String APP_KEY = "1406054";
-    public static final String SEC_KEY = "UVltVpGarKR";
-    public static final String ACCESS_TOKEN = "a8e5d00b-5e78-4518-ba25-b4d871928111";
+    public static final String APP_KEY = "2145973";
+    public static final String SEC_KEY = "Chl6lCk3M933";
+    public static final String ACCESS_TOKEN = "f2a79a33-4980-4903-9f74-4124bd8ee9fd";
 
 /*    public static final String APP_KEY = "7031967";
     public static final String SEC_KEY = "z2tB0cavGIL";
@@ -89,5 +95,16 @@ public class AlibabaService {
 
         // Calling and get the result.
         return apiExecutor.execute(param, ACCESS_TOKEN);
+    }
+
+    public static void main(String[] args) throws Exception {
+        SDKResult<AlibabaTradeGetBuyerOrderListResult> result = new AlibabaService().getBuyerOrderList();
+        System.out.println(result.getErrorMessage());
+        assertNotNull(result.getResult());
+        List<String> lstId = new ArrayList<>(200);
+        for (int i = 0; i < result.getResult().getResult().length; i++) {
+            lstId.add(result.getResult().getResult()[i].getBaseInfo().getIdOfStr());
+        }
+        System.out.println(Arrays.toString(lstId.toArray()));
     }
 }
