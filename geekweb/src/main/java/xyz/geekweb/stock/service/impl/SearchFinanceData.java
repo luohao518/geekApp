@@ -45,7 +45,7 @@ public class SearchFinanceData {
     @Autowired
     private RedisUtil redisUtil;
     private Logger logger = LoggerFactory.getLogger(SearchFinanceData.class);
-    private Map<String, List<RealTimeDataPOJO>> lstFinanceData;
+    private Map<FinanceTypeEnum, List<RealTimeDataPOJO>> lstFinanceData;
 
     public void clearRedisData() {
         logger.debug("clear redis data ");
@@ -87,16 +87,16 @@ public class SearchFinanceData {
 
         this.lstFinanceData = new HashMap<>(10);
         this.gznhg.fetchData(realTimeDataPOJOS);
-        this.lstFinanceData.put(FinanceTypeEnum.GZNHG.toString(), gznhg.getData());
+        this.lstFinanceData.put(FinanceTypeEnum.GZNHG, gznhg.getData());
 
         this.hbFund.fetchData(realTimeDataPOJOS);
-        this.lstFinanceData.put(FinanceTypeEnum.HB_FUND.toString(), hbFund.getData());
+        this.lstFinanceData.put(FinanceTypeEnum.HB_FUND, hbFund.getData());
 
         this.stock.fetchData(realTimeDataPOJOS);
-        this.lstFinanceData.put(FinanceTypeEnum.STOCK.toString(), stock.getData());
+        this.lstFinanceData.put(FinanceTypeEnum.STOCK, stock.getData());
 
         this.fjFund.fetchData();
-        this.lstFinanceData.put(FinanceTypeEnum.FJ_FUND.toString(), fjFund.getData());
+        this.lstFinanceData.put(FinanceTypeEnum.FJ_FUND, fjFund.getData());
     }
 
    /* public void saveSinaJslToMem(){
@@ -143,19 +143,19 @@ public class SearchFinanceData {
         if (lstFinanceData == null) {
             this.lstFinanceData = new HashMap<>(10);
         }
-        this.lstFinanceData.put(FinanceTypeEnum.FX.toString(), fx.getData());
+        this.lstFinanceData.put(FinanceTypeEnum.FX, fx.getData());
     }
 
-    public Map<String, List<RealTimeDataPOJO>> getAllDataFromRedis() {
+    public Map<FinanceTypeEnum, List<RealTimeDataPOJO>> getAllDataFromRedis() {
 
-        Map<String, List<RealTimeDataPOJO>> lstFinanceData1 =
-                (Map<String, List<RealTimeDataPOJO>>) redisUtil.lGetIndex(LST_SINA_JSL_KEY, 0);
+        Map<FinanceTypeEnum, List<RealTimeDataPOJO>> lstFinanceData1 =
+                (Map<FinanceTypeEnum, List<RealTimeDataPOJO>>) redisUtil.lGetIndex(LST_SINA_JSL_KEY, 0);
         //Map<String, List<RealTimeDataPOJO>> lstFinanceData1 =this.lstFinanceDataIns;
         Map<String, List<RealTimeDataPOJO>> lstFinanceData2 =
                 (Map<String, List<RealTimeDataPOJO>>) redisUtil.lGetIndex(LST_FX_KEY, 0);
         if (lstFinanceData1 != null) {
             if (lstFinanceData2 != null) {
-                lstFinanceData1.put("FX", lstFinanceData2.get("FX"));
+                lstFinanceData1.put(FinanceTypeEnum.FX, lstFinanceData2.get("FX"));
             }
             return lstFinanceData1;
         } else {
@@ -165,7 +165,7 @@ public class SearchFinanceData {
 
     }
 
-    public Map<String, List<RealTimeDataPOJO>> getAllData() {
+    public Map<FinanceTypeEnum, List<RealTimeDataPOJO>> getAllData() {
 
         if (HolidayUtil.isStockTime()) {
             fillSinaJslData();

@@ -66,6 +66,7 @@ public class KZZImpl implements FinanceData {
             double stockBuy1Price = searchResult.get(1).getBuy1Price();
             double stockBuy1Num = searchResult.get(1).getBuy1Num();
             double diffPercent=((kzzSell1Price/100*basePrice)-stockBuy1Price)/stockBuy1Price;
+            System.out.println("aaaaaaaaaaaaa="+fullCode+"bbbb"+diffPercent);
             if(diffPercent<-0.010){
                 if(fullCode.startsWith("sh")){
                     if(kzzSell1Num>10 && stockBuy1Num>100){
@@ -74,12 +75,19 @@ public class KZZImpl implements FinanceData {
                         sb.append("--------------watch--------------\n");
                         sb.append(String.format("%-6s diff[%7.3f] kzz[5.0f] stock[5.0f] %-6s %n", fullCode, kzzSell1Num, stockBuy1Num, diffPercent*100));
                         sb.append("--------------------------------------\n");
-                        logger.info(sb.toString());
+                        System.out.println(sb.toString());
 
                     }
                 }else{
-                    if(kzzSell1Num>100){
-                        //TODO
+                    System.out.println(kzzSell1Num);
+                    System.out.println(stockBuy1Num);
+                    if(kzzSell1Num>100 && stockBuy1Num>100){
+
+                        StringBuilder sb = new StringBuilder();
+                        sb.append("--------------watch--------------\n");
+                        sb.append(String.format("%-6s diff[%7.3f] kzz[5.0f] stock[5.0f] %-6s %n", fullCode, kzzSell1Num, stockBuy1Num, diffPercent*100));
+                        sb.append("--------------------------------------\n");
+                        System.out.println(sb.toString());
 
                     }
                 }
