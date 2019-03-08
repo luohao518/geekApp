@@ -105,5 +105,18 @@ public class PaymentController {
 
     }
 
+    @GetMapping("checkout")
+    public String checkout() {
+        logger.debug("do checkout");
+        return "paypal/checkout";
+
+    }
+
+    @GetMapping("success2")
+    public String success2() {
+        logger.debug("do success2");
+        return "paypal/success";
+
+    }
 
 }
