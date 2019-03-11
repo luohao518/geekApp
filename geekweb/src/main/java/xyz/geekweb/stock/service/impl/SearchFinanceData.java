@@ -43,6 +43,8 @@ public class SearchFinanceData {
     @Autowired
     private FXImpl fx;
     @Autowired
+    private KZZImpl kzz;
+    @Autowired
     private RedisUtil redisUtil;
     private Logger logger = LoggerFactory.getLogger(SearchFinanceData.class);
     private Map<FinanceTypeEnum, List<RealTimeDataPOJO>> lstFinanceData;
@@ -97,6 +99,8 @@ public class SearchFinanceData {
 
         this.fjFund.fetchData();
         this.lstFinanceData.put(FinanceTypeEnum.FJ_FUND, fjFund.getData());
+
+        this.kzz.fetchKZZData(realTimeDataPOJOS);
     }
 
    /* public void saveSinaJslToMem(){
