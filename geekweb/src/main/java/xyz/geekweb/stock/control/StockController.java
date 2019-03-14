@@ -17,6 +17,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
+import static xyz.geekweb.stock.enums.FinanceTypeEnum.*;
+
 /**
  * @author lhao
  */
@@ -41,23 +43,23 @@ public class StockController {
         model.addAttribute("refresh", refresh);
         model.addAttribute("datetime", LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
 
-        Map<String, List<RealTimeDataPOJO>> allData = searchFinanceData.getAllDataFromRedis();
+        Map<FinanceTypeEnum, List<RealTimeDataPOJO>> allData = searchFinanceData.getAllDataFromRedis();
         allData.forEach((k, v) -> {
             switch (k) {
-                case "STOCK":
-                    model.addAttribute(FinanceTypeEnum.STOCK.toString(), v);
+                case STOCK:
+                    model.addAttribute(STOCK.toString(), v);
                     break;
-                case "GZNHG":
-                    model.addAttribute(FinanceTypeEnum.GZNHG.toString(), v);
+                case GZNHG:
+                    model.addAttribute(GZNHG.toString(), v);
                     break;
-                case "HB_FUND":
-                    model.addAttribute(FinanceTypeEnum.HB_FUND.toString(), v);
+                case HB_FUND:
+                    model.addAttribute(HB_FUND.toString(), v);
                     break;
-                case "FJ_FUND":
-                    model.addAttribute(FinanceTypeEnum.FJ_FUND.toString(), v);
+                case FJ_FUND:
+                    model.addAttribute(FJ_FUND.toString(), v);
                     break;
-                case "FX":
-                    model.addAttribute(FinanceTypeEnum.FX.toString(), v);
+                case FX:
+                    model.addAttribute(FX.toString(), v);
                     break;
                 default:
                     logger.warn("参数错误！");
