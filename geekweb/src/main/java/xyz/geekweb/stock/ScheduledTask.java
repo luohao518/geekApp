@@ -30,13 +30,13 @@ public class ScheduledTask {
         this.searchFinanceData = searchFinanceData;
     }
 
-    @Scheduled(fixedRate = 120000)
-    public void reportCurrentTime() {
-        if (!HolidayUtil.isHoliday()) {
-            logger.debug("执行FX任务");
-            searchFinanceData.saveFXToRedis();
-        }
-    }
+//    @Scheduled(fixedRate = 120000)
+//    public void reportCurrentTime() {
+//        if (!HolidayUtil.isHoliday()) {
+//            logger.debug("执行FX任务");
+//            searchFinanceData.saveFXToRedis();
+//        }
+//    }
 
     @Scheduled(cron = "${geekweb.cron.exp}") //表示周一到周五每天上午9：15执行作业
     public void reportCurrentTimeCron() {

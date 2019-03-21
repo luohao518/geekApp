@@ -88,17 +88,17 @@ public class SearchFinanceData {
         final List<RealTimeDataPOJO> realTimeDataPOJOS = fetchSinaData();
 
         this.lstFinanceData = new HashMap<>(10);
-        this.gznhg.fetchData(realTimeDataPOJOS);
-        this.lstFinanceData.put(FinanceTypeEnum.GZNHG, gznhg.getData());
+//        this.gznhg.fetchData(realTimeDataPOJOS);
+//        this.lstFinanceData.put(FinanceTypeEnum.GZNHG, gznhg.getData());
 
-        this.hbFund.fetchData(realTimeDataPOJOS);
-        this.lstFinanceData.put(FinanceTypeEnum.HB_FUND, hbFund.getData());
+//        this.hbFund.fetchData(realTimeDataPOJOS);
+//        this.lstFinanceData.put(FinanceTypeEnum.HB_FUND, hbFund.getData());
 
         this.stock.fetchData(realTimeDataPOJOS);
         this.lstFinanceData.put(FinanceTypeEnum.STOCK, stock.getData());
 
-        this.fjFund.fetchData();
-        this.lstFinanceData.put(FinanceTypeEnum.FJ_FUND, fjFund.getData());
+//        this.fjFund.fetchData();
+//        this.lstFinanceData.put(FinanceTypeEnum.FJ_FUND, fjFund.getData());
 
         this.kzz.fetchKZZData(realTimeDataPOJOS);
     }

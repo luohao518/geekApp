@@ -60,7 +60,7 @@ public class KZZImpl implements FinanceData {
         for (String kzz: kzzes) {
             log.debug("parse:{}",kzz);
             String[] codes = kzz.split(":");
-            Assert.isTrue(codes.length==3,"must be 可转债代码:股票代码：转股价");
+            Assert.isTrue(codes.length>0,"must be 可转债代码:股票代码:转股价; format");
             List<RealTimeDataPOJO> searchResult = realTimeDataPOJO.stream().filter(item -> (item.getFullCode().startsWith(codes[0]) || item.getFullCode().startsWith(codes[1]))).collect(toList());
             Assert.isTrue(searchResult.size()==2,"must be two items");
             DecimalFormat dfNum = new DecimalFormat("#0");
@@ -106,7 +106,7 @@ public class KZZImpl implements FinanceData {
 
             log.debug("[{}:{}] {}% buy[{}:{}] sell[{}:{}]", codes[0],codes[1], decimalFormat.format(diffPercent),kzzSellNum, kzzSellPrice,stockBuy1Num,stockBuy1Price);
             if(diffPercent<-1.0d && kzzSellNum > min && stockBuy1Num>100){
-                log.info("[{}:{}] {}% buy[{}:{}] sell[{}:{}]", codes[0],codes[1], decimalFormat.format(diffPercent),kzzSellNum, kzzSellPrice,stockBuy1Num,stockBuy1Price);
+                log.warn("[{}:{}] {}% buy[{}:{}] sell[{}:{}]", codes[0],codes[1], decimalFormat.format(diffPercent),kzzSellNum, kzzSellPrice,stockBuy1Num,stockBuy1Price);
             }
         }
 
