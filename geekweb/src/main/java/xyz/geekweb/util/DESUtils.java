@@ -22,7 +22,7 @@ public class DESUtils {
     // 密钥
     private static Key key;
     // KEY种子
-    private static String KEY_STR = "encrypt@cncounter.com";
+    private static String KEY_STR = "luohao518@gmail.com";
 
     // 静态初始化
     static {
@@ -42,7 +42,7 @@ public class DESUtils {
     // 单元测试
     public static void main(String[] args) {
         // 需要加密的字符串
-        String email = "renfufei@qq.com";
+        String email = "luohao518@qq.com";
         // 加密
         String encrypted = DESUtils.encode(email);
         // 解密
