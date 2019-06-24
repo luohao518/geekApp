@@ -105,7 +105,7 @@ public class KZZImpl implements FinanceData {
             double diffPercent=(((kzzSellPrice/100*basePrice)-stockBuy1Price)/stockBuy1Price)*100;
 
             log.debug("[{}:{}] {}% buy[{}:{}] sell[{}:{}]", codes[0],codes[1], decimalFormat.format(diffPercent),kzzSellNum, kzzSellPrice,stockBuy1Num,stockBuy1Price);
-            if(diffPercent<-1.0d && kzzSellNum > min && stockBuy1Num>100){
+            if(diffPercent<1.0d && kzzSellNum > min && stockBuy1Num>100){
                 log.warn("[{}:{}] {}% buy[{}:{}] sell[{}:{}]", codes[0],codes[1], decimalFormat.format(diffPercent),kzzSellNum, kzzSellPrice,stockBuy1Num,stockBuy1Price);
             }
         }
