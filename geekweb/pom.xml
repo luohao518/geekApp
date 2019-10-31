@@ -15,7 +15,7 @@
 
     <properties>
         <!-- spring版本号 -->
-        <spring.version>2.0.2.RELEASE</spring.version>
+        <spring.version>2.1.0.RELEASE</spring.version>
     </properties>
 
     <dependencies>
@@ -203,6 +203,14 @@
             <artifactId>google-auth-library-oauth2-http</artifactId>
             <version>0.10.0</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients -->
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+
+
     </dependencies>
     <build>
         <finalName>geekApp</finalName>
