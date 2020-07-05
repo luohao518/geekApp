@@ -1,4 +1,5 @@
 package xyz.geekweb.jsoup;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
@@ -18,17 +19,17 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- *<STRONG>类描述</STRONG> :  2345万年历信息爬取工具<p>
+ * <STRONG>类描述</STRONG> :  2345万年历信息爬取工具<p>
  *
- * @version 1.0 <p>
  * @author 溯源blog
  *
  * <STRONG>创建时间</STRONG> : 2016年4月11日 下午14:15:44<p>
  * <STRONG>修改历史</STRONG> :<p>
- *<pre>
+ * <pre>
  * 修改人                   修改时间                     修改内容
  * ---------------         -------------------         -----------------------------------
- *</pre>
+ * </pre>
+ * @version 1.0 <p>
  */
 public class AlmanacUtil2 {
 
@@ -37,15 +38,16 @@ public class AlmanacUtil2 {
      */
     private AlmanacUtil2() {
     }
+
     /**
      * 获取万年历信息
+     *
      * @return
      */
-    public static Almanac getAlmanac(){
-        String url="http://data.eastmoney.com/hsgtcg/StockHdStatistics.aspx?stock=002614";
-        String html=pickData(url);
-        Almanac almanac=analyzeHTMLByString(html);
-        return almanac;
+    public static String getToken() {
+        String url = "http://data.eastmoney.com/hsgtcg/StockHdStatistics.aspx?stock=600185";
+        String html = pickData(url);
+        return analyzeHTMLByString(html);
     }
 
     /*
@@ -86,34 +88,42 @@ public class AlmanacUtil2 {
     /*
      * 使用jsoup解析网页信息
      */
-    private static Almanac analyzeHTMLByString(String html){
+    private static String analyzeHTMLByString(String html) {
 
-        String solarDate,lunarDate,chineseAra,should,avoid=" ";
         Document document = Jsoup.parse(html);
-        //公历时间
-        solarDate=getSolarDate();
-        //农历时间
-        Element eLunarDate=document.getElementById("info_nong");
-        lunarDate=eLunarDate.child(0).html().substring(1,3)+eLunarDate.html().substring(11);
-        //天干地支纪年法
-        Element eChineseAra=document.getElementById("info_chang");
-        chineseAra=eChineseAra.text().toString();
-        //宜
-        should=getSuggestion(document,"yi");
-        //忌
-        avoid=getSuggestion(document,"ji");
-        Almanac almanac=new Almanac(solarDate,lunarDate,chineseAra,should,avoid);
-        return almanac;
+
+        /*取得script下面的JS变量*/
+        Elements elements = document.getElementsByTag("script");
+        Elements e = elements.eq(22);
+        /*循环遍历script下面的JS变量*/
+        for (Element element : e) {
+            /*取得JS变量数组*/
+            String[] data = element.data().split("var");
+            /*取得单个JS变量*/
+            for (String variable : data) {
+                /*过滤variable为空的数据*/
+                if (variable.contains("=")) {
+                    /*取到满足条件的JS变量*/
+                    if (variable.contains("list")) {
+                        String[] kvp = variable.split("=");
+                        return kvp[3].substring(0,kvp[3].indexOf('&'));
+                    }
+                }
+            }
+        }
+
+        return null;
     }
+
     /*
      * 获取忌/宜
      */
-    private static String getSuggestion(Document doc,String id){
-        Element element=doc.getElementById(id);
-        Elements elements=element.getElementsByTag("a");
-        StringBuffer sb=new StringBuffer();
+    private static String getSuggestion(Document doc, String id) {
+        Element element = doc.getElementById(id);
+        Elements elements = element.getElementsByTag("a");
+        StringBuffer sb = new StringBuffer();
         for (Element e : elements) {
-            sb.append(e.text()+" ");
+            sb.append(e.text() + " ");
         }
         return sb.toString();
     }
