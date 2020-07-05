@@ -1,19 +1,14 @@
 package xyz.geekweb.jsoup;
 
 /**
- * Copyright 2020 bejson.com
+ * 沪深港通每日持股统计
  */
 
 import lombok.Data;
 
-/**
- * Auto-generated: 2020-07-05 15:11:53
- *
- * @author bejson.com (i@bejson.com)
- * @website http://www.bejson.com/java2pojo/
- */
+
 @Data
-public class bean1 {
+public class HsgthdstaBean {
 
     private String HDDATE;
     private String HKCODE;
@@ -28,7 +23,7 @@ public class bean1 {
     private double SHAREHOLDPRICEFIVE;
     private double SHAREHOLDPRICETEN;
     private String MARKET;
-    private long ShareHoldSumChg;
+    private String ShareHoldSumChg;
     private double Zb;
     private double Zzb;
 
