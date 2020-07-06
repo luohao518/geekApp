@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public class URLUtils {
 
+
     public static String getBaseURl(HttpServletRequest request) {
         String scheme = request.getScheme();
         String serverName = request.getServerName();

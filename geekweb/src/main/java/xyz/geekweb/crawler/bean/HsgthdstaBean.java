@@ -1,4 +1,4 @@
-package xyz.geekweb.jsoup;
+package xyz.geekweb.crawler.bean;
 
 /**
  * 沪深港通每日持股统计

@@ -1,4 +1,4 @@
-package xyz.geekweb.jsoup;
+package xyz.geekweb.crawler.bean;
 
 import lombok.Data;
 

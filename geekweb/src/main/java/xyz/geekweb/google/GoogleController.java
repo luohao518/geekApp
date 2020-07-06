@@ -24,7 +24,7 @@ public class GoogleController {
 
 //    public static final String GOOGLEUSERCONTENT_COM = "320502522179-ghvamimn46lr0ode7ocpus9oke104k2f.apps.googleusercontent.com";
 
-    public static final String GOOGLEUSERCONTENT_COM = "320502522179-cpppoag1v7kokag6se35lp96ejtm1aig.apps.googleusercontent.com";
+    public static final String GOOGLEUSERCONTENT_COM = "635997255845-5o731hmoqj0ncg645ngqic2hfqd2l2f7.apps.googleusercontent.com";
 
 
     private Logger logger = LoggerFactory.getLogger(GoogleController.class);
@@ -38,7 +38,7 @@ public class GoogleController {
         return "google/login";
     }
 
-    @RequestMapping(value = "googleVerify", method = RequestMethod.POST)
+    @PostMapping("googleVerify")
     public String verifyToken(String idtokenstr) {
 
         System.out.println(idtokenstr);

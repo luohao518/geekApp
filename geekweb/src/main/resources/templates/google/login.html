@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta name="google-signin-scope" content="profile email">
-    <meta name="google-signin-client_id" content="320502522179-cpppoag1v7kokag6se35lp96ejtm1aig.apps.googleusercontent.com">
+    <meta name="google-signin-client_id" content="635997255845-5o731hmoqj0ncg645ngqic2hfqd2l2f7.apps.googleusercontent.com">
     <script src="https://apis.google.com/js/platform.js" async defer></script>
 </head>
 <body>
@@ -30,6 +30,7 @@
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.onload = function() {
             console.log('Signed in as: ' + xhr.responseText);
+            //window.location.href = xhr.responseText.replace("\"","").replace("\"","")
         };
         xhr.send('idtokenstr=' + id_token);
     };
