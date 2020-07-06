@@ -50,7 +50,14 @@ public class CrawlerEastmoneyServiceTest {
         List<CbNewBean> cbNewJsonData = service.getCbNewJsonData();
         Map<String, Integer> hmCbNew = new HashMap<>(cbNewJsonData.size());
         for(CbNewBean cbNewBean : cbNewJsonData){
-            hmCbNew.put(cbNewBean.getCell().getStock_id(),1);
+            double calculatPrice = cbNewBean.getCell().calculatPrice();
+            log.info("{}  {}",cbNewBean.getCell().getStock_nm(),calculatPrice);
+            //转债价格
+            double dPrice = Double.parseDouble(cbNewBean.getCell().getPrice());
+            if(calculatPrice < 10 && dPrice<130) {
+                //溢价率5个点以下,价格130以下
+                hmCbNew.put(cbNewBean.getCell().getStock_id(), 1);
+            }
         }
 
         List<HSGTSumBean> hsgtSumBeanList = service.searchStocks();
