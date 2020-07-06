@@ -24,7 +24,10 @@ public class HSGTHdStaBean implements Serializable {
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = true)
+    /**
+     * 持股日期
+     */
+    @Column(nullable = false,columnDefinition="varchar(20) COMMENT '持股日期'")
     @SerializedName(value = "HDDATE")
     private String hdDate;
 
@@ -32,45 +35,63 @@ public class HSGTHdStaBean implements Serializable {
     @SerializedName(value = "HKCODE")
     private String hkCode;
 
-    @Column(nullable = false)
+    /**
+     * 股票代码
+     */
+    @Column(nullable = false,columnDefinition="varchar(20) COMMENT '股票代码'")
     @SerializedName(value = "SCODE")
     private String sCode;
 
-    @Column(nullable = false)
+    /**
+     * 股票名称
+     */
+    @Column(nullable = false,columnDefinition="varchar(20) COMMENT '股票名称'")
     @SerializedName(value = "SNAME")
     private String sName;
 
-    @Column(nullable = true)
+    /**
+     * 持股数量
+     */
+    @Column(nullable = false,columnDefinition="varchar(20) COMMENT '持股数量'")
     @SerializedName(value = "SHAREHOLDSUM")
-    private long shareholdSum;
+    private Long shareholdSum;
 
     @Column(nullable = true)
     @SerializedName(value = "SHARESRATE")
-    private double sharesRate;
+    private Double sharesRate;
 
-    @Column(nullable = true)
+    /**
+     * 当日收盘价
+     */
+    @Column(nullable = false,columnDefinition="varchar(50) COMMENT '当日收盘价'")
     @SerializedName(value = "CLOSEPRICE")
-    private double closePrice;
+    private Double closePrice;
 
-    @Column(nullable = true)
+    /**
+     * 当日涨跌幅
+     */
+    @Column(nullable = false,columnDefinition="varchar(20) COMMENT '当日涨跌幅'")
     @SerializedName(value = "ZDF")
-    private double zdf;
+    private Double zdf;
 
-    @Column(nullable = true)
+    /**
+     * 持股市值
+     */
+    @Column(nullable = false,columnDefinition="varchar(50) COMMENT '持股市值'")
     @SerializedName(value = "SHAREHOLDPRICE")
-    private double shareholdPrice;
+    private Double shareholdPrice;
 
     @Column(nullable = true)
     @SerializedName(value = "SHAREHOLDPRICEONE")
-    private double shareholdPriceOne;
+    private Double shareholdPriceOne;
 
     @Column(nullable = true)
     @SerializedName(value = "SHAREHOLDPRICEFIVE")
-    private double shareholdPriceFive;
+    private Double shareholdPriceFive;
 
     @Column(nullable = true)
     @SerializedName(value = "SHAREHOLDPRICETEN")
-    private double shareholdPriceTen;
+    private Double shareholdPriceTen;
 
     @Column(nullable = true)
     @SerializedName(value = "MARKET")
@@ -80,13 +101,16 @@ public class HSGTHdStaBean implements Serializable {
     @SerializedName(value = "ShareHoldSumChg")
     private String ShareHoldSumChg;
 
-    @Column(nullable = true)
+    /**
+     * 持股数量占A股百分比
+     */
+    @Column(nullable = false,columnDefinition="varchar(20) COMMENT '持股数量占A股百分比'")
     @SerializedName(value = "Zb")
-    private double zb;
+    private Double zb;
 
     @Column(nullable = true)
     @SerializedName(value = "Zzb")
-    private double zzb;
+    private Double zzb;
 
     @Column(nullable = false)
     private Date createDate;

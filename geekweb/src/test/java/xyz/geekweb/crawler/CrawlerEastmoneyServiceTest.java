@@ -8,10 +8,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import xyz.geekweb.crawler.bean.HSGTSumBean;
 import xyz.geekweb.crawler.bean.HSGTHdStaBean;
+import xyz.geekweb.crawler.bean.kzz.CbNewBean;
 import xyz.geekweb.crawler.service.CrawlerEastmoneyService;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @RunWith(SpringRunner.class)
@@ -38,5 +41,50 @@ public class CrawlerEastmoneyServiceTest {
             }
         });
         log.info("spend time:[{}]s",(System.currentTimeMillis()-start)/1000);
+    }
+
+    @Test
+    public void searchStock() throws Exception {
+
+        //可转债一览表
+        List<CbNewBean> cbNewJsonData = service.getCbNewJsonData();
+        Map<String, Integer> hmCbNew = new HashMap<>(cbNewJsonData.size());
+        for(CbNewBean cbNewBean : cbNewJsonData){
+            hmCbNew.put(cbNewBean.getCell().getStock_id(),1);
+        }
+
+        List<HSGTSumBean> hsgtSumBeanList = service.searchStocks();
+        for(HSGTSumBean item:hsgtSumBeanList){
+            List<HSGTHdStaBean> hsgtHdStaBeans = service.searchStock(item.getSCode());
+            long size=hsgtHdStaBeans.size();
+            String sCode = item.getSCode();
+            if(hmCbNew.get(sCode) ==null){
+                //排除非可转债标的物
+                continue;
+            }
+
+            for(int i=0;i<10;i++){
+                HSGTHdStaBean hsgtHdStaBean = hsgtHdStaBeans.get(i);
+                double sum1 = hsgtHdStaBean.getShareholdSum();
+                double sum2 = hsgtHdStaBeans.get(i+1).getShareholdSum();
+                double percent=((sum1-sum2)/sum2)*100;
+                //市值
+                double shareholdPrice=hsgtHdStaBean.getShareholdPrice()/100000000;
+
+                if(percent>8.0f && shareholdPrice>1){
+                    String strPercent = String.format("%.2f", percent);
+                    String strShareholdPrice = String.format("%.2f", shareholdPrice);
+
+                    log.info("[{}] {} {}% {} {}万股 {}亿", hsgtHdStaBean.getHdDate().substring(0,10), hsgtHdStaBean.getSName(),strPercent, hsgtHdStaBean.getZdf(),hsgtHdStaBean.getShareholdSum()/10000,strShareholdPrice);
+                }
+
+                if(percent<-8.0f && shareholdPrice>1){
+                    String strPercent = String.format("%.2f", percent);
+                    String strShareholdPrice = String.format("%.2f", shareholdPrice);
+
+                    log.info("减持： [{}] {} {}% {} {}万股 {}亿", hsgtHdStaBean.getHdDate().substring(0,10), hsgtHdStaBean.getSName(),strPercent, hsgtHdStaBean.getZdf(),hsgtHdStaBean.getShareholdSum()/10000,strShareholdPrice);
+                }
+            }
+        }
     }
 }

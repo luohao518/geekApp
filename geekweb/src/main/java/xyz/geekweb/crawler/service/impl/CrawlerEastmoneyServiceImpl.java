@@ -1,14 +1,21 @@
 package xyz.geekweb.crawler.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import xyz.geekweb.crawler.bean.HSGTSumBean;
 import xyz.geekweb.crawler.bean.HSGTHdStaBean;
+import xyz.geekweb.crawler.bean.kzz.CbNewBean;
+import xyz.geekweb.crawler.dao.HSGTHdStaRepository;
+import xyz.geekweb.crawler.dao.HSGTSumRepository;
 import xyz.geekweb.crawler.service.CrawlerEastmoneyService;
 import xyz.geekweb.util.UrlUtil;
 
@@ -32,6 +39,15 @@ public class CrawlerEastmoneyServiceImpl implements CrawlerEastmoneyService {
     /** 沪深港通每日持股统计（近1个月）*/
     private final static String  URL_HSGTHDSTA = "http://dcfm.eastmoney.com//em_mutisvcexpandinterface/api/js/get?type=HSGTHDSTA&token=%s&filter=(SCODE='%s')&st=HDDATE&sr=-1&p=1&ps=50&js=var yKYRKGdC={pages:(tp),data:(x)}&rt=53130646";
 
+    /** 记事录可转债一览*/
+    private final static String  URL_JSL_CBNEW = "https://www.jisilu.cn/data/cbnew/redeem_list/";
+
+
+    @Autowired
+    private HSGTSumRepository hsgtSumRepository;
+
+    @Autowired
+    private HSGTHdStaRepository hsgtHdStaRepository;
 
     @Override
     public String getToken() throws IOException {
@@ -77,6 +93,18 @@ public class CrawlerEastmoneyServiceImpl implements CrawlerEastmoneyService {
     }
 
     /**
+     * 从即使如接口获取可转债信息
+     * @return
+     * @throws IOException
+     */
+    @Override
+    public List<CbNewBean> getCbNewJsonData() throws IOException {
+        JSONObject jsonObject = UrlUtil.getInstance().callUrlByGet(String.format(URL_JSL_CBNEW));
+        JSONArray rows = jsonObject.getJSONArray("rows");
+        return Arrays.asList(new Gson().fromJson(rows.toJSONString(), CbNewBean[].class));
+    }
+
+    /**
      * 北向资金流入股票-流通股占比排序
      * @param token
      * @return
@@ -99,7 +127,24 @@ public class CrawlerEastmoneyServiceImpl implements CrawlerEastmoneyService {
             lstData.addAll(hsgt20GGTJSumBeans1);
         }
         return lstData;
-
     }
 
+    @Override
+    public List<HSGTSumBean> searchStocks()  {
+        HSGTSumBean bean = new HSGTSumBean();
+        Example<HSGTSumBean> example = Example.of(bean);
+        return hsgtSumRepository.findAll(example);
+    }
+
+    @Override
+    public List<HSGTHdStaBean> searchStock(String scode)  {
+        HSGTHdStaBean bean = new HSGTHdStaBean();
+        bean.setSCode(scode);
+        Example<HSGTHdStaBean> example = Example.of(bean);
+        return hsgtHdStaRepository.findAll(example);
+    }
+
+    public static void main(String[] args) throws IOException {
+
+    }
 }

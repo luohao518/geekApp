@@ -17,7 +17,7 @@ import java.util.Date;
 @Data
 @Entity
 public class HSGTSumBean implements Serializable {
-        private static final long serialVersionUID = 1L;
+        private static final Long serialVersionUID = 1L;
 
         @Id
         @GeneratedValue
@@ -75,19 +75,19 @@ public class HSGTSumBean implements Serializable {
 
         @Column(nullable = true)
         @SerializedName(value = "JG_SUM")
-        private int jgSum;
+        private Integer jgSum;
 
         @Column(nullable = true)
         @SerializedName(value = "SharesRate")
-        private double sharesRate;
+        private Double sharesRate;
 
         @Column(nullable = true)
         @SerializedName(value = "NewPrice")
-        private double newPrice;
+        private Double newPrice;
 
         @Column(nullable = true)
         @SerializedName(value = "Zdf")
-        private double zdf;
+        private Double zdf;
 
         @Column(nullable = true)
         @SerializedName(value = "Market")
@@ -95,55 +95,55 @@ public class HSGTSumBean implements Serializable {
 
         @Column(nullable = true)
         @SerializedName(value = "ShareHold")
-        private long shareHold;
+        private Long shareHold;
 
         @Column(nullable = true)
         @SerializedName(value = "ShareSZ")
-        private double shareSz;
+        private Double shareSz;
 
         @Column(nullable = true)
         @SerializedName(value = "LTZB")
-        private double ltzb;
+        private Double ltzb;
 
         @Column(nullable = true)
         @SerializedName(value = "ZZB")
-        private double zzb;
+        private Double zzb;
 
         @Column(nullable = true)
         @SerializedName(value = "LTSZ")
-        private double ltsz;
+        private Double ltsz;
 
         @Column(nullable = true)
         @SerializedName(value = "ZSZ")
-        private double zsz;
+        private Double zsz;
 
         @Column(nullable = true)
         @SerializedName(value = "ShareHold_Before_One")
-        private int shareHoldBeforeOne;
+        private Integer shareHoldBeforeOne;
 
         @Column(nullable = true)
         @SerializedName(value = "ShareSZ_Before_One")
-        private int shareszBeforeOne;
+        private Integer shareszBeforeOne;
 
         @Column(nullable = true)
         @SerializedName(value = "ShareHold_Chg_One")
-        private long shareHoldChgOne;
+        private Long shareHoldChgOne;
 
         @Column(nullable = true)
         @SerializedName(value = "ShareSZ_Chg_One")
-        private double shareszChgOne;
+        private Double shareszChgOne;
 
         @Column(nullable = true)
         @SerializedName(value = "ShareSZ_Chg_Rate_One")
-        private double shareszChgRateOne;
+        private Double shareszChgRateOne;
 
         @Column(nullable = true)
         @SerializedName(value = "LTZB_One")
-        private double ltzbOne;
+        private Double ltzbOne;
 
         @Column(nullable = true)
         @SerializedName(value = "ZZB_One")
-        private double zzbOne;
+        private Double zzbOne;
 
         @Column(nullable = false)
         private Date createDate;

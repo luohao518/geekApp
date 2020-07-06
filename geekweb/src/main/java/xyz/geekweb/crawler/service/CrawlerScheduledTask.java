@@ -1,6 +1,8 @@
 package xyz.geekweb.crawler.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -47,6 +49,10 @@ public class CrawlerScheduledTask {
         hsgtSumRepository.saveAll(hsgtSumBeans);
     }
 
+    /**
+     * 北向资金流入股票近30日数据存入mysql
+     * @throws IOException
+     */
     public void saveHSGTHdStaToMysql() throws IOException {
         String token = service.getToken();
         List<HSGTSumBean> lst = hsgtSumRepository.findAll();
@@ -59,7 +65,6 @@ public class CrawlerScheduledTask {
             }
             hsgtHdStaRepository.saveAll(hsgtHdStaJsonData);
         }
-
     }
 
 
