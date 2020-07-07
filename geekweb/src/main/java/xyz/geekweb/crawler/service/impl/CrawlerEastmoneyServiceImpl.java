@@ -17,6 +17,7 @@ import xyz.geekweb.crawler.bean.kzz.CbNewBean;
 import xyz.geekweb.crawler.dao.HSGTHdStaRepository;
 import xyz.geekweb.crawler.dao.HSGTSumRepository;
 import xyz.geekweb.crawler.service.CrawlerEastmoneyService;
+import xyz.geekweb.util.HolidayUtil;
 import xyz.geekweb.util.UrlUtil;
 
 import java.io.IOException;
@@ -114,9 +115,8 @@ public class CrawlerEastmoneyServiceImpl implements CrawlerEastmoneyService {
     public List<HSGTSumBean> getHSGTSumJsonData(String token) throws IOException {
 
         List<HSGTSumBean> lstData = new ArrayList<>(1000);
-        String yyyyMMdd = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        //TODO
-        yyyyMMdd = "2020-07-03";
+
+        String yyyyMMdd = getPreWorkingDay();
         Gson gson=new Gson();
         for(int i=0;i<20;i++){
             String html = UrlUtil.getInstance().callUrlByGetReturnString(String.format(URL_HSGT20_GGTJ_SUM, token, i + 1,yyyyMMdd));
@@ -127,6 +127,25 @@ public class CrawlerEastmoneyServiceImpl implements CrawlerEastmoneyService {
             lstData.addAll(hsgt20GGTJSumBeans1);
         }
         return lstData;
+    }
+
+    /**
+     * 取得上一个交易日
+     * @return
+     * @throws IOException
+     */
+    private String getPreWorkingDay() throws IOException {
+        LocalDate baseDate = LocalDate.now();
+        LocalDate preDate;
+        while(true){
+            preDate = baseDate.plusDays(-1);
+            if(! HolidayUtil.isHoliday(preDate.format(DateTimeFormatter.ofPattern("yyyyMMdd")))){
+                break;
+            }else{
+                baseDate = preDate;
+            }
+        }
+        return preDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 
     @Override

@@ -25,9 +25,9 @@ public class HolidayUtilTest {
     @Test
     public void testIsHoliday() throws Exception {
 
-        assertEquals(isHoliday("20180501"), true);
-        assertEquals(isHoliday("20180420"), false);
-        assertEquals(isHoliday("20180401"), true);
+        assertEquals(isHoliday("20200501"), true);
+        assertEquals(isHoliday("20200628"), false);
+        assertEquals(isHoliday("20200625"), true);
     }
 
 

@@ -1,5 +1,6 @@
 package xyz.geekweb.crawler.service;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -22,7 +23,7 @@ import java.util.List;
 @EnableScheduling
 public class CrawlerScheduledTask {
 
-    private CrawlerEastmoneyService service;
+    private final CrawlerEastmoneyService service;
 
     @Autowired
     private HSGTSumRepository hsgtSumRepository;
@@ -38,15 +39,38 @@ public class CrawlerScheduledTask {
 
 
     @Scheduled(cron = "${geekweb.cron.crawler.exp}") //表示周一到周五每天上午9：15执行作业
+    public void saveToMysql() throws IOException {
+
+        this.saveHsgtSumToMysql();
+
+        this.saveHSGTHdStaToMysql();
+    }
+
+    /**
+     * 北向资金流入股票一览表数据存入mysql
+     * @throws IOException
+     */
     public void saveHsgtSumToMysql() throws IOException {
         String token = service.getToken();
         List<HSGTSumBean> hsgtSumBeans = service.getHSGTSumJsonData(token);
         Date now = new Date();
         for(HSGTSumBean bean : hsgtSumBeans){
-            bean.setCreateDate(now);
-            bean.setUpdateDate(now);
+            HSGTSumBean hsgtSumBean=
+                    hsgtSumRepository.findBySCode(bean.getSCode());
+            if(hsgtSumBean ==null){
+                //不存在时候才去插入
+                bean.setCreateDate(now);
+                bean.setUpdateDate(now);
+                hsgtSumRepository.save(bean);
+            }else{
+                //如果存在则更新这条数据
+                Date createDate = hsgtSumBean.getCreateDate();
+                BeanUtils.copyProperties(bean,hsgtSumBean);
+                hsgtSumBean.setCreateDate(createDate);
+                hsgtSumBean.setUpdateDate(now);
+                hsgtSumRepository.save(hsgtSumBean);
+            }
         }
-        hsgtSumRepository.saveAll(hsgtSumBeans);
     }
 
     /**
@@ -60,12 +84,17 @@ public class CrawlerScheduledTask {
         for(HSGTSumBean bean : lst){
             List<HSGTHdStaBean> hsgtHdStaJsonData = service.getHSGTHdStaJsonData(token, bean.getSCode());
             for(HSGTHdStaBean hsgtHdStaBean : hsgtHdStaJsonData){
-                hsgtHdStaBean.setCreateDate(now);
-                hsgtHdStaBean.setUpdateDate(now);
+
+                HSGTHdStaBean hdStaBean=
+                        hsgtHdStaRepository.findBySCodeAndHdDate(hsgtHdStaBean.getSCode(), hsgtHdStaBean.getHdDate());
+                if(hdStaBean ==null){
+                    //不存在时候才去插入
+                    hsgtHdStaBean.setCreateDate(now);
+                    hsgtHdStaBean.setUpdateDate(now);
+                    hsgtHdStaRepository.save(hsgtHdStaBean);
+                }
             }
-            hsgtHdStaRepository.saveAll(hsgtHdStaJsonData);
+
         }
     }
-
-
 }

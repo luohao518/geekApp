@@ -127,7 +127,7 @@ public class HSGTSumBean implements Serializable {
 
         @Column(nullable = true)
         @SerializedName(value = "ShareHold_Chg_One")
-        private Long shareHoldChgOne;
+        private String shareHoldChgOne;
 
         @Column(nullable = true)
         @SerializedName(value = "ShareSZ_Chg_One")

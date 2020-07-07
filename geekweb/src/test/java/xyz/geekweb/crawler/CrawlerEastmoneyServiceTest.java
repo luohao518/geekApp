@@ -54,7 +54,7 @@ public class CrawlerEastmoneyServiceTest {
             log.info("{}  {}",cbNewBean.getCell().getStock_nm(),calculatPrice);
             //转债价格
             double dPrice = Double.parseDouble(cbNewBean.getCell().getPrice());
-            if(calculatPrice < 10 && dPrice<130) {
+            if(calculatPrice < 10 && dPrice>100 && dPrice<130) {
                 //溢价率5个点以下,价格130以下
                 hmCbNew.put(cbNewBean.getCell().getStock_id(), 1);
             }

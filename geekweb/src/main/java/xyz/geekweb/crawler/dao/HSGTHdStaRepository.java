@@ -9,5 +9,8 @@ import xyz.geekweb.crawler.bean.HSGTSumBean;
  * @date 2020/7/6
  */
 public interface HSGTHdStaRepository extends JpaRepository<HSGTHdStaBean, Long> {
+
     HSGTSumBean findBySCode(String sCode);
+
+    HSGTHdStaBean findBySCodeAndHdDate(String sCode,String hdDate);
 }

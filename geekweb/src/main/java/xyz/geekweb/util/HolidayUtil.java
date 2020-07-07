@@ -25,7 +25,7 @@ public class HolidayUtil {
      * 查询是否为节假日API接口  工作日对应结果为 0, 休息日对应结果为 1
      */
 //    private static String URL = "http://27.115.38.42:3000/hd?d=%s";
-    private static String URL = "http://192.168.1.27:3000/hd?d=%s";
+    private static String URL = "http://192.168.1.153:3000/hd?d=%s";
 
     private static int[] STOCK_TIMES = new int[]{915, 1130, 1300, 1500};
 
