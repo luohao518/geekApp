@@ -10,6 +10,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import xyz.geekweb.crawler.bean.HSGTSumBean;
 import xyz.geekweb.crawler.bean.HSGTHdStaBean;
@@ -23,9 +24,7 @@ import xyz.geekweb.util.UrlUtil;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -160,10 +159,75 @@ public class CrawlerEastmoneyServiceImpl implements CrawlerEastmoneyService {
         HSGTHdStaBean bean = new HSGTHdStaBean();
         bean.setSCode(scode);
         Example<HSGTHdStaBean> example = Example.of(bean);
-        return hsgtHdStaRepository.findAll(example);
+        Sort sort = new Sort(Sort.Direction.DESC, "hdDate");
+        return hsgtHdStaRepository.findAll(example,sort);
     }
 
-    public static void main(String[] args) throws IOException {
+    @Override
+    public String analysisStocks() throws IOException {
 
+        StringBuilder sb = new StringBuilder();
+        //可转债一览表(集思录读取)
+        List<CbNewBean> cbNewJsonData = this.getCbNewJsonData();
+        Map<String, Integer> hmKzz = filterKZZ(cbNewJsonData);
+        //搜索北向资金进入股票一览表
+        List<HSGTSumBean> hsgtSumBeanList = this.searchStocks();
+        for(HSGTSumBean stock : hsgtSumBeanList){
+            List<HSGTHdStaBean> hsgtHdStaBeans = this.searchStock(stock.getSCode());
+            long size=hsgtHdStaBeans.size();
+            String sCode = stock.getSCode();
+            if(hmKzz.get(sCode) ==null){
+                //排除非可转债标的物
+                continue;
+            }
+
+            for(int i=0;i<10;i++){
+                //最近10个交易日数据
+                if(hsgtHdStaBeans.size()==0){
+                    log.error("can't find data:{}",stock.getSCode());
+                }
+                HSGTHdStaBean hsgtHdStaBean = hsgtHdStaBeans.get(i);
+                double sum1 = hsgtHdStaBean.getShareholdSum();
+                double sum2 = hsgtHdStaBeans.get(i+1).getShareholdSum();
+                double percent=((sum1-sum2)/sum2)*100;
+                //市值
+                double shareholdPrice=hsgtHdStaBean.getShareholdPrice()/100000000;
+
+                if(percent>8.0f && shareholdPrice>1){
+                    String strPercent = String.format("%.2f", percent);
+                    String strShareholdPrice = String.format("%.2f", shareholdPrice);
+
+//                    log.info("[{}] {} {}% {} {}万股 {}亿", hsgtHdStaBean.getHdDate().substring(0,10), hsgtHdStaBean.getSName(),strPercent, hsgtHdStaBean.getZdf(),hsgtHdStaBean.getShareholdSum()/10000,strShareholdPrice);
+                    String format = String.format("[%s] %s %s %s%% %s %s万股 %s亿", hsgtHdStaBean.getHdDate().substring(0, 10), hsgtHdStaBean.getSCode(),hsgtHdStaBean.getSName(), strPercent, hsgtHdStaBean.getZdf(), hsgtHdStaBean.getShareholdSum() / 10000, strShareholdPrice);
+                    sb.append(format).append("\n");
+                }
+
+                if(percent<-8.0f && shareholdPrice>1){
+                    String strPercent = String.format("%.2f", percent);
+                    String strShareholdPrice = String.format("%.2f", shareholdPrice);
+
+//                    log.info("减持： [{}] {} {}% {} {}万股 {}亿", hsgtHdStaBean.getHdDate().substring(0,10), hsgtHdStaBean.getSName(),strPercent, hsgtHdStaBean.getZdf(),hsgtHdStaBean.getShareholdSum()/10000,strShareholdPrice);
+                    String format = String.format("减持：[%s] %s %s %s%% %s %s万股 %s亿", hsgtHdStaBean.getHdDate().substring(0, 10), hsgtHdStaBean.getSCode(),hsgtHdStaBean.getSName(), strPercent, hsgtHdStaBean.getZdf(), hsgtHdStaBean.getShareholdSum() / 10000, strShareholdPrice);
+                    sb.append(format).append("\n");
+                }
+            }
+        }
+        return sb.toString();
+    }
+
+    private Map<String, Integer> filterKZZ(List<CbNewBean> cbNewJsonData) {
+        Map<String, Integer> hmCbNew = new HashMap<>(cbNewJsonData.size());
+
+        for(CbNewBean cbNewBean : cbNewJsonData){
+            double calculatPrice = cbNewBean.getCell().calculatPrice();
+            log.info("{}  {}",cbNewBean.getCell().getStock_nm(),calculatPrice);
+            //转债价格
+            double dPrice = Double.parseDouble(cbNewBean.getCell().getPrice());
+            if(calculatPrice < 10 && dPrice>100 && dPrice<130) {
+                //溢价率5个点以下,价格130以下
+                hmCbNew.put(cbNewBean.getCell().getStock_id(), 1);
+            }
+        }
+        return hmCbNew;
     }
 }

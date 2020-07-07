@@ -9,6 +9,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import xyz.geekweb.crawler.bean.HSGTHdStaBean;
 import xyz.geekweb.crawler.service.CrawlerScheduledTask;
 
+import java.io.IOException;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -34,9 +35,13 @@ public class CrawlerScheduledTaskTest {
      * @throws Exception
      */
     @Test
-    public void saveHSGTHdStaToMysql() throws Exception {
+    public void saveHSGTHdStaToMysql() throws IOException {
         task.saveHSGTHdStaToMysql();
     }
 
+    @Test
+    public void analysisStocks() throws Exception {
 
+        task.analysisStocks();
+    }
 }

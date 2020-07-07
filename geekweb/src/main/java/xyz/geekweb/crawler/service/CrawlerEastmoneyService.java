@@ -20,4 +20,6 @@ public interface CrawlerEastmoneyService {
     List<HSGTSumBean> searchStocks();
 
     List<HSGTHdStaBean> searchStock(String scode);
+
+    String analysisStocks() throws IOException;
 }
