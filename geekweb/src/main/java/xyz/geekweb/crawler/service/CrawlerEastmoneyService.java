@@ -21,5 +21,5 @@ public interface CrawlerEastmoneyService {
 
     List<HSGTHdStaBean> searchStock(String scode);
 
-    String analysisStocks() throws IOException;
+    String analysisStocks(boolean isIncludeKZZ) throws IOException;
 }

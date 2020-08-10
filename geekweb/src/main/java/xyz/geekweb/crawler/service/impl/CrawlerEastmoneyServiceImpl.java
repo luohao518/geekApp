@@ -164,25 +164,41 @@ public class CrawlerEastmoneyServiceImpl implements CrawlerEastmoneyService {
     }
 
     @Override
-    public String analysisStocks() throws IOException {
+    public String analysisStocks(boolean isIncludeKZZ) throws IOException {
 
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder("        持股日期 证券代码 证券名称 百分比 涨跌幅   股数   股市值\n\n");
         //可转债一览表(集思录读取)
         List<CbNewBean> cbNewJsonData = this.getCbNewJsonData();
         Map<String, Integer> hmKzz = filterKZZ(cbNewJsonData);
+        //添加自定义股票
+        hmKzz.put("600185", 1);//格力
+        hmKzz.put("601098", 1);//中南
+        hmKzz.put("002551", 1);//尚荣
+        hmKzz.put("603301", 1);//振德
+        hmKzz.put("002503", 1);//搜于特
+        if(hmKzz.get("002614")==null){
+            hmKzz.put("002614", 1);//博彦
+        }
+        if(hmKzz.get("002728")==null){
+            hmKzz.put("002728", 1);//特一药业
+        }
+        if(hmKzz.get("002083")==null){
+            hmKzz.put("002083", 1);//孚日股份
+        }
+
         //搜索北向资金进入股票一览表
         List<HSGTSumBean> hsgtSumBeanList = this.searchStocks();
         for(HSGTSumBean stock : hsgtSumBeanList){
             List<HSGTHdStaBean> hsgtHdStaBeans = this.searchStock(stock.getSCode());
             long size=hsgtHdStaBeans.size();
             String sCode = stock.getSCode();
-            if(hmKzz.get(sCode) ==null){
+            if(isIncludeKZZ && hmKzz.get(sCode) ==null){
                 //排除非可转债标的物
                 continue;
             }
 
-            for(int i=0;i<10;i++){
-                //最近10个交易日数据
+            for(int i=0;i<3;i++){
+                //最近3个交易日数据
                 if(hsgtHdStaBeans.size()==0){
                     log.error("can't find data:{}",stock.getSCode());
                 }
@@ -198,7 +214,7 @@ public class CrawlerEastmoneyServiceImpl implements CrawlerEastmoneyService {
                     String strShareholdPrice = String.format("%.2f", shareholdPrice);
 
 //                    log.info("[{}] {} {}% {} {}万股 {}亿", hsgtHdStaBean.getHdDate().substring(0,10), hsgtHdStaBean.getSName(),strPercent, hsgtHdStaBean.getZdf(),hsgtHdStaBean.getShareholdSum()/10000,strShareholdPrice);
-                    String format = String.format("[%s] %s %s %s%% %s %s万股 %s亿", hsgtHdStaBean.getHdDate().substring(0, 10), hsgtHdStaBean.getSCode(),hsgtHdStaBean.getSName(), strPercent, hsgtHdStaBean.getZdf(), hsgtHdStaBean.getShareholdSum() / 10000, strShareholdPrice);
+                    String format = String.format("增持: [%s] %s %s %s%% %.2f%% %s万股 %s亿", hsgtHdStaBean.getHdDate().substring(0, 10), hsgtHdStaBean.getSCode(),hsgtHdStaBean.getSName(), strPercent, hsgtHdStaBean.getZdf(), hsgtHdStaBean.getShareholdSum() / 10000, strShareholdPrice);
                     sb.append(format).append("\n");
                 }
 
@@ -207,7 +223,7 @@ public class CrawlerEastmoneyServiceImpl implements CrawlerEastmoneyService {
                     String strShareholdPrice = String.format("%.2f", shareholdPrice);
 
 //                    log.info("减持： [{}] {} {}% {} {}万股 {}亿", hsgtHdStaBean.getHdDate().substring(0,10), hsgtHdStaBean.getSName(),strPercent, hsgtHdStaBean.getZdf(),hsgtHdStaBean.getShareholdSum()/10000,strShareholdPrice);
-                    String format = String.format("减持：[%s] %s %s %s%% %s %s万股 %s亿", hsgtHdStaBean.getHdDate().substring(0, 10), hsgtHdStaBean.getSCode(),hsgtHdStaBean.getSName(), strPercent, hsgtHdStaBean.getZdf(), hsgtHdStaBean.getShareholdSum() / 10000, strShareholdPrice);
+                    String format = String.format("--减持: [%s] %s %s %s%% %.2f%% %s万股 %s亿", hsgtHdStaBean.getHdDate().substring(0, 10), hsgtHdStaBean.getSCode(),hsgtHdStaBean.getSName(), strPercent, hsgtHdStaBean.getZdf(), hsgtHdStaBean.getShareholdSum() / 10000, strShareholdPrice);
                     sb.append(format).append("\n");
                 }
             }

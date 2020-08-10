@@ -111,9 +111,13 @@ public class CrawlerScheduledTask {
 
     public void analysisStocks() throws IOException {
 
-        String log = service.analysisStocks();
         String yyyyMmdd = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        String log = service.analysisStocks(false);
         FileUtils.writeStringToFile(
-                new File("D:\\reports\\"+yyyyMmdd+".txt"),log);
+                new File("D:\\reports\\all_"+yyyyMmdd+".txt"),log);
+
+        log = service.analysisStocks(true);
+        FileUtils.writeStringToFile(
+                new File("D:\\reports\\kzz_"+yyyyMmdd+".txt"),log);
     }
 }
