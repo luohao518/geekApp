@@ -33,4 +33,22 @@ public class KZZmplTest {
         kzz.fetchKZZData(realTimeDataPOJOS);
     }
 
+    @Test
+    public void SellStockAndBuyKzz() throws Exception {
+
+        List<RealTimeDataPOJO> realTimeDataPOJOS = searchFinanceData.getAllData().get(FinanceTypeEnum.STOCK);
+
+        kzz.SellStockAndBuyKzz(realTimeDataPOJOS);
+    }
+
+    @Test
+    public void doLoopSellStockAndBuyKzz() throws Exception {
+
+        while(true){
+            SellStockAndBuyKzz();
+            Thread.sleep(10000);
+        }
+
+    }
+
 }

@@ -53,6 +53,10 @@ public class KZZImpl implements FinanceData {
     }
 
 
+    /**
+     * 可转债溢价率监测
+     * @param realTimeDataPOJO
+     */
     public void fetchKZZData(List<RealTimeDataPOJO> realTimeDataPOJO) {
 
         List<String> codeList=new ArrayList<>();
@@ -62,7 +66,7 @@ public class KZZImpl implements FinanceData {
             String[] codes = kzz.split(":");
             Assert.isTrue(codes.length>0,"must be 可转债代码:股票代码:转股价; format");
             List<RealTimeDataPOJO> searchResult = realTimeDataPOJO.stream().filter(item -> (item.getFullCode().startsWith(codes[0]) || item.getFullCode().startsWith(codes[1]))).collect(toList());
-            Assert.isTrue(searchResult.size()==2,"must be two items");
+            Assert.isTrue(searchResult.size()==2,"must be two items or not exist");
             DecimalFormat dfNum = new DecimalFormat("#0");
             float basePrice = Float.parseFloat(codes[2]);
             String fullCode = searchResult.get(0).getFullCode();
@@ -106,7 +110,7 @@ public class KZZImpl implements FinanceData {
 
             log.debug("[{}:{}] {}% buy[{}:{}] sell[{}:{}]", codes[0],codes[1], decimalFormat.format(diffPercent),kzzSellNum, kzzSellPrice,stockBuy1Num,stockBuy1Price);
             if(diffPercent<1.0d && kzzSellNum > min && stockBuy1Num>100){
-                log.warn("[{}:{}] {}% buy[{}:{}] sell[{}:{}]", codes[0],codes[1], decimalFormat.format(diffPercent),kzzSellNum, kzzSellPrice,stockBuy1Num,stockBuy1Price);
+                ///log.warn("[{}:{}] {}% buy[{}:{}] sell[{}:{}]", codes[0],codes[1], decimalFormat.format(diffPercent),kzzSellNum, kzzSellPrice,stockBuy1Num,stockBuy1Price);
             }
         }
 
@@ -132,4 +136,68 @@ public class KZZImpl implements FinanceData {
     }
 
 
+    /**
+     * 可转债折价套利（卖股买债）
+     * @param realTimeDataPOJO
+     */
+    public void SellStockAndBuyKzz(List<RealTimeDataPOJO> realTimeDataPOJO) {
+
+        List<String> codeList=new ArrayList<>();
+        //监测额可转债列表
+        String[] kzzes = this.dataProperties.getMap().get("kzz").split(";");
+        for (String kzz: kzzes) {
+            log.debug("parse:{}",kzz);
+            String[] codes = kzz.split(":");
+            Assert.isTrue(codes.length>0,"must be 可转债代码:股票代码:转股价; format");
+            List<RealTimeDataPOJO> searchResult = realTimeDataPOJO.stream().filter(item -> (item.getFullCode().startsWith(codes[0]) || item.getFullCode().startsWith(codes[1]))).collect(toList());
+            Assert.isTrue(searchResult.size()==2,"must be two items or not exist");
+            DecimalFormat dfNum = new DecimalFormat("#0");
+            float basePrice = Float.parseFloat(codes[2]);
+            String fullCode = searchResult.get(0).getFullCode();
+            double stockBuy1Price = searchResult.get(1).getBuy1Price();
+            int stockBuy1Num = (int)(searchResult.get(1).getBuy1Num()/100);
+
+            boolean isSH = fullCode.startsWith("sh");
+            boolean isSZ = fullCode.startsWith("sz");
+
+            //取最大可买到值
+            int kzzBuyNum =0;
+            double kzzBuyPrice = 0.0d;
+            int min = 10;
+            if(isSZ){
+                min = 100;
+            }
+            if(searchResult.get(0).getBuy1Num()> min){
+                log.debug("try buy1：{}",searchResult.get(0).getBuy1Num());
+                kzzBuyNum =(int)(searchResult.get(0).getBuy1Price());
+                kzzBuyPrice = searchResult.get(0).getSell1Price();
+            }else if(searchResult.get(0).getBuy2Num()>min){
+                log.debug("try buy2：{}",searchResult.get(0).getBuy2Num());
+                kzzBuyNum =(int)(searchResult.get(0).getSell2Num());
+                kzzBuyPrice = searchResult.get(0).getBuy2Price();
+            }else if(searchResult.get(0).getBuy3Num()>min){
+                log.debug("try buy3：{}",searchResult.get(0).getBuy3Num());
+                kzzBuyNum =(int)(searchResult.get(0).getSell3Num());
+                kzzBuyPrice = searchResult.get(0).getBuy3Price();
+            }else if(searchResult.get(0).getBuy4Num()>min){
+                log.debug("try buy4：{}",searchResult.get(0).getBuy4Num());
+                kzzBuyNum =(int)(searchResult.get(0).getSell4Num());
+                kzzBuyPrice = searchResult.get(0).getBuy4Price();
+            }else if(searchResult.get(0).getBuy5Num()>min){
+                log.debug("try buy5：{}",searchResult.get(0).getSell5Num());
+                kzzBuyNum =(int)(searchResult.get(0).getBuy5Num());
+                kzzBuyPrice = searchResult.get(0).getBuy5Price();
+            }
+
+
+            double diffPercent=(((kzzBuyPrice/100*basePrice)-stockBuy1Price)/stockBuy1Price)*100;
+            if(diffPercent<-0.1d){
+                log.info("[{}:{}] {}% sell[{}:{}] buy[{}:{}]", codes[0],codes[1], decimalFormat.format(diffPercent),kzzBuyNum, kzzBuyPrice,stockBuy1Num,stockBuy1Price);
+            }
+            if(diffPercent<-0.4d && kzzBuyNum > min && stockBuy1Num>10){
+                log.warn("[{}:{}] {}% sell[{}:{}] buy[{}:{}]", codes[0],codes[1], decimalFormat.format(diffPercent),kzzBuyNum, kzzBuyPrice,stockBuy1Num,stockBuy1Price);
+            }
+        }
+
+    }
 }

@@ -85,21 +85,28 @@ public class SearchFinanceData {
 
         logger.debug("execute fillSinaJslData()");
 
+        //从sina获取数据
         final List<RealTimeDataPOJO> realTimeDataPOJOS = fetchSinaData();
 
         this.lstFinanceData = new HashMap<>(10);
+
+        //填充国债逆回购数据
 //        this.gznhg.fetchData(realTimeDataPOJOS);
 //        this.lstFinanceData.put(FinanceTypeEnum.GZNHG, gznhg.getData());
 
+        //填充货币基金数据
 //        this.hbFund.fetchData(realTimeDataPOJOS);
 //        this.lstFinanceData.put(FinanceTypeEnum.HB_FUND, hbFund.getData());
 
+        //填充股票数据
         this.stock.fetchData(realTimeDataPOJOS);
         this.lstFinanceData.put(FinanceTypeEnum.STOCK, stock.getData());
 
+        //填充分级数据
 //        this.fjFund.fetchData();
 //        this.lstFinanceData.put(FinanceTypeEnum.FJ_FUND, fjFund.getData());
 
+        //填充可转债数据
         this.kzz.fetchKZZData(realTimeDataPOJOS);
     }
 
