@@ -50,7 +50,7 @@ public class FileProducer {
         props.put("buffer.memory", 33554432);
 
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "xyz.geekweb.kafka.FileMapSerializer");
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "xyz.geekweb.kafka.filetransfer.FileMapSerializer");
 
         Producer<String, Map> producer = new KafkaProducer<>(props);
 

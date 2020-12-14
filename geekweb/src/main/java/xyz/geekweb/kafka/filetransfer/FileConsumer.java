@@ -26,7 +26,7 @@ public class FileConsumer {
         props.put("session.timeout.ms", "30000");
 
         props.put(KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
-        props.put(VALUE_DESERIALIZER_CLASS_CONFIG, "xyz.geekweb.kafka.FileMapDeserializer");
+        props.put(VALUE_DESERIALIZER_CLASS_CONFIG, "xyz.geekweb.kafka.filetransfer.FileMapDeserializer");
         KafkaConsumer<String, Map<String,byte[]>> consumer = new KafkaConsumer<>(props);
 
         //Kafka Consumer subscribes list of topics here.

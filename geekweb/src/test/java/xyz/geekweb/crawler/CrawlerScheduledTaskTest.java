@@ -20,6 +20,13 @@ public class CrawlerScheduledTaskTest {
     @Autowired
     private CrawlerScheduledTask task;
 
+    @Test
+    public void all() throws Exception {
+        task.saveHsgtSumToMysql();
+        task.saveHSGTHdStaToMysql();
+        task.analysisStocks();
+    }
+
     /**
      * 北向资金流入股票（前1000只）存入mysql
      * @throws Exception
