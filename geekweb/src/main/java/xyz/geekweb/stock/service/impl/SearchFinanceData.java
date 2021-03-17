@@ -105,7 +105,7 @@ public class SearchFinanceData {
 //        this.lstFinanceData.put(FinanceTypeEnum.FJ_FUND, fjFund.getData());
 
         //填充可转债数据
-        this.kzz.fetchKZZData(realTimeDataPOJOS);
+        //this.kzz.fetchKZZData(realTimeDataPOJOS);
     }
 
    /* public void saveSinaJslToMem(){

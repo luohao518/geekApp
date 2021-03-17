@@ -1,17 +1,17 @@
 package xyz.geekweb.stock.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import xyz.geekweb.config.DataProperties;
+import xyz.geekweb.stock.pojo.KZZBean;
 import xyz.geekweb.stock.mq.Sender;
 import xyz.geekweb.stock.pojo.savesinastockdata.RealTimeDataPOJO;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -198,6 +198,76 @@ public class KZZImpl implements FinanceData {
                 log.warn("[{}:{}] {}% sell[{}:{}] buy[{}:{}]", codes[0],codes[1], decimalFormat.format(diffPercent),kzzBuyNum, kzzBuyPrice,stockBuy1Num,stockBuy1Price);
             }
         }
+
+    }
+
+    /**
+     * 可转债折价套利（卖股买债）
+     * @param realTimeDataPOJO
+     */
+    public List<KZZBean> getKzzBean(List<RealTimeDataPOJO> realTimeDataPOJO, String[] kzzes) {
+
+        List<KZZBean> result = new ArrayList<>();
+        KZZBean bean=null;
+        for (String kzz: kzzes) {
+            bean = new KZZBean();
+            String[] codes = kzz.split(":");
+            Assert.isTrue(codes.length>0,"must be 可转债代码:股票代码:转股价; format");
+            List<RealTimeDataPOJO> searchResult = realTimeDataPOJO.stream().filter(item -> (item.getFullCode().startsWith(codes[0]) || item.getFullCode().startsWith(codes[1]))).collect(toList());
+            Assert.isTrue(searchResult.size()==2,"must be two items or not exist");
+            DecimalFormat dfNum = new DecimalFormat("#0");
+            float basePrice = Float.parseFloat(codes[2]);
+            String fullCode = searchResult.get(0).getFullCode();
+            double stockBuy1Price = searchResult.get(1).getBuy1Price();
+            int stockBuy1Num = (int)(searchResult.get(1).getBuy1Num()/100);
+
+            boolean isSH = fullCode.startsWith("sh");
+            boolean isSZ = fullCode.startsWith("sz");
+
+            //取最大可买到值
+            int buyNum =0;
+            double buyPrice = 0.0d;
+            double buyAmount = 0.0d;
+            String buyType="";
+            int min = 10;
+            if(isSZ){
+                min = 100;
+            }
+            if(searchResult.get(0).getBuy1Num()> min){
+                buyType = "buy1";
+                buyNum =(int)(searchResult.get(0).getSell1Num());
+                buyPrice = searchResult.get(0).getSell1Price();
+            }else if(searchResult.get(0).getBuy2Num()>min){
+                buyType = "buy2";
+                buyNum =(int)(searchResult.get(0).getSell2Num());
+                buyPrice = searchResult.get(0).getBuy2Price();
+            }else if(searchResult.get(0).getBuy3Num()>min){
+                buyType = "buy3";
+                buyNum =(int)(searchResult.get(0).getSell3Num());
+                buyPrice = searchResult.get(0).getBuy3Price();
+            }else if(searchResult.get(0).getBuy4Num()>min){
+                buyType = "buy4";
+                buyNum =(int)(searchResult.get(0).getSell4Num());
+                buyPrice = searchResult.get(0).getBuy4Price();
+            }else if(searchResult.get(0).getBuy5Num()>min){
+                buyType = "buy5";
+                buyNum =(int)(searchResult.get(0).getBuy5Num());
+                buyPrice = searchResult.get(0).getBuy5Price();
+            }
+
+            double diffPercent=(((buyPrice/100*basePrice)-stockBuy1Price)/stockBuy1Price)*100;
+            double formatDiffPercent = Double.parseDouble(String.format("%.2f",diffPercent));
+            bean.setDiffPercent(formatDiffPercent);
+            bean.setBuyType(buyType);
+            bean.setBuyNum(buyNum);
+            bean.setBuyPrice(buyPrice);
+            buyAmount = buyPrice * buyNum;
+            bean.setBuyAmount(buyAmount);
+            bean.setInput(kzz);
+            bean.setNow(new Date());
+            result.add(bean);
+        }
+        return result;
 
     }
 }
