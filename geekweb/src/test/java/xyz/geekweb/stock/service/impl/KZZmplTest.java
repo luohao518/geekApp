@@ -41,6 +41,7 @@ public class KZZmplTest {
         kzz.SellStockAndBuyKzz(realTimeDataPOJOS);
     }
 
+
     @Test
     public void doLoopSellStockAndBuyKzz() throws Exception {
 
