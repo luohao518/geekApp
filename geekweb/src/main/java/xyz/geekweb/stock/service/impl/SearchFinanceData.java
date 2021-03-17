@@ -33,8 +33,6 @@ public class SearchFinanceData {
     @Autowired
     private DataProperties dataProperties;
     @Autowired
-    private FjFundImpl fjFund;
-    @Autowired
     private StockImpl stock;
     @Autowired
     private HBFundImpl hbFund;

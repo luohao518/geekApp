@@ -26,9 +26,7 @@ public class DataPropertiesTest {
     @Test
     public void testGetList() throws Exception {
         Assert.assertNotNull(dataProperties);
-        Assert.assertNotNull(dataProperties.getFj_funds());
         Assert.assertNotNull(dataProperties.getReverse_bonds());
-        Assert.assertNotNull(dataProperties.getFj_funds_have());
         Assert.assertNotNull(dataProperties.getMonetary_funds());
         Assert.assertNotNull(dataProperties.getStocks());
     }

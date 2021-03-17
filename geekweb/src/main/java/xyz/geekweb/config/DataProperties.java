@@ -28,11 +28,6 @@ public class DataProperties {
     //股票
     private List<String> stocks;
 
-    //分级
-    private List<String> fj_funds;
-    private List<String> fj_funds_have;
-
-
     //FX
     private List<String> fx;
 
